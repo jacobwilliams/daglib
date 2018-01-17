@@ -1,0 +1,19 @@
+project: daglib
+project_dir: ./src
+output_dir: ./doc
+project_github: https://github.com/jacobwilliams/daglib
+summary: Directed Acyclic Graphs With Modern Fortran
+author: Jacob Williams
+github: https://github.com/jacobwilliams
+predocmark_alt: >
+predocmark: <
+docmark_alt:
+docmark: !
+display: public
+         protected
+         private
+source: true
+graph: true
+extra_mods: iso_fortran_env:https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html
+
+{!README.md!}
