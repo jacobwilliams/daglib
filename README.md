@@ -80,7 +80,13 @@ program dag_example
 end program dag_example
 ```
 
-This program produces the file:
+This program produces the toposort order:
+
+```
+ order = [1, 2, 5, 3, 4, 6]
+```
+
+and the image file:
 
 ![Image](https://raw.githubusercontent.com/jacobwilliams/daglib/master/src/tests/dag_example.png)
 
