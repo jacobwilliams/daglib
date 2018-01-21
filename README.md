@@ -3,7 +3,7 @@ DAGLILB
 
 ## Overview
 
-A simple module for creating and manipulating directed acyclic graphics (DAGs). It includes a toposort feature, and also the ability to generate files in the GraphViz "dot" notation.
+A simple module for creating and manipulating directed acyclic graphics (DAGs). It includes a toposort feature, and also the ability to generate files in the [GraphViz](https://www.graphviz.org) "dot" notation.
 
 ## Building
 
