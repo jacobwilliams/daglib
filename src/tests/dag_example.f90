@@ -10,12 +10,11 @@
 
     type(dag) :: d
     integer,dimension(:),allocatable :: order
-    character(len=:),allocatable :: diagraph
     integer :: istat
     integer :: i
 
     integer,parameter :: n_nodes = 6
-    character(len=*),parameter :: filetype = 'pdf'
+    character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
 
     ! TODO combine set_edges and set_vertex_info into one routine maybe.
 
