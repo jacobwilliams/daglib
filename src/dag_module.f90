@@ -11,12 +11,12 @@
     type :: vertex
         !! a vertex of a directed acyclic graph (DAG)
         private
-        integer,dimension(:),allocatable :: edges
+        integer,dimension(:),allocatable :: edges  !! these are the vertices that this vertex depends on
         integer :: ivertex = 0 !! vertex number
-        logical :: checking = .false.
-        logical :: marked = .false.
-        character(len=:),allocatable :: label
-        character(len=:),allocatable :: attributes
+        logical :: checking = .false.  !! used for toposort
+        logical :: marked = .false.    !! used for toposort
+        character(len=:),allocatable :: label      !! used for diagraph
+        character(len=:),allocatable :: attributes !! used for diagraph
     contains
         generic :: set_edges => set_edge_vector, add_edge
         procedure :: set_edge_vector
@@ -26,14 +26,18 @@
     type,public :: dag
         !! a directed acyclic graph (DAG)
         private
-        type(vertex),dimension(:),allocatable :: vertices
+        integer :: n = 0 !! number of `vertices`
+        type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG.
     contains
         procedure,public :: set_vertices     => dag_set_vertices
         procedure,public :: set_edges        => dag_set_edges
         procedure,public :: set_vertex_info  => dag_set_vertex_info
         procedure,public :: toposort         => dag_toposort
         procedure,public :: generate_digraph => dag_generate_digraph
+        procedure,public :: generate_dependency_matrix => dag_generate_dependency_matrix
         procedure,public :: save_digraph     => dag_save_digraph
+        procedure,public :: get_edges        => dag_get_edges
+        procedure,public :: get_dependencies => dag_get_dependencies
         procedure,public :: destroy          => dag_destroy
     end type dag
 
@@ -48,6 +52,7 @@
 
     class(dag),intent(inout) :: me
 
+    me%n = 0
     if (allocated(me%vertices)) deallocate(me%vertices)
 
     end subroutine dag_destroy
@@ -99,6 +104,61 @@
 
 !*******************************************************************************
 !>
+!  get the edges for the vertex (all the the vertices
+!  that this vertex depends on).
+
+    pure function dag_get_edges(me,ivertex) result(edges)
+
+    implicit none
+
+    class(dag),intent(in) :: me
+    integer,intent(in) :: ivertex
+    integer,dimension(:),allocatable :: edges
+
+    if (ivertex>0 .and. ivertex <= me%n) then
+        edges = me%vertices(ivertex)%edges  ! auto LHS allocation
+    end if
+
+    end function dag_get_edges
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  get all the vertices that depend on this vertex.
+
+    pure function dag_get_dependencies(me,ivertex) result(dep)
+
+    implicit none
+
+    class(dag),intent(in) :: me
+    integer,intent(in) :: ivertex
+    integer,dimension(:),allocatable :: dep  !! the set of all vertices
+                                             !! than depend on `ivertex`
+
+    integer :: i !! vertex counter
+
+    if (ivertex>0 .and. ivertex <= me%n) then
+
+        ! have to check all the vertices:
+        do i=1, me%n
+            if (allocated(me%vertices(i)%edges)) then
+                if (any(me%vertices(i)%edges == ivertex)) then
+                    if (allocated(dep)) then
+                        dep = [i]       ! auto LHS allocation
+                    else
+                        dep = [dep, i]  ! auto LHS allocation
+                    end if
+                end if
+            end if
+        end do
+
+    end if
+
+    end function dag_get_dependencies
+!*******************************************************************************
+
+!*******************************************************************************
+!>
 !  set the number of vertices in the dag
 
     subroutine dag_set_vertices(me,nvertices)
@@ -108,6 +168,7 @@
 
     integer :: i
 
+    me%n = nvertices
     allocate(me%vertices(nvertices))
     me%vertices%ivertex = [(i,i=1,nvertices)]
 
@@ -171,14 +232,15 @@
                                  !! * -1 if circular dependency
                                  !!  (in this case, `order` will not be allocated)
 
-    integer :: i,n,iorder
+    integer :: i,iorder
 
-    n = size(me%vertices)
-    allocate(order(n))
+    if (me%n==0) return
+
+    allocate(order(me%n))
 
     iorder = 0  ! index in order array
     istat = 0   ! no errors so far
-    do i=1,n
+    do i=1,me%n
       if (.not. me%vertices(i)%marked) call dfs(me%vertices(i))
       if (istat==-1) exit
     end do
@@ -237,7 +299,6 @@
     character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
     integer,intent(in),optional :: dpi !! resolution (e.g. 300)
 
-    integer :: n       !! number of vertices
     integer :: i,j     !! counter
     integer :: n_edges !! number of edges
     character(len=:),allocatable :: attributes,label
@@ -246,8 +307,7 @@
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
 
-    if (.not. allocated(me%vertices)) return
-    n = size(me%vertices)
+    if (me%n == 0) return
 
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
@@ -256,7 +316,7 @@
         str = str//tab//'graph [ dpi = '//integer_to_string(dpi)//' ]'//newline//newline
 
     ! define the vertices:
-    do i=1,n
+    do i=1,me%n
         has_label      = allocated(me%vertices(i)%label)
         has_attributes = allocated(me%vertices(i)%attributes)
         if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%label))//'"'
@@ -270,11 +330,11 @@
             attributes = ''
         end if
         str = str//tab//integer_to_string(i)//' '//attributes//newline
-        if (i==n) str = str//newline
+        if (i==me%n) str = str//newline
     end do
 
     ! define the dependencies:
-    do i=1,n
+    do i=1,me%n
         if (allocated(me%vertices(i)%edges)) then
             n_edges = size(me%vertices(i)%edges)
             str = str//tab//integer_to_string(i)//' -> '
@@ -290,6 +350,38 @@
     str = str//newline//'}'
 
     end function dag_generate_digraph
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Generate the dependency matrix for the DAG.
+!
+!  This is an \(n \times n \) matrix with elements \(A_{ij}\),
+!  such that \(A_{ij}\) is true if vertex \(i\) depends on vertex \(j\).
+
+    subroutine dag_generate_dependency_matrix(me,mat)
+
+    implicit none
+
+    class(dag),intent(in) :: me
+    logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
+
+    integer :: i !! vertex counter
+
+    if (me%n > 0) then
+
+        allocate(mat(me%n,me%n))
+        mat = .false.
+
+        do i=1,me%n
+            if (allocated(me%vertices(i)%edges)) then
+                mat(i,me%vertices(i)%edges) = .true.
+            end if
+        end do
+
+    end if
+
+    end subroutine dag_generate_dependency_matrix
 !*******************************************************************************
 
 !*******************************************************************************

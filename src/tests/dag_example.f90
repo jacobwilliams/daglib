@@ -11,7 +11,8 @@
     type(dag) :: d
     integer,dimension(:),allocatable :: order
     integer :: istat
-    integer :: i
+    integer :: i,r,c
+    logical,dimension(:,:),allocatable :: mat !! dependency matrix
 
     integer,parameter :: n_nodes = 6
     character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
@@ -30,7 +31,6 @@
     write(*,*) ''
     write(*,*) 'istat=', istat
     write(*,*) 'order=', order ! prints 1,2,5,3,4
-    write(*,*) ''
 
     do i = 1, n_nodes
         if (i==3 .or. i==6) then
@@ -40,11 +40,31 @@
         end if
     end do
 
-    call d%save_digraph('test.dot','RL',300)
-    call d%destroy()
+    write(*,*) ''
+    write(*,*) 'diagraph:'
+    write(*,*) ''
 
+    call d%save_digraph('test.dot','RL',300)
     call execute_command_line('cat test.dot')
     call execute_command_line('dot -T'//filetype//' -o test.'//filetype//' test.dot')
+
+    write(*,*) ''
+    write(*,*) 'dependency matrix:'
+    write(*,*) ''
+    call d%generate_dependency_matrix(mat)
+    do r=1,n_nodes
+        do c=1,n_nodes
+            if (mat(r,c)) then
+                write(*,'(A)',advance='NO') 'X'
+            else
+                write(*,'(A)',advance='NO') 'O'
+            end if
+        end do
+            write(*,'(A)') ''
+    end do
+
+    ! cleanup:
+    call d%destroy()
 
     end program dag_example
 !*******************************************************************************

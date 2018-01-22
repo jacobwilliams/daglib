@@ -88,7 +88,7 @@ This program produces the toposort order:
 
 and the image file:
 
-![Image](https://raw.githubusercontent.com/jacobwilliams/daglib/master/src/tests/dag_example.png)
+<img src="https://raw.githubusercontent.com/jacobwilliams/daglib/master/src/tests/dag_example.png" width="500">
 
 
 ### License
