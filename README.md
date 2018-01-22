@@ -1,11 +1,8 @@
-DAGLILB
-=============================
+### Overview
 
-## Overview
+DAGLIB is a modern Fortran module for creating and manipulating directed acyclic graphs (DAGs). It includes a toposort feature, and also the ability to generate files in the [GraphViz](https://www.graphviz.org) "dot" notation.
 
-A simple module for creating and manipulating directed acyclic graphs (DAGs). It includes a toposort feature, and also the ability to generate files in the [GraphViz](https://www.graphviz.org) "dot" notation.
-
-## Building
+### Building
 
 A [FoBiS](https://github.com/szaghi/FoBiS) configuration file (`daglib.fobis`) is provided that can build the library and examples. Use the `mode` flag to indicate what to build. For example:
 
@@ -29,7 +26,7 @@ The full set of modes are:
 * `tests-intel`
 * `tests-intel-debug`
 
-## Example
+### Example
 
 A simple example is shown below:
 
