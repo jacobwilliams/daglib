@@ -428,7 +428,7 @@
 
     integer :: istat
 
-    allocate( character(len=64) :: s )  !! should be big enough
+    allocate( character(len=64) :: s )  ! should be big enough
     write(s,fmt='(ss,I0)',iostat=istat) i
     if (istat==0) then
         s = trim(adjustl(s))
