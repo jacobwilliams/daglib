@@ -144,9 +144,9 @@
             if (allocated(me%vertices(i)%edges)) then
                 if (any(me%vertices(i)%edges == ivertex)) then
                     if (allocated(dep)) then
-                        dep = [i]       ! auto LHS allocation
-                    else
                         dep = [dep, i]  ! auto LHS allocation
+                    else
+                        dep = [i]       ! auto LHS allocation
                     end if
                 end if
             end if
