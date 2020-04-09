@@ -5,7 +5,7 @@
 program dag_example
 
     use iso_fortran_env, only : error_unit
-    use dag_module, only : dag
+    use dag_interface, only : dag
 
     implicit none
 
