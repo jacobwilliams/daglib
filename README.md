@@ -85,10 +85,10 @@ This program produces the toposort order:
 
 and the image file:
 
-<img src="https://raw.githubusercontent.com/jacobwilliams/daglib/master/src/tests/dag_example.png" width="500">
+<img src="https://raw.githubusercontent.com/sourceryinstitute/daglib/master/media/dag_example.png" width="500">
 
 
 ### License
 
-This library is released under a [BSD-3 license](https://github.com/jacobwilliams/daglib/blob/master/LICENSE).
+This library is released under a [BSD-3 license](https://github.com/sourceryinstitute/daglib/blob/master/LICENSE).
 
