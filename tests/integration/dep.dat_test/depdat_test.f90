@@ -5,7 +5,7 @@
     program depdat_test
 
     use iso_fortran_env, only : error_unit
-    use dag_module
+    use dag_interface, only : dag
 
     implicit none
 
@@ -33,8 +33,8 @@
     integer :: i, row
 
     call d%set_vertices(n_nodes)
-    call d%set_edges( 2,[])    !2 depends on  0?
-    call d%set_edges( 3,[])    !3 depends on  0?
+    call d%set_edges( 2,[integer::])    !2 depends on  0?
+    call d%set_edges( 3,[integer::])    !3 depends on  0?
     call d%set_edges( 4,[3])   !4 depends on  3
     call d%set_edges( 5,[4])   !5 depends on  4
     call d%set_edges( 6,[3])   !6 depends on  3
