@@ -11,7 +11,7 @@
 
     type :: vertex
         !! a vertex of a directed acyclic graph (DAG)
-        private
+        !private
         integer,dimension(:),allocatable :: edges  !! these are the vertices that this vertex depends on
         integer :: ivertex = 0 !! vertex number
         logical :: checking = .false.  !! used for toposort
