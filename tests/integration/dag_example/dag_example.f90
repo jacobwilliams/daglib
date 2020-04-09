@@ -4,26 +4,33 @@
 
     program dag_example
 
+    use iso_fortran_env, only : error_unit
     use dag_module
 
     implicit none
 
     type(dag) :: d
-    integer,dimension(:),allocatable :: order
-    integer :: istat
-    integer :: i,r,c
-    logical,dimension(:,:),allocatable :: mat !! dependency matrix
-    logical, parameter :: expected_mat(*,*) = reshape( & !! expected dependency matrix
-      [.false., .true. , .true. , .false., .false., .false., &
-       .false., .false., .false., .false., .true. , .true. , &
-       .false., .false., .false., .false., .false., .false., &
-       .false., .false., .false., .false., .false., .true. , &
-       .false., .false., .true. , .true. , .false., .false., &
-       .false., .false., .false., .false., .false., .false.], [6,6])
-    integer,parameter :: n_nodes = 6
-    character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
 
-    ! TODO combine set_edges and set_vertex_info into one routine maybe.
+    integer, allocatable :: order(:) !! topological sort
+    logical, allocatable :: mat(:,:) !! dependency matrix
+
+    integer, parameter :: expected_order(*) = [1,2,5,3,4]
+    logical, parameter :: expected_mat(*,*) = reshape( [ &
+      .false., .true. , .true. , .false., .false., .false., &
+      .false., .false., .false., .false., .true. , .true. , &
+      .false., .false., .false., .false., .false., .false., &
+      .false., .false., .false., .false., .false., .true. , &
+      .false., .false., .true. , .true. , .false., .false., &
+      .false., .false., .false., .false., .false., .false. &
+      ], [6,6])
+      !! expected dependency matrix
+    integer,parameter :: n_nodes = 6, success=0
+    character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
+    character(len=*), parameter :: gray_square = 'shape=square,fillcolor="SlateGray1",style=filled'
+    character(len=len(gray_square)), parameter :: silk_circle = 'shape=circle,fillcolor="cornsilk",style=filled'
+
+    integer :: istat
+    integer :: i, row
 
     call d%set_vertices(n_nodes)
     call d%set_edges(2,[1])     !2 depends on 1
@@ -34,42 +41,30 @@
 
     call d%toposort(order,istat)
 
-    write(*,*) ''
-    write(*,*) 'istat=', istat
-    write(*,*) 'order=', order ! prints 1,2,5,3,4
+    if (istat/=success) then
+      write(error_unit, *) 'istat =', istat
+      error stop
+    end if
+
+    if (any(order /= expected_order)) then
+      write(error_unit, *) 'order =', order
+      error stop
+    end if
 
     do i = 1, n_nodes
-        if (i==3 .or. i==6) then
-            call d%set_vertex_info(i,attributes='shape=square,fillcolor="SlateGray1",style=filled')
-        else
-            call d%set_vertex_info(i,attributes='shape=circle,fillcolor="cornsilk",style=filled')
-        end if
+      call d%set_vertex_info(i, attributes = merge(gray_square, silk_circle, any(i==[3,6])))
     end do
-
-    write(*,*) ''
-    write(*,*) 'diagraph:'
-    write(*,*) ''
-
-    call d%save_digraph('test.dot','RL',300)
-    call execute_command_line('cat test.dot')
+    call d%save_digraph('test.dot','RL',300) ! TODO: verify internal generate_diagraph result against expected result
     call execute_command_line('dot -T'//filetype//' -o test.'//filetype//' test.dot')
 
-    write(*,*) ''
-    write(*,*) 'dependency matrix:'
-    write(*,*) ''
     call d%generate_dependency_matrix(mat)
-    do r=1,n_nodes
-        do c=1,n_nodes
-            if (mat(r,c)) then
-                write(*,'(A)',advance='NO') 'X'
-            else
-                write(*,'(A)',advance='NO') 'O'
-            end if
-        end do
-            write(*,'(A)') ''
-    end do
-
-    if (any(mat .neqv. expected_mat)) error stop "main: incorrect dependency matrix"
+    if (any(mat .neqv. expected_mat)) then
+      write(error_unit,*) 'main: incorrect dependency matrix:'
+      do row = 1, n_nodes
+        write(error_unit,*) merge('X', 'O', mat(row,:)) ! write column
+      end do
+      error stop
+    end if
 
     ! cleanup:
     call d%destroy()
