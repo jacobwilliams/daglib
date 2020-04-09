@@ -1,94 +1,41 @@
 ### Overview
 
-DAGLIB is a modern Fortran module for creating and manipulating directed acyclic graphs (DAGs). It includes a toposort feature, and also the ability to generate files in the [GraphViz](https://www.graphviz.org) "dot" notation.
+DAGLIB is a Fortran 2018 library for creating and manipulating directed acyclic graphs (DAGs).
+It includes a topological sort feature, and it generates files in the [GraphViz] "dot" format.
 
-### Building
+### Prerequisites
+The recommended versions below are the versions used in developing daglib.
+1. A Fortran 2018 compiler (Recommended: [gfortran] 10 or later).
+2. OpenCoarrays (Recommended: 2.8.0 or later)
+3. CMake (Recommended: 3.17 or later)
 
-A [FoBiS](https://github.com/szaghi/FoBiS) configuration file (`daglib.fobis`) is provided that can build the library and examples. Use the `mode` flag to indicate what to build. For example:
+### Building and testing
+To clone, build, and test, execute the following in a `bash` shell:
+```
+git cone https://github.com/sourceryinstitute/daglib
+mkdir -p daglib/build
+cd daglib/build
+cmake ..
+ctest
+```
+or the corresponding commands for other shells.
 
-* To build all the examples using gfortran: `FoBiS.py build -f daglib.fobis -mode tests-gnu`
-* To build all the examples using ifort: `FoBiS.py build -f daglib.fobis -mode tests-intel`
-* To build a static library using gfortran: `FoBiS.py build -f daglib.fobis -mode static-gnu`
-* To build a static library using ifort: `FoBiS.py build -f daglib.fobis -mode static-intel`
-
-The full set of modes are:
-
-* `static-gnu`
-* `static-gnu-debug`
-* `static-intel`
-* `static-intel-debug`
-* `shared-gnu`
-* `shared-gnu-debug`
-* `shared-intel`
-* `shared-intel-debug`
-* `tests-gnu`
-* `tests-gnu-debug`
-* `tests-intel`
-* `tests-intel-debug`
+Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams], from which
+the current repository was forked.
 
 ### Example
 
-A simple example is shown below:
-
-```fortran
-program dag_example
-
-    use dag_module
-
-    implicit none
-
-    type(dag) :: d
-    integer,dimension(:),allocatable :: order
-    integer :: istat
-    integer :: i
-
-    integer,parameter :: n_nodes = 6
-    character(len=*),parameter :: filetype = 'pdf'
-
-    ! create a dag:
-
-    call d%set_vertices(n_nodes)
-    call d%set_edges(2,[1])     !2 depends on 1
-    call d%set_edges(3,[5,1])   !3 depends on 5 and 1
-    call d%set_edges(4,[5])     !4 depends on 5
-    call d%set_edges(5,[2])     !5 depends on 2
-    call d%set_edges(6,[2,4])   !6 depends on 2 and 4
-
-    ! toposort:
-
-    call d%toposort(order,istat)
-
-    ! define some styles for the GraphViz output:
-
-    do i = 1, n_nodes
-        if (i==3 .or. i==6) then
-            call d%set_vertex_info(i,attributes='shape=square,fillcolor="SlateGray1",style=filled')
-        else
-            call d%set_vertex_info(i,attributes='shape=circle,fillcolor="cornsilk",style=filled')
-        end if
-    end do
-
-    ! generate the GraphViz output:
-
-    call d%save_digraph('test.dot','RL',300)
-    call d%destroy()
-    call execute_command_line('dot -Tpdf -o test.pdf test.dot')
-
-end program dag_example
-```
-
-This program produces the toposort order:
-
-```
- order = [1, 2, 5, 3, 4, 6]
-```
-
-and the image file:
+The [dag_example.f90] test provides a short example of the use of daglib, including checks
+for the expected results.  That test also writes the following image to a `.png` file:
 
 <img src="https://raw.githubusercontent.com/sourceryinstitute/daglib/master/media/dag_example.png" width="500">
-
 
 ### License
 
 This library is released under a [BSD-3 license](https://github.com/sourceryinstitute/daglib/blob/master/LICENSE).
 
+[daglib by Jacob Williams]: https://github.com/jacobwilliams/daglib
+[FoBiS]: https://github.com/szaghi/FoBiS
+[GraphViz]: https://www.graphviz.org
+[dag_example]:
+https://raw.githubusercontent.com/sourceryinstitute/daglib/master/tests/integration/dag_example/dag_example.f90
