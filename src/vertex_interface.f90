@@ -7,6 +7,7 @@
     implicit none
 
     private
+    public :: vertex
 
     type :: vertex
         !! a vertex of a directed acyclic graph (DAG)
