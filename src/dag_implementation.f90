@@ -2,138 +2,33 @@
 !>
 !  DAG Module.
 
-    module dag_module
+    submodule(dag_interface) dag_implementation
 
     implicit none
 
-    private
-
-    type :: vertex
-        !! a vertex of a directed acyclic graph (DAG)
-        private
-        integer,dimension(:),allocatable :: edges  !! these are the vertices that this vertex depends on
-        integer :: ivertex = 0 !! vertex number
-        logical :: checking = .false.  !! used for toposort
-        logical :: marked = .false.    !! used for toposort
-        character(len=:),allocatable :: label      !! used for diagraph
-        character(len=:),allocatable :: attributes !! used for diagraph
-    contains
-        generic :: set_edges => set_edge_vector, add_edge
-        procedure :: set_edge_vector
-        procedure :: add_edge
-    end type vertex
-
-    type,public :: dag
-        !! a directed acyclic graph (DAG)
-        private
-        integer :: n = 0 !! number of `vertices`
-        type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG.
-    contains
-        procedure,public :: set_vertices     => dag_set_vertices
-        procedure,public :: set_edges        => dag_set_edges
-        procedure,public :: set_vertex_info  => dag_set_vertex_info
-        procedure,public :: toposort         => dag_toposort
-        procedure,public :: generate_digraph => dag_generate_digraph
-        procedure,public :: generate_dependency_matrix => dag_generate_dependency_matrix
-        procedure,public :: save_digraph     => dag_save_digraph
-        procedure,public :: get_edges        => dag_get_edges
-        procedure,public :: get_dependencies => dag_get_dependencies
-        procedure,public :: destroy          => dag_destroy
-    end type dag
-
-    contains
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  Destroy the `dag`.
-
-    subroutine dag_destroy(me)
-
-    class(dag),intent(inout) :: me
-
-    me%n = 0
-    if (allocated(me%vertices)) deallocate(me%vertices)
-
-    end subroutine dag_destroy
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  specify the edge indices for this vertex
-
-    subroutine set_edge_vector(me,edges)
-
-    class(vertex),intent(inout)     :: me
-    integer,dimension(:),intent(in) :: edges
-
-    integer :: i !! counter
-
-    if (allocated(me%edges)) then
-        do i=1,size(edges)
-            call me%add_edge(edges(i))
-        end do
-    else
-        allocate(me%edges(size(edges)))  ! note: not checking for uniqueness here.
-        me%edges = edges
-    end if
-
-    end subroutine set_edge_vector
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  add an edge index for this vertex
-
-    subroutine add_edge(me,edge)
-
-    class(vertex),intent(inout) :: me
-    integer,intent(in) :: edge
-
-    if (allocated(me%edges)) then
-        if (.not. any (edge==me%edges)) then
-            me%edges = [me%edges, edge]  ! auto lhs reallocation
-        end if
-    else
-        allocate(me%edges(1))
-        me%edges = [edge]
-    end if
-
-    end subroutine add_edge
-!*******************************************************************************
+contains
 
 !*******************************************************************************
 !>
 !  get the edges for the vertex (all the the vertices
 !  that this vertex depends on).
 
-    pure function dag_get_edges(me,ivertex) result(edges)
-
-    implicit none
-
-    class(dag),intent(in) :: me
-    integer,intent(in) :: ivertex
-    integer,dimension(:),allocatable :: edges
+    module procedure dag_get_edges
 
     if (ivertex>0 .and. ivertex <= me%n) then
         edges = me%vertices(ivertex)%edges  ! auto LHS allocation
     end if
 
-    end function dag_get_edges
+    end procedure
 !*******************************************************************************
 
 !*******************************************************************************
 !>
 !  get all the vertices that depend on this vertex.
 
-    pure function dag_get_dependencies(me,ivertex) result(dep)
+    module procedure dag_get_dependencies
 
     implicit none
-
-    class(dag),intent(in) :: me
-    integer,intent(in) :: ivertex
-    integer,dimension(:),allocatable :: dep  !! the set of all vertices
-                                             !! than depend on `ivertex`
 
     integer :: i !! vertex counter
 
@@ -154,17 +49,14 @@
 
     end if
 
-    end function dag_get_dependencies
+    end procedure
 !*******************************************************************************
 
 !*******************************************************************************
 !>
 !  set the number of vertices in the dag
 
-    subroutine dag_set_vertices(me,nvertices)
-
-    class(dag),intent(inout) :: me
-    integer,intent(in)       :: nvertices !! number of vertices
+    module procedure dag_set_vertices
 
     integer :: i
 
@@ -172,22 +64,14 @@
     allocate(me%vertices(nvertices))
     me%vertices%ivertex = [(i,i=1,nvertices)]
 
-    end subroutine dag_set_vertices
+    end procedure
 !*******************************************************************************
 
 !*******************************************************************************
 !>
 !  set info about a vertex in a dag.
 
-    subroutine dag_set_vertex_info(me,ivertex,label,attributes)
-
-    class(dag),intent(inout) :: me
-    integer,intent(in)                   :: ivertex !! vertex number
-    character(len=*),intent(in),optional :: label !! if a label is not set,
-                                                  !! then the integer vertex
-                                                  !! number is used.
-    character(len=*),intent(in),optional :: attributes !! other attributes when
-                                                       !! saving as a diagraph.
+    module procedure dag_set_vertex_info
 
     if (present(label)) then
         me%vertices(ivertex)%label = label
@@ -200,37 +84,25 @@
         me%vertices(ivertex)%attributes = attributes
     end if
 
-    end subroutine dag_set_vertex_info
+    end procedure
 !*******************************************************************************
 
 !*******************************************************************************
 !>
 !  set the edges for a vertex in a dag
 
-    subroutine dag_set_edges(me,ivertex,edges)
-
-    class(dag),intent(inout)        :: me
-    integer,intent(in)              :: ivertex !! vertex number
-    integer,dimension(:),intent(in) :: edges
+    module procedure dag_set_edges
 
     call me%vertices(ivertex)%set_edges(edges)
 
-    end subroutine dag_set_edges
+    end procedure
 !*******************************************************************************
 
 !*******************************************************************************
 !>
 !  Main toposort routine
 
-    subroutine dag_toposort(me,order,istat)
-
-    class(dag),intent(inout) :: me
-    integer,dimension(:),allocatable,intent(out) :: order  !! the toposort order
-    integer,intent(out) :: istat !! Status flag:
-                                 !!
-                                 !! * 0 if no errors
-                                 !! * -1 if circular dependency
-                                 !!  (in this case, `order` will not be allocated)
+    module procedure dag_toposort
 
     integer :: i,iorder
 
@@ -279,7 +151,7 @@
 
     end subroutine dfs
 
-    end subroutine dag_toposort
+    end procedure dag_toposort
 !*******************************************************************************
 
 !*******************************************************************************
@@ -290,14 +162,9 @@
 !  * To convert this to a PDF using `dot`: `dot -Tpdf -o test.pdf test.dot`,
 !    where `test.dot` is `str` written to a file.
 
-    function dag_generate_digraph(me,rankdir,dpi) result(str)
+    module procedure dag_generate_digraph
 
     implicit none
-
-    class(dag),intent(in) :: me
-    character(len=:),allocatable :: str
-    character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
-    integer,intent(in),optional :: dpi !! resolution (e.g. 300)
 
     integer :: i,j     !! counter
     integer :: n_edges !! number of edges
@@ -307,7 +174,7 @@
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
 
-    if (me%n == 0) return
+    if (me%n == unset) return
 
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
@@ -349,7 +216,7 @@
 
     str = str//newline//'}'
 
-    end function dag_generate_digraph
+    end procedure dag_generate_digraph
 !*******************************************************************************
 
 !*******************************************************************************
@@ -359,12 +226,9 @@
 !  This is an \(n \times n \) matrix with elements \(A_{ij}\),
 !  such that \(A_{ij}\) is true if vertex \(i\) depends on vertex \(j\).
 
-    subroutine dag_generate_dependency_matrix(me,mat)
+    module procedure dag_generate_dependency_matrix
 
     implicit none
-
-    class(dag),intent(in) :: me
-    logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
 
     integer :: i !! vertex counter
 
@@ -381,21 +245,16 @@
 
     end if
 
-    end subroutine dag_generate_dependency_matrix
+    end procedure
 !*******************************************************************************
 
 !*******************************************************************************
 !>
 !  Generate a Graphviz digraph structure for the DAG and write it to a file.
 
-    subroutine dag_save_digraph(me,filename,rankdir,dpi)
+    module procedure dag_save_digraph
 
     implicit none
-
-    class(dag),intent(in) :: me
-    character(len=*),intent(in),optional :: filename !! file name for diagraph
-    character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
-    integer,intent(in),optional :: dpi !! resolution (e.g. 300)
 
     integer :: iunit, istat
     character(len=:),allocatable :: diagraph
@@ -412,8 +271,9 @@
 
     close(iunit,iostat=istat)
 
-    end subroutine dag_save_digraph
+    end procedure
 !*******************************************************************************
+
 
 !*******************************************************************************
 !>
@@ -440,5 +300,7 @@
 !*******************************************************************************
 
 !*******************************************************************************
-    end module dag_module
+
+!*******************************************************************************
+    end submodule dag_implementation
 !*******************************************************************************

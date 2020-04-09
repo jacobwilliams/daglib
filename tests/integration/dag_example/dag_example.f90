@@ -2,10 +2,10 @@
 !>
 !  DAG module test program.
 
-    program dag_example
+program dag_example
 
     use iso_fortran_env, only : error_unit
-    use dag_module
+    use dag_interface, only : dag
 
     implicit none
 
@@ -25,7 +25,7 @@
       ], [6,6])
       !! expected dependency matrix
     integer,parameter :: n_nodes = 6, success=0
-    character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
+    character(len=*), parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
     character(len=*), parameter :: gray_square = 'shape=square,fillcolor="SlateGray1",style=filled'
     character(len=len(gray_square)), parameter :: silk_circle = 'shape=circle,fillcolor="cornsilk",style=filled'
 
@@ -41,7 +41,7 @@
 
     call d%toposort(order,istat)
 
-    if (istat/=success) then
+    if (istat /= success) then
       write(error_unit, *) 'istat =', istat
       error stop
     end if
@@ -66,9 +66,6 @@
       error stop
     end if
 
-    ! cleanup:
-    call d%destroy()
-
     print *,"Test passed."
-    end program dag_example
+end program dag_example
 !*******************************************************************************
