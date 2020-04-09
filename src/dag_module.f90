@@ -23,10 +23,11 @@
         procedure :: add_edge
     end type vertex
 
+    integer, parameter :: unset=0
     type,public :: dag
         !! a directed acyclic graph (DAG)
         private
-        integer :: n = 0 !! number of `vertices`
+        integer :: n = unset !! number of `vertices`
         type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG.
     contains
         procedure,public :: set_vertices     => dag_set_vertices
@@ -38,24 +39,10 @@
         procedure,public :: save_digraph     => dag_save_digraph
         procedure,public :: get_edges        => dag_get_edges
         procedure,public :: get_dependencies => dag_get_dependencies
-        procedure,public :: destroy          => dag_destroy
     end type dag
 
-    contains
-!*******************************************************************************
+contains
 
-!*******************************************************************************
-!>
-!  Destroy the `dag`.
-
-    subroutine dag_destroy(me)
-
-    class(dag),intent(inout) :: me
-
-    me%n = 0
-    if (allocated(me%vertices)) deallocate(me%vertices)
-
-    end subroutine dag_destroy
 !*******************************************************************************
 
 !*******************************************************************************
@@ -307,7 +294,7 @@
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
 
-    if (me%n == 0) return
+    if (me%n == unset) return
 
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &

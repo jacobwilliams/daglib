@@ -2,7 +2,7 @@
 !>
 !  DAG module test program.
 
-    program dag_example
+program dag_example
 
     use iso_fortran_env, only : error_unit
     use dag_module, only : dag
@@ -66,9 +66,6 @@
       error stop
     end if
 
-    ! cleanup:
-    call d%destroy()
-
     print *,"Test passed."
-    end program dag_example
+end program dag_example
 !*******************************************************************************
