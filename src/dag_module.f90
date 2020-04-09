@@ -337,7 +337,7 @@
     do i=1,me%n
         if (allocated(me%vertices(i)%edges)) then
             n_edges = size(me%vertices(i)%edges)
-            str = str//tab//integer_to_string(i)//' -> '
+            str = str//tab//integer_to_string(i)// merge(' -> ','    ',n_edges/=0)
             do j=1,n_edges
                 ! comma-separated list:
                 str = str//integer_to_string(me%vertices(i)%edges(j))
