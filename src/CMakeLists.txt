@@ -1,3 +1,4 @@
 add_library(dag
-  dag_module.f90
+  dag_interface.f90
+  vertex_interface.f90
 )
