@@ -23,28 +23,16 @@
         procedure :: add_edge
     end type vertex
 
-contains
+interface
 
 !*******************************************************************************
 !>
 !  specify the edge indices for this vertex
 
-    subroutine set_edge_vector(me,edges)
-
+    module subroutine set_edge_vector(me,edges)
+    implicit none
     class(vertex),intent(inout)     :: me
     integer,dimension(:),intent(in) :: edges
-
-    integer :: i !! counter
-
-    if (allocated(me%edges)) then
-        do i=1,size(edges)
-            call me%add_edge(edges(i))
-        end do
-    else
-        allocate(me%edges(size(edges)))  ! note: not checking for uniqueness here.
-        me%edges = edges
-    end if
-
     end subroutine set_edge_vector
 !*******************************************************************************
 
@@ -52,22 +40,14 @@ contains
 !>
 !  add an edge index for this vertex
 
-    subroutine add_edge(me,edge)
-
+    module subroutine add_edge(me,edge)
+    implicit none
     class(vertex),intent(inout) :: me
     integer,intent(in) :: edge
-
-    if (allocated(me%edges)) then
-        if (.not. any (edge==me%edges)) then
-            me%edges = [me%edges, edge]  ! auto lhs reallocation
-        end if
-    else
-        allocate(me%edges(1))
-        me%edges = [edge]
-    end if
-
     end subroutine add_edge
 !*******************************************************************************
+
+end interface
 
     end module vertex_interface
 !*******************************************************************************
