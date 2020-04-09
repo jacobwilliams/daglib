@@ -50,10 +50,11 @@ endforeach()
 enable_testing()
 
 foreach(integration_test
-  dag_example
+  jacob-example
+  multiple-independents
 )
   add_test( NAME "${integration_test}"
-    COMMAND "${CMAKE_BINARY_DIR}/tests/integration/${integration_test}/${integration_test}"
+    COMMAND "${CMAKE_BINARY_DIR}/tests/integration/${integration_test}/test-${integration_test}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/tests/integration/${integration_test}"
   )
   set_tests_properties(${integration_test}

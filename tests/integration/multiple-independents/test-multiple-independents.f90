@@ -2,7 +2,7 @@
 !>
 !  DAG module test program.
 
-    program depdat_test
+    program multiple_independents
 
     use iso_fortran_env, only : error_unit
     use dag_interface, only : dag
@@ -14,7 +14,6 @@
     integer, allocatable :: order(:) !! topological sort
     logical, allocatable :: mat(:,:) !! dependency matrix
 
-!    integer, parameter :: expected_order(*) = [1,2,5,3,4]
 !    logical, parameter :: expected_mat(*,*) = reshape( [ &
 !      .false., .true. , .true. , .false., .false., .false., &
 !      .false., .false., .false., .false., .true. , .true. , &
@@ -24,13 +23,12 @@
 !      .false., .false., .false., .false., .false., .false. &
 !      ], [6,6])
       !! expected dependency matrix
+    integer :: i, row, istat
     integer,parameter :: n_nodes = 14, success=0
+    integer, parameter :: expected_order(*) = [(i,i=1,n_nodes)]
 !    character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
 !    character(len=*), parameter :: gray_square = 'shape=square,fillcolor="SlateGray1",style=filled'
 !    character(len=len(gray_square)), parameter :: silk_circle = 'shape=circle,fillcolor="cornsilk",style=filled'
-
-    integer :: istat
-    integer :: i, row
 
     call d%set_vertices(n_nodes)
     call d%set_edges( 2,[integer::])    !2 depends on  0?
@@ -56,10 +54,10 @@
 
 print *, order
 
-!    if (any(order /= expected_order)) then
-!      write(error_unit, *) 'order =', order
-!      error stop
-!    end if
+    if (any(order /= expected_order)) then
+      write(error_unit, *) 'order =', order
+      error stop
+    end if
 
 !    do i = 1, n_nodes
 !      call d%set_vertex_info(i, attributes = merge(gray_square, silk_circle, any(i==[3,6])))
@@ -76,7 +74,7 @@ print *, order
 !      error stop
 !    end if
 
-!    print *,"Test passed."
+    print *,"Test passed."
 
-  end program depdat_test
+  end program multiple_independents
 !*******************************************************************************

@@ -1,2 +1,2 @@
-add_subdirectory(dag_example)
-add_subdirectory(dep.dat_test)
+add_subdirectory(jacob-example)
+add_subdirectory(multiple-independents)
