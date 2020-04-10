@@ -41,7 +41,7 @@ if(CMAKE_Fortran_COMPILER_ID MATCHES GNU)
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Wall")
 endif()
 
-set(CMAKE_Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/mod")
+set(CMAKE_Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/mod")
 
 foreach(directory src tests)
   add_subdirectory("${directory}")
@@ -54,8 +54,8 @@ foreach(integration_test
   multiple-independents
 )
   add_test( NAME "${integration_test}"
-    COMMAND "${CMAKE_BINARY_DIR}/tests/integration/${integration_test}/test-${integration_test}"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/tests/integration/${integration_test}"
+    COMMAND "${PROJECT_BINARY_DIR}/tests/integration/${integration_test}/test-${integration_test}"
+    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/tests/integration/${integration_test}"
   )
   set_tests_properties(${integration_test}
      PROPERTIES PASS_REGULAR_EXPRESSION "Test passed."
