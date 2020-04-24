@@ -49,15 +49,20 @@ endforeach()
 
 enable_testing()
 
-foreach(integration_test
-  jacob-example
-  multiple-independents
-)
-  add_test( NAME "${integration_test}"
-    COMMAND "${PROJECT_BINARY_DIR}/tests/integration/${integration_test}/test-${integration_test}"
-    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/tests/integration/${integration_test}"
+function(add_caf_test name type num_images)
+  set(test_dir "${PROJECT_BINARY_DIR}/tests/${type}/${name}")
+  add_test( NAME "${name}"
+    COMMAND cafrun -n "${num_images}" "${test_dir}/test-${name}"
+    WORKING_DIRECTORY "${test_dir}"
   )
   set_tests_properties(${integration_test}
      PROPERTIES PASS_REGULAR_EXPRESSION "Test passed."
   )
+endfunction()
+
+foreach(test_name
+  jacob-example
+  multiple-independents
+)
+  add_caf_test("${test_name}" "integration" 2)
 endforeach()

@@ -60,6 +60,7 @@ program multiple_independents
     error stop
   end if
 
-  print *,"Test passed."
+  sync all
+  if (this_image()==1) print *,"Test passed."
 
 end program multiple_independents
