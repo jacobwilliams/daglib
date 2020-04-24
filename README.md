@@ -20,6 +20,9 @@ To clone, build, and test, execute the following in a `bash` shell:
 git clone https://github.com/sourceryinstitute/daglib
 mkdir -p daglib/build
 cd daglib/build
+export FC=$(which caf)
+export CC=$(which gcc)
+export CXX=$(which g++)
 cmake ..
 ctest
 ```
