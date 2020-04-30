@@ -4,3 +4,5 @@ add_library(dag
   vertex_interface.f90
   vertex_implementation.f90
 )
+
+add_subdirectory(git-submodules)
