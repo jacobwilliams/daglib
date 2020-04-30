@@ -66,3 +66,9 @@ foreach(test_name
 )
   add_caf_test("${test_name}" "integration" 2)
 endforeach()
+
+foreach(test_name
+  input-output
+)
+  add_caf_test("${test_name}" "unit" 2)
+endforeach()
