@@ -55,7 +55,7 @@ function(add_caf_test name type num_images)
     COMMAND cafrun -n "${num_images}" "${test_dir}/test-${name}"
     WORKING_DIRECTORY "${test_dir}"
   )
-  set_tests_properties(${integration_test}
+  set_tests_properties(${name}
      PROPERTIES PASS_REGULAR_EXPRESSION "Test passed."
   )
 endfunction()
