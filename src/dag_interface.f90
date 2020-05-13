@@ -26,6 +26,7 @@
         procedure,public :: save_digraph     => dag_save_digraph
         procedure,public :: get_edges        => dag_get_edges
         procedure,public :: get_dependencies => dag_get_dependencies
+        procedure,public :: output
     end type dag
 
 interface
@@ -152,6 +153,17 @@ interface
     character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
     integer,intent(in),optional :: dpi !! resolution (e.g. 300)
     end subroutine dag_save_digraph
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Write the dag components to a file or to the output_unit.
+
+    module subroutine output(me,filename)
+    implicit none
+    class(dag),intent(in) :: me
+    character(len=*),intent(in),optional :: filename !! file name for diagraph
+    end subroutine
 !*******************************************************************************
 
 end interface

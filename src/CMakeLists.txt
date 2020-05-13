@@ -4,5 +4,10 @@ add_library(dag
   vertex_interface.f90
   vertex_implementation.f90
 )
-
+target_link_libraries(dag
+  PRIVATE jsonfortran-static
+)
+target_include_directories(dag
+  PUBLIC $<TARGET_PROPERTY:jsonfortran-static,Fortran_MODULE_DIRECTORY>
+)
 add_subdirectory(git-submodules)

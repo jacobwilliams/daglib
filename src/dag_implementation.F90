@@ -306,7 +306,168 @@ contains
 !*******************************************************************************
 
 !*******************************************************************************
+!>
+!  Integer to allocatable string.
+    module procedure output
+     use json_module, wp => json_RK, IK => json_IK, LK => json_LK
+     use, intrinsic :: iso_fortran_env , only: error_unit
+     implicit none
+     type(json_core) :: json
+     type(json_value),pointer :: p
 
+     call write_and_verify()
+
+    contains
+
+    subroutine write_and_verify()
+
+    !! Populate a JSON structure and write it to a file.
+
+    integer :: error_cnt
+    type(json_value),pointer :: p, graph
+    type(json_core) :: json  !! factory for manipulating `json_value` pointers
+    integer(IK) :: iunit
+    logical(LK) :: is_valid
+    character(kind=json_CK,len=:),allocatable :: error_msg
+
+    call json%initialize()
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error stop "json%initialize() failed"
+    end if
+
+    call json%create_object(p,'') ! create root object
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%add_by_path(p, 'dag.n', me%n)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%create_array(graph,'')
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%add_by_path(p, 'dag.vertices', graph)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    block
+     integer i
+      do i=1,size(me%vertices)
+        associate(v => me%vertices(i))
+          call add_variables(json, graph, v%edges, v%ivertex, v%checking, v%marked, v%label, v%attributes, error_cnt )
+        end associate
+      end do
+      nullify(graph)
+    end block
+
+    call json%validate(p,is_valid,error_msg)
+    if (.not. is_valid) then
+        write(error_unit,'(A)') 'Error: p is not a valid JSON linked list: '//error_msg
+        error_cnt = error_cnt + 1
+    end if
+
+    open(newunit=iunit, file=filename, status='UNKNOWN')
+    call json%print(p,iunit)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+    close(iunit)
+
+    !cleanup:
+    call json%destroy(p)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    end subroutine write_and_verify
+
+    subroutine add_variables(json, me, edges, ivertex, checking, marked, label, attributes, error_cnt)
+    !Used by test_2.
+
+    implicit none
+
+    type(json_core),intent(inout) :: json
+    type(json_value),pointer :: me
+    integer(IK), dimension(:),intent(in) :: edges
+    integer(IK), intent(in) :: ivertex
+    logical, intent(in) :: checking, marked
+    character(len=*), intent(in) :: label, attributes
+    integer, intent(inout) :: error_cnt
+
+    type(json_value),pointer :: var
+
+    nullify(var)
+
+    !create the object before data can be added:
+    call json%create_object(var,'')    !name does not matter
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    ! add data
+    call json%add(var, 'edges', edges)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%add(var, 'ivertex', ivertex)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%add(var, 'checking', checking)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%add(var, 'marked', marked)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%add(var, 'label', label)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    call json%add(var, 'attributes', attributes)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    !add this variable to graph structure:
+    call json%add(me, var)
+    if (json%failed()) then
+        call json%print_error_message(error_unit)
+        error_cnt = error_cnt + 1
+    end if
+
+    !cleanup:
+    nullify(var)
+
+    end subroutine add_variables
+
+    end procedure
 !*******************************************************************************
+
     end submodule dag_implementation
 !*******************************************************************************
