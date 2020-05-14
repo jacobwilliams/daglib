@@ -1,50 +1,46 @@
-!*******************************************************************************
-!>
-!  DAG Module.
-
 submodule(vertex_interface) vertex_implementation
-
-    implicit none
+  implicit none
 
 contains
 
-!*******************************************************************************
-!>
-!  specify the edge indices for this vertex
+  module procedure set_edge_vector
 
-    module procedure set_edge_vector
-
-    integer :: i !! counter
+    integer i
 
     if (allocated(me%edges)) then
-        do i=1,size(edges)
-            call me%add_edge(edges(i))
-        end do
+      do i=1,size(edges)
+          call me%add_edge(edges(i))
+      end do
     else
-        allocate(me%edges(size(edges)))  ! note: not checking for uniqueness here.
-        me%edges = edges
+      allocate(me%edges(size(edges)))  ! note: not checking for uniqueness here.
+      me%edges = edges
     end if
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-!*******************************************************************************
-!>
-!  add an edge index for this vertex
+  module procedure get_ivertex
+    my_ivertex = me%ivertex
+  end procedure
 
-    module procedure add_edge
+  module procedure get_checking
+    my_checking = me%checking
+  end procedure
+
+  module procedure get_marked
+    my_marked = me%marked
+  end procedure
+
+  module procedure add_edge
 
     if (allocated(me%edges)) then
-        if (.not. any (edge==me%edges)) then
-            me%edges = [me%edges, edge]  ! auto lhs reallocation
-        end if
+      if (.not. any (edge==me%edges)) then
+          me%edges = [me%edges, edge]
+      end if
     else
-        allocate(me%edges(1))
-        me%edges = [edge]
+      allocate(me%edges(1))
+      me%edges = [edge]
     end if
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-    end submodule
-!*******************************************************************************
+end submodule
