@@ -21,6 +21,9 @@
     contains
         generic :: set_edges => set_edge_vector, add_edge
         procedure :: set_edge_vector
+        procedure :: get_vertex_id
+        procedure :: get_checking
+        procedure :: get_marked
         procedure :: add_edge
     end type vertex
 
@@ -36,6 +39,40 @@ interface
     integer,dimension(:),intent(in) :: edges
     end subroutine set_edge_vector
 !*******************************************************************************
+
+!*******************************************************************************
+!>
+!  result is vertex number
+
+    pure module function get_vertex_id(me) result(my_vertex_id)
+    implicit none
+    class(vertex), intent(in) :: me
+    integer my_vertex_id
+    end function
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  result is used for toposort
+
+    pure module function get_checking(me) result(my_checking)
+    implicit none
+    class(vertex), intent(in) :: me
+    integer my_checking
+    end function
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  result is used for toposort
+
+    pure module function get_marked(me) result(my_marked)
+    implicit none
+    class(vertex), intent(in) :: me
+    integer my_marked
+    end function
+!*******************************************************************************
+
 
 !*******************************************************************************
 !>

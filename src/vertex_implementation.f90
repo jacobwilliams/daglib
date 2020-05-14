@@ -18,8 +18,8 @@ contains
 
   end procedure
 
-  module procedure get_ivertex
-    my_ivertex = me%ivertex
+  module procedure get_vertex_id
+    my_vertex_id = me%ivertex
   end procedure
 
   module procedure get_checking
