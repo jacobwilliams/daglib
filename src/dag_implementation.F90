@@ -307,68 +307,50 @@ contains
 
 !*******************************************************************************
 !>
-!  Integer to allocatable string.
-    module procedure output
-     use json_module, wp => json_RK, IK => json_IK, LK => json_LK
-     use, intrinsic :: iso_fortran_env , only: error_unit
-     implicit none
-     type(json_core) :: json
-     type(json_value),pointer :: p
-
-     call write_and_verify()
-
-    contains
-
-    subroutine write_and_verify()
-
-    !! Populate a JSON structure and write it to a file.
-
-    integer :: error_cnt
-    type(json_value),pointer :: p, graph
-    type(json_core) :: json  !! factory for manipulating `json_value` pointers
-    integer(IK) :: iunit
+! Write DAG to JSON file
+  module procedure output
+    use json_module, wp => json_RK, IK => json_IK, LK => json_LK
+    use, intrinsic :: iso_fortran_env , only: error_unit
+    type(json_value), pointer :: p, graph, var
+    type(json_core) :: json
+    integer(IK) :: iunit, i, error_cnt
     logical(LK) :: is_valid
-    character(kind=json_CK,len=:),allocatable :: error_msg
+    character(kind=json_CK,len=:), allocatable :: error_msg
 
     call json%initialize()
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error stop "json%initialize() failed"
-    end if
+    call terminate_if_error(json, operation="initialize()")
 
     call json%create_object(p,'') ! create root object
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call terminate_if_error(json, operation="create_object()")
 
     call json%add_by_path(p, 'dag.n', me%n)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
 
     call json%create_array(graph,'')
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
 
     call json%add_by_path(p, 'dag.vertices', graph)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
 
-    block
-     integer i
-      do i=1,size(me%vertices)
-        associate(v => me%vertices(i))
-          call add_variables(json, graph, v%edges, v%ivertex, v%checking, v%marked, v%label, v%attributes, error_cnt )
-        end associate
-      end do
-      nullify(graph)
-    end block
+    do i=1,size(me%vertices)
+      nullify(var)
+      call json%create_object(var,'')
+      call increment_if_error(json, error_cnt)
+
+      associate( e => me%vertices(i)%edges(:)) ! strip allocatable attribute (gfortran 10.1 bug workaround)
+        call add_intrinsic_variable(json, graph, e, 'edges', error_cnt, var)
+      end associate
+      call add_intrinsic_variable(json, graph, me%vertices(i)%ivertex, 'ivertex', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%checking, 'checking', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%marked, 'marked', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%label, 'label', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%attributes, 'attributes', error_cnt, var)
+
+      call json%add(graph, var)
+      call increment_if_error(json, error_cnt)
+      nullify(var)
+    end do
+    nullify(graph)
 
     call json%validate(p,is_valid,error_msg)
     if (.not. is_valid) then
@@ -378,93 +360,69 @@ contains
 
     open(newunit=iunit, file=filename, status='UNKNOWN')
     call json%print(p,iunit)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
     close(iunit)
 
-    !cleanup:
     call json%destroy(p)
-    if (json%failed()) then
+    call increment_if_error(json, error_cnt)
+
+  contains
+
+    subroutine increment_if_error(json_factory, error_count)
+      type(json_core), intent(in) :: json_factory
+      integer(IK), intent(inout) :: error_count
+
+      if (json_factory%failed()) then
         call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+        error_count = error_count + 1
+      end if
+    end subroutine
 
-    end subroutine write_and_verify
+    subroutine terminate_if_error(json_factory, operation)
+      type(json_core), intent(inout) :: json_factory
+      character(len=*), intent(in) :: operation
 
-    subroutine add_variables(json, me, edges, ivertex, checking, marked, label, attributes, error_cnt)
-    !Used by test_2.
+      if (json_factory%failed()) then
+        call json_factory%print_error_message(error_unit)
+        error stop "json%" // operation //" failed."
+      end if
+    end subroutine
 
-    implicit none
+    subroutine add_intrinsic_variable(json, me, variable, variable_name, error_cnt, var)
+      type(json_core),intent(inout) :: json
+      type(json_value), pointer, intent(inout) :: me
+      class(*), intent(in) :: variable(..)
+      character(len=*), intent(in) :: variable_name
+      integer, intent(inout) :: error_cnt
+      type(json_value),pointer, intent(inout) :: var
 
-    type(json_core),intent(inout) :: json
-    type(json_value),pointer :: me
-    integer(IK), dimension(:),intent(in) :: edges
-    integer(IK), intent(in) :: ivertex
-    logical, intent(in) :: checking, marked
-    character(len=*), intent(in) :: label, attributes
-    integer, intent(inout) :: error_cnt
+      select rank(variable)
+        rank(0)
+          select type(variable)
+            type is(integer(IK))
+              call json%add(var, variable_name, variable)
+            type is(logical)
+              call json%add(var, variable_name, variable)
+            type is(character(len=*))
+              call json%add(var, variable_name, variable)
+            class default
+              error stop "dag add_intrinsic_variable: unsupported rank-0 type"
+          end select
+        rank(1)
+          select type(variable)
+            type is(integer(IK))
+              call json%add(var, variable_name, variable)
+            class default
+              error stop "dag add_intrinsic_variable: unsupported rank-1 type"
+          end select
+      end select
 
-    type(json_value),pointer :: var
+      if (json%failed()) then
+          call json%print_error_message(error_unit)
+          error_cnt = error_cnt + 1
+      end if
 
-    nullify(var)
-
-    !create the object before data can be added:
-    call json%create_object(var,'')    !name does not matter
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    ! add data
-    call json%add(var, 'edges', edges)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    call json%add(var, 'ivertex', ivertex)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    call json%add(var, 'checking', checking)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    call json%add(var, 'marked', marked)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    call json%add(var, 'label', label)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    call json%add(var, 'attributes', attributes)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    !add this variable to graph structure:
-    call json%add(me, var)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
-
-    !cleanup:
-    nullify(var)
-
-    end subroutine add_variables
+    end subroutine
 
     end procedure
 !*******************************************************************************
