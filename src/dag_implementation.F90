@@ -307,57 +307,35 @@ contains
 
 !*******************************************************************************
 !>
-!  Integer to allocatable string.
-   module procedure output
+! Write DAG to JSON file
+  module procedure output
     use json_module, wp => json_RK, IK => json_IK, LK => json_LK
     use, intrinsic :: iso_fortran_env , only: error_unit
+    type(json_value), pointer :: p, graph, var
     type(json_core) :: json
-    integer :: error_cnt
-    type(json_value),pointer :: p, graph
-    type(json_core) :: json  !! factory for manipulating `json_value` pointers
-    integer(IK) :: iunit
+    integer(IK) :: iunit, i, error_cnt
     logical(LK) :: is_valid
-    character(kind=json_CK,len=:),allocatable :: error_msg
-    integer i
-    type(json_value),pointer :: var
+    character(kind=json_CK,len=:), allocatable :: error_msg
 
     call json%initialize()
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error stop "json%initialize() failed"
-    end if
+    call terminate_if_error(json, operation="initialize()")
 
     call json%create_object(p,'') ! create root object
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call terminate_if_error(json, operation="create_object()")
 
     call json%add_by_path(p, 'dag.n', me%n)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
 
     call json%create_array(graph,'')
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
 
     call json%add_by_path(p, 'dag.vertices', graph)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
 
     do i=1,size(me%vertices)
       nullify(var)
       call json%create_object(var,'')
-      if (json%failed()) then
-          call json%print_error_message(error_unit)
-          error_cnt = error_cnt + 1
-      end if
+      call increment_if_error(json, error_cnt)
 
       associate( e => me%vertices(i)%edges(:)) ! strip allocatable attribute (gfortran 10.1 bug workaround)
         call add_intrinsic_variable(json, graph, e, 'edges', error_cnt, var)
@@ -369,10 +347,7 @@ contains
       call add_intrinsic_variable(json, graph, me%vertices(i)%attributes, 'attributes', error_cnt, var)
 
       call json%add(graph, var)
-      if (json%failed()) then
-          call json%print_error_message(error_unit)
-          error_cnt = error_cnt + 1
-      end if
+      call increment_if_error(json, error_cnt)
       nullify(var)
     end do
     nullify(graph)
@@ -385,23 +360,37 @@ contains
 
     open(newunit=iunit, file=filename, status='UNKNOWN')
     call json%print(p,iunit)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
     close(iunit)
 
     call json%destroy(p)
-    if (json%failed()) then
-        call json%print_error_message(error_unit)
-        error_cnt = error_cnt + 1
-    end if
+    call increment_if_error(json, error_cnt)
 
-    contains
+  contains
+
+    subroutine increment_if_error(json_factory, error_count)
+      type(json_core), intent(in) :: json_factory
+      integer(IK), intent(inout) :: error_count
+
+      if (json_factory%failed()) then
+        call json%print_error_message(error_unit)
+        error_count = error_count + 1
+      end if
+    end subroutine
+
+    subroutine terminate_if_error(json_factory, operation)
+      type(json_core), intent(inout) :: json_factory
+      character(len=*), intent(in) :: operation
+
+      if (json_factory%failed()) then
+        call json_factory%print_error_message(error_unit)
+        error stop "json%" // operation //" failed."
+      end if
+    end subroutine
 
     subroutine add_intrinsic_variable(json, me, variable, variable_name, error_cnt, var)
       type(json_core),intent(inout) :: json
-      type(json_value),pointer :: me
+      type(json_value), pointer, intent(inout) :: me
       class(*), intent(in) :: variable(..)
       character(len=*), intent(in) :: variable_name
       integer, intent(inout) :: error_cnt
