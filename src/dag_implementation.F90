@@ -62,7 +62,7 @@ contains
 
     me%n = nvertices
     allocate(me%vertices(nvertices))
-    me%vertices%ivertex = [(i,i=1,nvertices)]
+    call me%vertices%set_vertex_id( [(i,i=1,nvertices)] )
 
     end procedure
 !*******************************************************************************
@@ -74,15 +74,13 @@ contains
     module procedure dag_set_vertex_info
 
     if (present(label)) then
-        me%vertices(ivertex)%label = label
+        call me%vertices(ivertex)%set_label(label)
     else
         ! just use the vertex number
-        me%vertices(ivertex)%label = integer_to_string(ivertex)
+        call me%vertices(ivertex)%set_label(integer_to_string(ivertex))
     end if
 
-    if (present(attributes)) then
-        me%vertices(ivertex)%attributes = attributes
-    end if
+    if (present(attributes)) call me%vertices(ivertex)%set_attributes(attributes)
 
     end procedure
 !*******************************************************************************
@@ -113,7 +111,7 @@ contains
     iorder = 0  ! index in order array
     istat = 0   ! no errors so far
     do i=1,me%n
-      if (.not. me%vertices(i)%marked) call dfs(me%vertices(i))
+      if (.not. me%vertices(i)%get_marked()) call dfs(me%vertices(i))
       if (istat==-1) exit
     end do
 
@@ -134,24 +132,26 @@ contains
 
     if (istat==-1) return
 
-    if (v%checking) then
-      ! error: circular dependency
-      istat = -1
-    else
-      if (.not. v%marked) then
-        v%checking = .true.
-        if (allocated(v%edges)) then
-          do j=1,size(v%edges)
-            call dfs(me%vertices(v%edges(j)))
-            if (istat==-1) return
-          end do
+    associate( v_checking => v%get_checking(), v_marked => v%get_marked())
+      if (v_checking) then
+        ! error: circular dependency
+        istat = -1
+      else
+        if (.not. v_marked) then
+          call v%set_checking(.true.)
+          if (allocated(v%edges)) then
+            do j=1,size(v%edges)
+              call dfs(me%vertices(v%edges(j)))
+              if (istat==-1) return
+            end do
+          end if
+          call v%set_checking(.false.)
+          call v%set_marked(.true.)
+          iorder = iorder + 1
+          order(iorder) = v%get_vertex_id()
         end if
-        v%checking = .false.
-        v%marked = .true.
-        iorder = iorder + 1
-        order(iorder) = v%ivertex
       end if
-    end if
+    end associate
 
     end subroutine dfs
 
@@ -174,8 +174,7 @@ contains
 
     integer :: i,j     !! counter
     integer :: n_edges !! number of edges
-    character(len=:),allocatable :: attributes,label
-    logical :: has_label, has_attributes
+    character(len=:),allocatable :: attributes, label
 
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
@@ -190,20 +189,23 @@ contains
 
     ! define the vertices:
     do i=1,me%n
-        has_label      = allocated(me%vertices(i)%label)
-        has_attributes = allocated(me%vertices(i)%attributes)
-        if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%label))//'"'
+      associate( &
+        has_label      => me%vertices(i)%has_label(), &
+        has_attributes => me%vertices(i)%has_attributes() &
+      )
+        if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%get_label()))//'"'
         if (has_label .and. has_attributes) then
-            attributes = '['//trim(adjustl(me%vertices(i)%attributes))//','//label//']'
+            attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//','//label//']'
         elseif (has_label .and. .not. has_attributes) then
             attributes = '['//label//']'
         elseif (.not. has_label .and. has_attributes) then
-            attributes = '['//trim(adjustl(me%vertices(i)%attributes))//']'
+            attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//']'
         else ! neither
             attributes = ''
         end if
-        str = str//tab//integer_to_string(i)//' '//attributes//newline
-        if (i==me%n) str = str//newline
+      end associate
+      str = str//tab//integer_to_string(i)//' '//attributes//newline
+      if (i==me%n) str = str//newline
     end do
 
     ! define the dependencies:
@@ -337,14 +339,16 @@ contains
       call json%create_object(var,'')
       call increment_if_error(json, error_cnt)
 
-      associate( e => me%vertices(i)%edges(:)) ! strip allocatable attribute (gfortran 10.1 bug workaround)
-        call add_intrinsic_variable(json, graph, e, 'edges', error_cnt, var)
-      end associate
-      call add_intrinsic_variable(json, graph, me%vertices(i)%ivertex, 'ivertex', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%checking, 'checking', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%marked, 'marked', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%label, 'label', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%attributes, 'attributes', error_cnt, var)
+#ifdef __GFORTRAN__
+      call add_intrinsic_variable(json, graph, me%vertices(i)%edges, 'edges', error_cnt, var)
+#else
+      call add_intrinsic_variable(json, graph, me%vertices(i)%get_edges(), 'edges', error_cnt, var)
+#endif
+      call add_intrinsic_variable(json, graph, me%vertices(i)%get_vertex_id(), 'ivertex', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%get_checking(), 'checking', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%get_marked(), 'marked', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%get_label(), 'label', error_cnt, var)
+      call add_intrinsic_variable(json, graph, me%vertices(i)%get_attributes(), 'attributes', error_cnt, var)
 
       call json%add(graph, var)
       call increment_if_error(json, error_cnt)
