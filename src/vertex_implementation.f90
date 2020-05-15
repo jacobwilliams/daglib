@@ -42,6 +42,10 @@ contains
     my_vertex_id = me%ivertex
   end procedure
 
+  module procedure get_edges
+    my_edges = me%edges
+  end procedure
+
   module procedure get_checking
     my_checking = me%checking
   end procedure
