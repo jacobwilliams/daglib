@@ -340,15 +340,15 @@ contains
       call increment_if_error(json, error_cnt)
 
 #ifdef __GFORTRAN__
-      call add_intrinsic_variable(json, graph, me%vertices(i)%edges, 'edges', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%edges, 'edges', error_cnt, var)
 #else
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_edges(), 'edges', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_edges(), 'edges', error_cnt, var)
 #endif
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_vertex_id(), 'ivertex', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_checking(), 'checking', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_marked(), 'marked', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_label(), 'label', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_attributes(), 'attributes', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_vertex_id(), 'ivertex', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_checking(), 'checking', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_marked(), 'marked', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_label(), 'label', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_attributes(), 'attributes', error_cnt, var)
 
       call json%add(graph, var)
       call increment_if_error(json, error_cnt)
@@ -392,9 +392,8 @@ contains
       end if
     end subroutine
 
-    subroutine add_intrinsic_variable(json, me, variable, variable_name, error_cnt, var)
+    subroutine add_intrinsic_variable(json, variable, variable_name, error_cnt, var)
       type(json_core),intent(inout) :: json
-      type(json_value), pointer, intent(inout) :: me
       class(*), intent(in) :: variable(..)
       character(len=*), intent(in) :: variable_name
       integer, intent(inout) :: error_cnt
