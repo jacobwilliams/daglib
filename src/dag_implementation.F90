@@ -1,17 +1,8 @@
-!*******************************************************************************
-!>
-!  DAG Module.
-
     submodule(dag_interface) dag_implementation
 
     implicit none
 
 contains
-
-!*******************************************************************************
-!>
-!  get the edges for the vertex (all the the vertices
-!  that this vertex depends on).
 
     module procedure dag_get_edges
 
@@ -20,11 +11,6 @@ contains
     end if
 
     end procedure
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  get all the vertices that depend on this vertex.
 
     module procedure dag_get_dependencies
 
@@ -50,11 +36,6 @@ contains
     end if
 
     end procedure
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  set the number of vertices in the dag
 
     module procedure dag_set_vertices
 
@@ -65,11 +46,6 @@ contains
     call me%vertices%set_vertex_id( [(i,i=1,nvertices)] )
 
     end procedure
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  set info about a vertex in a dag.
 
     module procedure dag_set_vertex_info
 
@@ -83,22 +59,12 @@ contains
     if (present(attributes)) call me%vertices(ivertex)%set_attributes(attributes)
 
     end procedure
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  set the edges for a vertex in a dag
 
     module procedure dag_set_edges
 
     call me%vertices(ivertex)%set_edges(edges)
 
     end procedure
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  Main toposort routine
 
     module procedure dag_toposort
 
@@ -158,15 +124,6 @@ contains
 #ifndef FORD
     end procedure dag_toposort
 #endif
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  Generate a Graphviz digraph structure for the DAG.
-!
-!### Example
-!  * To convert this to a PDF using `dot`: `dot -Tpdf -o test.pdf test.dot`,
-!    where `test.dot` is `str` written to a file.
 
     module procedure dag_generate_digraph
 
@@ -225,14 +182,6 @@ contains
     str = str//newline//'}'
 
     end procedure dag_generate_digraph
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  Generate the dependency matrix for the DAG.
-!
-!  This is an \(n \times n \) matrix with elements \(A_{ij}\),
-!  such that \(A_{ij}\) is true if vertex \(i\) depends on vertex \(j\).
 
     module procedure dag_generate_dependency_matrix
 
@@ -254,11 +203,6 @@ contains
     end if
 
     end procedure
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  Generate a Graphviz digraph structure for the DAG and write it to a file.
 
     module procedure dag_save_digraph
 
@@ -280,12 +224,6 @@ contains
     close(iunit,iostat=istat)
 
     end procedure
-!*******************************************************************************
-
-
-!*******************************************************************************
-!>
-!  Integer to allocatable string.
 
     pure function integer_to_string(i) result(s)
 
@@ -305,11 +243,7 @@ contains
     end if
 
     end function integer_to_string
-!*******************************************************************************
 
-!*******************************************************************************
-!>
-! Write DAG to JSON file
   module procedure output
     use json_module, wp => json_RK, IK => json_IK, LK => json_LK
     use, intrinsic :: iso_fortran_env , only: error_unit
@@ -428,7 +362,5 @@ contains
     end subroutine
 
     end procedure
-!*******************************************************************************
 
     end submodule dag_implementation
-!*******************************************************************************
