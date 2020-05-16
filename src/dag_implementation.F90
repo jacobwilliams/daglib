@@ -1,43 +1,41 @@
-    submodule(dag_interface) dag_implementation
+submodule(dag_interface) dag_implementation
 
-    implicit none
+  implicit none
 
 contains
 
-    module procedure dag_get_edges
+  module procedure dag_get_edges
 
     if (ivertex>0 .and. ivertex <= me%n) then
-        edges = me%vertices(ivertex)%edges  ! auto LHS allocation
+      edges = me%vertices(ivertex)%edges  ! auto LHS allocation
     end if
 
-    end procedure
+  end procedure
 
-    module procedure dag_get_dependencies
-
-    implicit none
+  module procedure dag_get_dependencies
 
     integer :: i !! vertex counter
 
     if (ivertex>0 .and. ivertex <= me%n) then
 
-        ! have to check all the vertices:
-        do i=1, me%n
-            if (allocated(me%vertices(i)%edges)) then
-                if (any(me%vertices(i)%edges == ivertex)) then
-                    if (allocated(dep)) then
-                        dep = [dep, i]  ! auto LHS allocation
-                    else
-                        dep = [i]       ! auto LHS allocation
-                    end if
-                end if
-            end if
-        end do
+      ! have to check all the vertices:
+      do i=1, me%n
+          if (allocated(me%vertices(i)%edges)) then
+              if (any(me%vertices(i)%edges == ivertex)) then
+                  if (allocated(dep)) then
+                      dep = [dep, i]  ! auto LHS allocation
+                  else
+                      dep = [i]       ! auto LHS allocation
+                  end if
+              end if
+          end if
+      end do
 
     end if
 
-    end procedure
+  end procedure
 
-    module procedure dag_set_vertices
+  module procedure dag_set_vertices
 
     integer :: i
 
@@ -45,9 +43,9 @@ contains
     allocate(me%vertices(nvertices))
     call me%vertices%set_vertex_id( [(i,i=1,nvertices)] )
 
-    end procedure
+  end procedure
 
-    module procedure dag_set_vertex_info
+  module procedure dag_set_vertex_info
 
     if (present(label)) then
         call me%vertices(ivertex)%set_label(label)
@@ -58,15 +56,15 @@ contains
 
     if (present(attributes)) call me%vertices(ivertex)%set_attributes(attributes)
 
-    end procedure
+  end procedure
 
-    module procedure dag_set_edges
+  module procedure dag_set_edges
 
     call me%vertices(ivertex)%set_edges(edges)
 
-    end procedure
+  end procedure
 
-    module procedure dag_toposort
+  module procedure dag_toposort
 
     integer :: i,iorder
 
@@ -84,50 +82,48 @@ contains
     if (istat==-1) deallocate(order)
 
 #ifndef FORD
-    contains
+  contains
 #else
     end procedure ! work around ford documentation generator bug
 #endif
 
     recursive subroutine dfs(v)
 
-    !! depth-first graph traversal
+        !! depth-first graph traversal
 
-    type(vertex),intent(inout) :: v
-    integer :: j
+      type(vertex),intent(inout) :: v
+      integer :: j
 
-    if (istat==-1) return
+      if (istat==-1) return
 
-    associate( v_checking => v%get_checking(), v_marked => v%get_marked())
-      if (v_checking) then
-        ! error: circular dependency
-        istat = -1
-      else
-        if (.not. v_marked) then
-          call v%set_checking(.true.)
-          if (allocated(v%edges)) then
-            do j=1,size(v%edges)
-              call dfs(me%vertices(v%edges(j)))
-              if (istat==-1) return
-            end do
+      associate( v_checking => v%get_checking(), v_marked => v%get_marked())
+        if (v_checking) then
+          ! error: circular dependency
+          istat = -1
+        else
+          if (.not. v_marked) then
+            call v%set_checking(.true.)
+            if (allocated(v%edges)) then
+              do j=1,size(v%edges)
+                call dfs(me%vertices(v%edges(j)))
+                if (istat==-1) return
+              end do
+            end if
+            call v%set_checking(.false.)
+            call v%set_marked(.true.)
+            iorder = iorder + 1
+            order(iorder) = v%get_vertex_id()
           end if
-          call v%set_checking(.false.)
-          call v%set_marked(.true.)
-          iorder = iorder + 1
-          order(iorder) = v%get_vertex_id()
         end if
-      end if
-    end associate
+      end associate
 
     end subroutine dfs
 
 #ifndef FORD
-    end procedure dag_toposort
+  end procedure dag_toposort
 #endif
 
-    module procedure dag_generate_digraph
-
-    implicit none
+  module procedure dag_generate_digraph
 
     integer :: i,j     !! counter
     integer :: n_edges !! number of edges
@@ -181,11 +177,9 @@ contains
 
     str = str//newline//'}'
 
-    end procedure dag_generate_digraph
+  end procedure dag_generate_digraph
 
-    module procedure dag_generate_dependency_matrix
-
-    implicit none
+  module procedure dag_generate_dependency_matrix
 
     integer :: i !! vertex counter
 
@@ -202,11 +196,9 @@ contains
 
     end if
 
-    end procedure
+  end procedure
 
-    module procedure dag_save_digraph
-
-    implicit none
+  module procedure dag_save_digraph
 
     integer :: iunit, istat
     character(len=:),allocatable :: diagraph
@@ -223,11 +215,9 @@ contains
 
     close(iunit,iostat=istat)
 
-    end procedure
+  end procedure
 
-    pure function integer_to_string(i) result(s)
-
-    implicit none
+  pure function integer_to_string(i) result(s)
 
     integer,intent(in) :: i
     character(len=:),allocatable :: s
@@ -242,7 +232,7 @@ contains
         s = '***'
     end if
 
-    end function integer_to_string
+  end function integer_to_string
 
   module procedure output
     use json_module, wp => json_RK, IK => json_IK, LK => json_LK
@@ -361,6 +351,6 @@ contains
 
     end subroutine
 
-    end procedure
+  end procedure
 
-    end submodule dag_implementation
+end submodule dag_implementation
