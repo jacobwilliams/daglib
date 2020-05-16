@@ -1,14 +1,13 @@
 submodule(dag_interface) dag_implementation
-
+  use assert_interface, only : assert
   implicit none
 
 contains
 
   module procedure dag_get_edges
 
-    if (ivertex>0 .and. ivertex <= me%n) then
-      edges = me%vertices(ivertex)%edges  ! auto LHS allocation
-    end if
+    call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_edges: index in bounds")
+    edges = me%vertices(ivertex)%edges
 
   end procedure
 
@@ -16,22 +15,15 @@ contains
 
     integer :: i !! vertex counter
 
-    if (ivertex>0 .and. ivertex <= me%n) then
+    call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_dependencies: index in bounds")
 
-      ! have to check all the vertices:
-      do i=1, me%n
-          if (allocated(me%vertices(i)%edges)) then
-              if (any(me%vertices(i)%edges == ivertex)) then
-                  if (allocated(dep)) then
-                      dep = [dep, i]  ! auto LHS allocation
-                  else
-                      dep = [i]       ! auto LHS allocation
-                  end if
-              end if
-          end if
-      end do
+    if (.not. allocated(dep)) allocate(dep(0))
 
-    end if
+    do i=1, size(me%vertices)
+      if (allocated(me%vertices(i)%edges)) then
+        if (any(me%vertices(i)%edges == ivertex)) dep = [dep, i]
+      end if
+    end do
 
   end procedure
 
@@ -39,7 +31,6 @@ contains
 
     integer :: i
 
-    me%n = nvertices
     allocate(me%vertices(nvertices))
     call me%vertices%set_vertex_id( [(i,i=1,nvertices)] )
 
@@ -68,16 +59,18 @@ contains
 
     integer :: i,iorder
 
-    if (me%n==0) return
+    associate( num_vertices => size(me%vertices))
+      if (num_vertices==0) return
 
-    allocate(order(me%n))
+      allocate(order(num_vertices))
 
-    iorder = 0  ! index in order array
-    istat = 0   ! no errors so far
-    do i=1,me%n
-      if (.not. me%vertices(i)%get_marked()) call dfs(me%vertices(i))
-      if (istat==-1) exit
-    end do
+      iorder = 0  ! index in order array
+      istat = 0   ! no errors so far
+      do i=1,num_vertices
+        if (.not. me%vertices(i)%get_marked()) call dfs(me%vertices(i))
+        if (istat==-1) exit
+      end do
+    end associate
 
     if (istat==-1) deallocate(order)
 
@@ -132,8 +125,6 @@ contains
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
 
-    if (me%n == unset) return
-
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
         str = str//tab//'rankdir='//rankdir//newline//newline
@@ -141,7 +132,7 @@ contains
         str = str//tab//'graph [ dpi = '//integer_to_string(dpi)//' ]'//newline//newline
 
     ! define the vertices:
-    do i=1,me%n
+    do i=1,size(me%vertices)
       associate( &
         has_label      => me%vertices(i)%has_label(), &
         has_attributes => me%vertices(i)%has_attributes() &
@@ -158,11 +149,11 @@ contains
         end if
       end associate
       str = str//tab//integer_to_string(i)//' '//attributes//newline
-      if (i==me%n) str = str//newline
+      if (i==size(me%vertices)) str = str//newline
     end do
 
     ! define the dependencies:
-    do i=1,me%n
+    do i=1,size(me%vertices)
         if (allocated(me%vertices(i)%edges)) then
             n_edges = size(me%vertices(i)%edges)
             str = str//tab//integer_to_string(i)//merge(' -> ','    ',n_edges/=0)
@@ -183,18 +174,20 @@ contains
 
     integer :: i !! vertex counter
 
-    if (me%n > 0) then
+    associate(num_vertices => size(me%vertices))
+      if (num_vertices > 0) then
 
-        allocate(mat(me%n,me%n))
+        allocate(mat(num_vertices,num_vertices))
         mat = .false.
 
-        do i=1,me%n
+        do i=1,num_vertices
             if (allocated(me%vertices(i)%edges)) then
                 mat(i,me%vertices(i)%edges) = .true.
             end if
         end do
 
-    end if
+      end if
+    end associate
 
   end procedure
 
@@ -248,9 +241,6 @@ contains
 
     call json%create_object(p,'') ! create root object
     call terminate_if_error(json, operation="create_object()")
-
-    call json%add_by_path(p, 'dag.n', me%n)
-    call increment_if_error(json, error_cnt)
 
     call json%create_array(graph,'')
     call increment_if_error(json, error_cnt)
