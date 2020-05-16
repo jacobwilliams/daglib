@@ -14,7 +14,6 @@
     type,public :: dag
         !! a directed acyclic graph (DAG)
         private
-        integer :: n = unset !! number of `vertices`
         type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG.
     contains
         procedure,public :: set_vertices     => dag_set_vertices

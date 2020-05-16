@@ -39,6 +39,10 @@ endif()
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES GNU)
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Wall -std=f2018")
+  get_filename_component(barename ${CMAKE_Fortran_COMPILER} NAME)
+  if("${barename}" MATCHES gfortran)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcoarray=single")
+  endif()
 endif()
 
 set(CMAKE_Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/mod")

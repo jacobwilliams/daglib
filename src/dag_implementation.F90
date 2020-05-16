@@ -1,77 +1,42 @@
-!*******************************************************************************
-!>
-!  DAG Module.
-
-    submodule(dag_interface) dag_implementation
-
-    implicit none
+submodule(dag_interface) dag_implementation
+  use assert_interface, only : assert
+  implicit none
 
 contains
 
-!*******************************************************************************
-!>
-!  get the edges for the vertex (all the the vertices
-!  that this vertex depends on).
+  module procedure dag_get_edges
 
-    module procedure dag_get_edges
+    call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_edges: index in bounds")
+    edges = me%vertices(ivertex)%edges
 
-    if (ivertex>0 .and. ivertex <= me%n) then
-        edges = me%vertices(ivertex)%edges  ! auto LHS allocation
-    end if
+  end procedure
 
-    end procedure
-!*******************************************************************************
-
-!*******************************************************************************
-!>
-!  get all the vertices that depend on this vertex.
-
-    module procedure dag_get_dependencies
-
-    implicit none
+  module procedure dag_get_dependencies
 
     integer :: i !! vertex counter
 
-    if (ivertex>0 .and. ivertex <= me%n) then
+    call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_dependencies: index in bounds")
 
-        ! have to check all the vertices:
-        do i=1, me%n
-            if (allocated(me%vertices(i)%edges)) then
-                if (any(me%vertices(i)%edges == ivertex)) then
-                    if (allocated(dep)) then
-                        dep = [dep, i]  ! auto LHS allocation
-                    else
-                        dep = [i]       ! auto LHS allocation
-                    end if
-                end if
-            end if
-        end do
+    if (.not. allocated(dep)) allocate(dep(0))
 
-    end if
+    do i=1, size(me%vertices)
+      if (allocated(me%vertices(i)%edges)) then
+        if (any(me%vertices(i)%edges == ivertex)) dep = [dep, i]
+      end if
+    end do
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-!*******************************************************************************
-!>
-!  set the number of vertices in the dag
-
-    module procedure dag_set_vertices
+  module procedure dag_set_vertices
 
     integer :: i
 
-    me%n = nvertices
     allocate(me%vertices(nvertices))
     call me%vertices%set_vertex_id( [(i,i=1,nvertices)] )
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-!*******************************************************************************
-!>
-!  set info about a vertex in a dag.
-
-    module procedure dag_set_vertex_info
+  module procedure dag_set_vertex_info
 
     if (present(label)) then
         call me%vertices(ivertex)%set_label(label)
@@ -82,95 +47,76 @@ contains
 
     if (present(attributes)) call me%vertices(ivertex)%set_attributes(attributes)
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-!*******************************************************************************
-!>
-!  set the edges for a vertex in a dag
-
-    module procedure dag_set_edges
+  module procedure dag_set_edges
 
     call me%vertices(ivertex)%set_edges(edges)
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-!*******************************************************************************
-!>
-!  Main toposort routine
-
-    module procedure dag_toposort
+  module procedure dag_toposort
 
     integer :: i,iorder
 
-    if (me%n==0) return
+    associate( num_vertices => size(me%vertices))
+      if (num_vertices==0) return
 
-    allocate(order(me%n))
+      allocate(order(num_vertices))
 
-    iorder = 0  ! index in order array
-    istat = 0   ! no errors so far
-    do i=1,me%n
-      if (.not. me%vertices(i)%get_marked()) call dfs(me%vertices(i))
-      if (istat==-1) exit
-    end do
+      iorder = 0  ! index in order array
+      istat = 0   ! no errors so far
+      do i=1,num_vertices
+        if (.not. me%vertices(i)%get_marked()) call dfs(me%vertices(i))
+        if (istat==-1) exit
+      end do
+    end associate
 
     if (istat==-1) deallocate(order)
 
 #ifndef FORD
-    contains
+  contains
 #else
     end procedure ! work around ford documentation generator bug
 #endif
 
     recursive subroutine dfs(v)
 
-    !! depth-first graph traversal
+        !! depth-first graph traversal
 
-    type(vertex),intent(inout) :: v
-    integer :: j
+      type(vertex),intent(inout) :: v
+      integer :: j
 
-    if (istat==-1) return
+      if (istat==-1) return
 
-    associate( v_checking => v%get_checking(), v_marked => v%get_marked())
-      if (v_checking) then
-        ! error: circular dependency
-        istat = -1
-      else
-        if (.not. v_marked) then
-          call v%set_checking(.true.)
-          if (allocated(v%edges)) then
-            do j=1,size(v%edges)
-              call dfs(me%vertices(v%edges(j)))
-              if (istat==-1) return
-            end do
+      associate( v_checking => v%get_checking(), v_marked => v%get_marked())
+        if (v_checking) then
+          ! error: circular dependency
+          istat = -1
+        else
+          if (.not. v_marked) then
+            call v%set_checking(.true.)
+            if (allocated(v%edges)) then
+              do j=1,size(v%edges)
+                call dfs(me%vertices(v%edges(j)))
+                if (istat==-1) return
+              end do
+            end if
+            call v%set_checking(.false.)
+            call v%set_marked(.true.)
+            iorder = iorder + 1
+            order(iorder) = v%get_vertex_id()
           end if
-          call v%set_checking(.false.)
-          call v%set_marked(.true.)
-          iorder = iorder + 1
-          order(iorder) = v%get_vertex_id()
         end if
-      end if
-    end associate
+      end associate
 
     end subroutine dfs
 
 #ifndef FORD
-    end procedure dag_toposort
+  end procedure dag_toposort
 #endif
-!*******************************************************************************
 
-!*******************************************************************************
-!>
-!  Generate a Graphviz digraph structure for the DAG.
-!
-!### Example
-!  * To convert this to a PDF using `dot`: `dot -Tpdf -o test.pdf test.dot`,
-!    where `test.dot` is `str` written to a file.
-
-    module procedure dag_generate_digraph
-
-    implicit none
+  module procedure dag_generate_digraph
 
     integer :: i,j     !! counter
     integer :: n_edges !! number of edges
@@ -179,8 +125,6 @@ contains
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
 
-    if (me%n == unset) return
-
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
         str = str//tab//'rankdir='//rankdir//newline//newline
@@ -188,7 +132,7 @@ contains
         str = str//tab//'graph [ dpi = '//integer_to_string(dpi)//' ]'//newline//newline
 
     ! define the vertices:
-    do i=1,me%n
+    do i=1,size(me%vertices)
       associate( &
         has_label      => me%vertices(i)%has_label(), &
         has_attributes => me%vertices(i)%has_attributes() &
@@ -205,11 +149,11 @@ contains
         end if
       end associate
       str = str//tab//integer_to_string(i)//' '//attributes//newline
-      if (i==me%n) str = str//newline
+      if (i==size(me%vertices)) str = str//newline
     end do
 
     ! define the dependencies:
-    do i=1,me%n
+    do i=1,size(me%vertices)
         if (allocated(me%vertices(i)%edges)) then
             n_edges = size(me%vertices(i)%edges)
             str = str//tab//integer_to_string(i)//merge(' -> ','    ',n_edges/=0)
@@ -224,45 +168,30 @@ contains
 
     str = str//newline//'}'
 
-    end procedure dag_generate_digraph
-!*******************************************************************************
+  end procedure dag_generate_digraph
 
-!*******************************************************************************
-!>
-!  Generate the dependency matrix for the DAG.
-!
-!  This is an \(n \times n \) matrix with elements \(A_{ij}\),
-!  such that \(A_{ij}\) is true if vertex \(i\) depends on vertex \(j\).
-
-    module procedure dag_generate_dependency_matrix
-
-    implicit none
+  module procedure dag_generate_dependency_matrix
 
     integer :: i !! vertex counter
 
-    if (me%n > 0) then
+    associate(num_vertices => size(me%vertices))
+      if (num_vertices > 0) then
 
-        allocate(mat(me%n,me%n))
+        allocate(mat(num_vertices,num_vertices))
         mat = .false.
 
-        do i=1,me%n
+        do i=1,num_vertices
             if (allocated(me%vertices(i)%edges)) then
                 mat(i,me%vertices(i)%edges) = .true.
             end if
         end do
 
-    end if
+      end if
+    end associate
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-!*******************************************************************************
-!>
-!  Generate a Graphviz digraph structure for the DAG and write it to a file.
-
-    module procedure dag_save_digraph
-
-    implicit none
+  module procedure dag_save_digraph
 
     integer :: iunit, istat
     character(len=:),allocatable :: diagraph
@@ -279,17 +208,9 @@ contains
 
     close(iunit,iostat=istat)
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-
-!*******************************************************************************
-!>
-!  Integer to allocatable string.
-
-    pure function integer_to_string(i) result(s)
-
-    implicit none
+  pure function integer_to_string(i) result(s)
 
     integer,intent(in) :: i
     character(len=:),allocatable :: s
@@ -304,12 +225,8 @@ contains
         s = '***'
     end if
 
-    end function integer_to_string
-!*******************************************************************************
+  end function integer_to_string
 
-!*******************************************************************************
-!>
-! Write DAG to JSON file
   module procedure output
     use json_module, wp => json_RK, IK => json_IK, LK => json_LK
     use, intrinsic :: iso_fortran_env , only: error_unit
@@ -325,9 +242,6 @@ contains
     call json%create_object(p,'') ! create root object
     call terminate_if_error(json, operation="create_object()")
 
-    call json%add_by_path(p, 'dag.n', me%n)
-    call increment_if_error(json, error_cnt)
-
     call json%create_array(graph,'')
     call increment_if_error(json, error_cnt)
 
@@ -340,15 +254,15 @@ contains
       call increment_if_error(json, error_cnt)
 
 #ifdef __GFORTRAN__
-      call add_intrinsic_variable(json, graph, me%vertices(i)%edges, 'edges', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%edges, 'edges', error_cnt, var)
 #else
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_edges(), 'edges', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_edges(), 'edges', error_cnt, var)
 #endif
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_vertex_id(), 'ivertex', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_checking(), 'checking', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_marked(), 'marked', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_label(), 'label', error_cnt, var)
-      call add_intrinsic_variable(json, graph, me%vertices(i)%get_attributes(), 'attributes', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_vertex_id(), 'ivertex', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_checking(), 'checking', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_marked(), 'marked', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_label(), 'label', error_cnt, var)
+      call add_intrinsic_variable(json, me%vertices(i)%get_attributes(), 'attributes', error_cnt, var)
 
       call json%add(graph, var)
       call increment_if_error(json, error_cnt)
@@ -392,9 +306,8 @@ contains
       end if
     end subroutine
 
-    subroutine add_intrinsic_variable(json, me, variable, variable_name, error_cnt, var)
+    subroutine add_intrinsic_variable(json, variable, variable_name, error_cnt, var)
       type(json_core),intent(inout) :: json
-      type(json_value), pointer, intent(inout) :: me
       class(*), intent(in) :: variable(..)
       character(len=*), intent(in) :: variable_name
       integer, intent(inout) :: error_cnt
@@ -428,8 +341,6 @@ contains
 
     end subroutine
 
-    end procedure
-!*******************************************************************************
+  end procedure
 
-    end submodule dag_implementation
-!*******************************************************************************
+end submodule dag_implementation

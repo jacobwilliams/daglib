@@ -28,6 +28,7 @@
         procedure :: set_vertex_id
         procedure :: set_label
         procedure :: set_attributes
+        procedure :: get_edges
         procedure :: get_vertex_id
         procedure :: get_checking
         procedure :: get_marked
@@ -114,6 +115,17 @@ interface
     implicit none
     class(vertex), intent(in) :: me
     integer my_vertex_id
+    end function
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  result is an array of the vertex identifiers on which this vertex depends
+
+    pure module function get_edges(me) result(my_edges)
+    implicit none
+    class(vertex), intent(in) :: me
+    integer :: my_edges(size(me%edges))
     end function
 !*******************************************************************************
 
