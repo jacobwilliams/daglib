@@ -17,7 +17,7 @@ contains
 
     call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_dependencies: index in bounds")
 
-    if (.not. allocated(dep)) allocate(dep(0))
+    allocate(dep(0))
 
     do i=1, size(me%vertices)
       if (allocated(me%vertices(i)%edges)) then
@@ -230,7 +230,7 @@ contains
   module procedure output
     use json_module, wp => json_RK, IK => json_IK, LK => json_LK
     use, intrinsic :: iso_fortran_env , only: error_unit
-    type(json_value), pointer :: p, graph, var
+    type(json_value), pointer :: root, array, element
     type(json_core) :: json
     integer(IK) :: iunit, i, error_cnt
     logical(LK) :: is_valid
@@ -239,49 +239,65 @@ contains
     call json%initialize()
     call terminate_if_error(json, operation="initialize()")
 
-    call json%create_object(p,'') ! create root object
+    call json%create_object(root,'') ! create root object
     call terminate_if_error(json, operation="create_object()")
 
-    call json%create_array(graph,'')
+    call json%create_array(array,'')
     call increment_if_error(json, error_cnt)
 
-    call json%add_by_path(p, 'dag.vertices', graph)
+    call json%add_by_path(root, 'dag.vertices', array)
     call increment_if_error(json, error_cnt)
 
     do i=1,size(me%vertices)
-      nullify(var)
-      call json%create_object(var,'')
+      call json%create_object(element,'')
       call increment_if_error(json, error_cnt)
 
-#ifdef __GFORTRAN__
-      call add_intrinsic_variable(json, me%vertices(i)%edges, 'edges', error_cnt, var)
-#else
-      call add_intrinsic_variable(json, me%vertices(i)%get_edges(), 'edges', error_cnt, var)
-#endif
-      call add_intrinsic_variable(json, me%vertices(i)%get_vertex_id(), 'ivertex', error_cnt, var)
-      call add_intrinsic_variable(json, me%vertices(i)%get_checking(), 'checking', error_cnt, var)
-      call add_intrinsic_variable(json, me%vertices(i)%get_marked(), 'marked', error_cnt, var)
-      call add_intrinsic_variable(json, me%vertices(i)%get_label(), 'label', error_cnt, var)
-      call add_intrinsic_variable(json, me%vertices(i)%get_attributes(), 'attributes', error_cnt, var)
+      call json%add(element, 'edges', me%vertices(i)%get_edges())
+      if (json%failed()) then
+          call json%print_error_message(error_unit)
+          error_cnt = error_cnt + 1
+      end if
 
-      call json%add(graph, var)
+      call json%add(element, 'checking', me%vertices(i)%get_checking())
+      if (json%failed()) then
+          call json%print_error_message(error_unit)
+          error_cnt = error_cnt + 1
+      end if
+
+      call json%add(element, 'marked', me%vertices(i)%get_marked())
+      if (json%failed()) then
+          call json%print_error_message(error_unit)
+          error_cnt = error_cnt + 1
+      end if
+
+      call json%add(element, 'label', me%vertices(i)%get_label())
+      if (json%failed()) then
+          call json%print_error_message(error_unit)
+          error_cnt = error_cnt + 1
+      end if
+
+      call json%add(element, 'attributes', me%vertices(i)%get_attributes())
+      if (json%failed()) then
+          call json%print_error_message(error_unit)
+          error_cnt = error_cnt + 1
+      end if
+
+      call json%add(array, element)
       call increment_if_error(json, error_cnt)
-      nullify(var)
     end do
-    nullify(graph)
 
-    call json%validate(p,is_valid,error_msg)
+    call json%validate(root,is_valid,error_msg)
     if (.not. is_valid) then
-        write(error_unit,'(A)') 'Error: p is not a valid JSON linked list: '//error_msg
+        write(error_unit,'(A)') 'Error: root is not a valid JSON linked list: '//error_msg
         error_cnt = error_cnt + 1
     end if
 
     open(newunit=iunit, file=filename, status='UNKNOWN')
-    call json%print(p,iunit)
+    call json%print(root,iunit)
     call increment_if_error(json, error_cnt)
     close(iunit)
 
-    call json%destroy(p)
+    call json%destroy(root)
     call increment_if_error(json, error_cnt)
 
   contains
@@ -332,6 +348,8 @@ contains
             class default
               error stop "dag add_intrinsic_variable: unsupported rank-1 type"
           end select
+        rank default
+          error stop "dag add_intrinsic_variable: rank " // integer_to_string(rank(variable)) // " unsupported."
       end select
 
       if (json%failed()) then
