@@ -76,3 +76,21 @@ foreach(test_name
 )
   add_caf_test("${test_name}" "unit" 2)
 endforeach()
+
+install(TARGETS
+        dag
+    EXPORT dagConfig
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+export(TARGETS
+        dag
+    NAMESPACE dag::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/dagConfig.cmake"
+)
+install(EXPORT
+        dagConfig
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/dag/cmake"
+    NAMESPACE dag::
+)
