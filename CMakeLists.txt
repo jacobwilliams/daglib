@@ -1,25 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
 
 set (DAGLIB_VERSION "1.0")
-set (ALLOWED_BUILD_TYPES "Debug" "Release")
-
-get_property(multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(multi_config)
-  set (CMAKE_CONFIGURATION_TYPES "${ALLOWED_BUILD_TYPES}" CACHE STRING "list of supported configuration types" FORCE)
-else()
-  set (CMAKE_BUILD_TYPE "Debug" CACHE STRING "Select which configuration to build.")
-  set_property (CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${ALLOWED_BUILD_TYPES})
-endif()
-
-file    (READ ${CMAKE_CURRENT_LIST_DIR}/media/text-art.txt LOGO)
-string  (JOIN "\n " GREETING "${LOGO}" "Version: ${DAGLIB_VERSION}\n Build type: ${CMAKE_BUILD_TYPE}\n")
-message (STATUS "\n${GREETING}")
 
 project(daglib
   VERSION "${DAGLIB_VERSION}"
   LANGUAGES Fortran
   DESCRIPTION "Directed Acyclic Graph Library"
 )
+
+file    (READ ${CMAKE_CURRENT_LIST_DIR}/media/text-art.txt LOGO)
+string  (JOIN "\n " GREETING "${LOGO}" "Version: ${DAGLIB_VERSION}\n Build type: ${CMAKE_BUILD_TYPE}\n")
+message (STATUS "\n${GREETING}")
 
 if ("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
   message(FATAL_ERROR
@@ -35,6 +26,15 @@ if ("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
     "  cmake .. \n"
     "or by substituting the appropriate syntax for shells other than bash."
   )
+endif()
+
+set (ALLOWED_BUILD_TYPES "Debug" "Release")
+get_property(multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(multi_config)
+  set (CMAKE_CONFIGURATION_TYPES "${ALLOWED_BUILD_TYPES}" CACHE STRING "list of supported configuration types" FORCE)
+else()
+  set (CMAKE_BUILD_TYPE "Debug" CACHE STRING "Select which configuration to build.")
+  set_property (CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${ALLOWED_BUILD_TYPES})
 endif()
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES GNU)
@@ -76,21 +76,3 @@ foreach(test_name
 )
   add_caf_test("${test_name}" "unit" 2)
 endforeach()
-
-install(TARGETS
-        dag
-    EXPORT dagConfig
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-export(TARGETS
-        dag
-    NAMESPACE dag::
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/dagConfig.cmake"
-)
-install(EXPORT
-        dagConfig
-    DESTINATION "${CMAKE_INSTALL_DATADIR}/dag/cmake"
-    NAMESPACE dag::
-)

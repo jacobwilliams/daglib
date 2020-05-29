@@ -12,3 +12,13 @@ add_library(dag
 #target_include_directories(dag
 #  PUBLIC $<TARGET_PROPERTY:yafyaml,Fortran_MODULE_DIRECTORY>
 #)
+
+install(TARGETS dag
+  EXPORT dagConfig
+)
+export(TARGETS dag
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/dagConfig.cmake"
+)
+install(EXPORT dagConfig
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/dag/cmake"
+)
