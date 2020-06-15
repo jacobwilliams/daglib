@@ -6,10 +6,19 @@ add_library(dag
   assert_implementation.f90
   assert_interface.f90
 )
-target_link_libraries(dag
-  PRIVATE jsonfortran-static
+#target_link_libraries(dag
+#  PRIVATE yafyaml
+#)
+#target_include_directories(dag
+#  PUBLIC $<TARGET_PROPERTY:yafyaml,Fortran_MODULE_DIRECTORY>
+#)
+
+install(TARGETS dag
+  EXPORT dagConfig
 )
-target_include_directories(dag
-  PUBLIC $<TARGET_PROPERTY:jsonfortran-static,Fortran_MODULE_DIRECTORY>
+export(TARGETS dag
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/dagConfig.cmake"
 )
-add_subdirectory(git-submodules)
+install(EXPORT dagConfig
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/dag/cmake"
+)

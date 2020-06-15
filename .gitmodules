@@ -1,12 +1,6 @@
-[submodule "src/git-submodules/json-fortran"]
-	path = src/git-submodules/json-fortran
-	url = https://github.com/jacobwilliams/json-fortran
+[submodule "src/git-submodules/gFTL-shared"]
+	path = src/git-submodules/gFTL-shared
+	url = git@github.com:Goddard-Fortran-Ecosystem/gFTL-shared
 [submodule "src/git-submodules/yaFyaml"]
 	path = src/git-submodules/yaFyaml
 	url = git@github.com:Goddard-Fortran-Ecosystem/yaFyaml
-[submodule "src/git-submodules/gftl"]
-	path = src/git-submodules/gftl
-	url = git@github.com:Goddard-Fortran-Ecosystem/gftl
-[submodule "src/git-submodules/gftl-shared"]
-	path = src/git-submodules/gftl-shared
-	url = git@github.com:Goddard-Fortran-Ecosystem/gftl-shared
