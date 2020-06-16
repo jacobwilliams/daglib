@@ -15,7 +15,8 @@
 #ifdef __GFORTRAN__
         integer, public, allocatable :: edges(:) !! vertices on which this vertex depends
 #else
-        integer,         allocatable :: edges(:) !! vertices on which this vertex depends
+        integer, public, allocatable :: edges(:) !! vertices on which this vertex depends
+        !integer,         allocatable :: edges(:) !! vertices on which this vertex depends
 #endif
         integer :: ivertex = 0 !! vertex identifier
         logical :: checking = .false., marked = .false. !! used for toposort

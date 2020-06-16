@@ -6,12 +6,12 @@ add_library(dag
   assert_implementation.f90
   assert_interface.f90
 )
-#target_link_libraries(dag
-#  PRIVATE yafyaml
-#)
-#target_include_directories(dag
-#  PUBLIC $<TARGET_PROPERTY:yafyaml,Fortran_MODULE_DIRECTORY>
-#)
+target_link_libraries(dag
+  PRIVATE yafyaml
+)
+target_include_directories(dag
+  PUBLIC $<TARGET_PROPERTY:yafyaml,Fortran_MODULE_DIRECTORY>
+)
 
 install(TARGETS dag
   EXPORT dagConfig
