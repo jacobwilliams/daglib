@@ -25,7 +25,7 @@ git clone https://github.com/sourceryinstitute/daglib
 mkdir -p daglib/build
 cd daglib/build
 export FC=caf
-cmake ..
+cmake .. -DCMAKE_PREFIX_PATH=<insert-gFTL-gFTL-shared-yaFyaml-installation-root-directory-here>
 ctest
 ```
 or the corresponding commands for other shells.
