@@ -15,14 +15,16 @@ might work also.
 
 Building and testing
 --------------------
+#Serial builds
+Replace caf with gfortran in the parall build instructions below.
+
+#Parallel builds
 To clone, build, and test, execute the following in a `bash` shell:
 ```
 git clone https://github.com/sourceryinstitute/daglib
 mkdir -p daglib/build
 cd daglib/build
-export FC=$(which caf)
-export CC=$(which gcc)
-export CXX=$(which g++)
+export FC=caf
 cmake ..
 ctest
 ```
