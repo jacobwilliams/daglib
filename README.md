@@ -15,10 +15,10 @@ might work also.
 
 Building and testing
 --------------------
-#Serial builds
+### Serial builds
 Replace caf with gfortran in the parall build instructions below.
 
-#Parallel builds
+### Parallel builds
 To clone, build, and test, execute the following in a `bash` shell:
 ```
 git clone https://github.com/sourceryinstitute/daglib
