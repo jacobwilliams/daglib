@@ -47,6 +47,10 @@ endif()
 
 set(CMAKE_Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/mod")
 
+find_package(GFTL REQUIRED)
+find_package(GFTL_SHARED REQUIRED VERSION 1.0.4)
+find_package(YAFYAML REQUIRED)
+
 foreach(directory src tests)
   add_subdirectory("${directory}")
 endforeach()

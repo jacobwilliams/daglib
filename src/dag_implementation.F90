@@ -1,5 +1,6 @@
 submodule(dag_interface) dag_implementation
   use assert_interface, only : assert
+  use yafyaml, only : Parser, Configuration, FileStream
   implicit none
 
 contains
@@ -227,8 +228,47 @@ contains
 
   end function integer_to_string
 
-  module procedure output
-    print *, "----------> dag%output unimplemented <----------"
-  end procedure
+  module procedure input
+    !! Read a dag from a JSON file
+    use gFTL_UnlimitedVector, only : UnlimitedVector
 
+    type(Parser) p
+    type(Configuration) c, subconfig
+
+    class(*), pointer :: dag_vertices=>null(), dag_vertices_i_edges=>null()
+    integer :: i, j
+
+    p = Parser('core')
+    c = p%load(FileStream(filename))
+    call c%get_node_at_selector(dag_vertices, 'dag', 'vertices')
+
+    select type (dag_vertices)
+    class is (UnlimitedVector)
+
+      allocate(me%vertices(dag_vertices%size()))
+
+      do i=1,size(me%vertices)
+
+        call c%get(subconfig, 'dag', 'vertices', i)
+        call subconfig%get_node_at_selector(dag_vertices_i_edges, 'edges')
+
+        select type (dag_vertices_i_edges)
+        class is (UnlimitedVector)
+
+          allocate(me%vertices(i)%edges(dag_vertices_i_edges%size()))
+
+          do j = 1,size(me%vertices(i)%edges)
+            me%vertices(i)%edges(j) = c%at('dag','vertices',i,'edges',j)
+          end do
+        class default
+          error stop "unexpected dag_vertices_i_edges class"
+        end select
+
+      end do
+
+    class default
+       error stop "unexpected dag_vertices class"
+    end select
+
+  end procedure
 end submodule dag_implementation
