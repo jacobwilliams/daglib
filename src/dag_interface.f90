@@ -25,7 +25,7 @@
         procedure,public :: save_digraph     => dag_save_digraph
         procedure,public :: get_edges        => dag_get_edges
         procedure,public :: get_dependencies => dag_get_dependencies
-        procedure,public :: output
+        procedure,public :: input
     end type dag
 
 interface
@@ -156,12 +156,12 @@ interface
 
 !*******************************************************************************
 !>
-!  Write the dag components to a file or to the output_unit.
+!  Write the dag components to a file or to the input_unit.
 
-    module subroutine output(me,filename)
+    module subroutine input(me,filename)
     implicit none
-    class(dag),intent(in) :: me
-    character(len=*),intent(in),optional :: filename !! file name for diagraph
+    class(dag),intent(out) :: me
+    character(len=*),intent(in) :: filename !! file name for diagraph
     end subroutine
 !*******************************************************************************
 

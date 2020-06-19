@@ -228,47 +228,47 @@ contains
 
   end function integer_to_string
 
-  module procedure output
+  module procedure input
+    !! Read a dag from a JSON file
     use gFTL_UnlimitedVector, only : UnlimitedVector
 
-    type(dag) d
     type(Parser) p
     type(Configuration) c, subconfig
 
-    class(*), pointer :: dag_vertices=>null(), dag_vertices_i_depends_on=>null()
+    class(*), pointer :: dag_vertices=>null(), dag_vertices_i_edges=>null()
     integer :: i, j
 
     p = Parser('core')
-    c = p%load(FileStream('nested-object-array.json'))
-    !call c%get_node_at_selector(dag_vertices, 'dag', 'vertices')
+    c = p%load(FileStream(filename))
+    call c%get_node_at_selector(dag_vertices, 'dag', 'vertices')
 
     select type (dag_vertices)
     class is (UnlimitedVector)
 
-      allocate(d%vertices(dag_vertices%size()))
+      allocate(me%vertices(dag_vertices%size()))
 
-      do i=1,size(d%vertices)
+      do i=1,size(me%vertices)
 
-    !    call c%get(subconfig, 'dag', 'vertices', i)
-    !    call subconfig%get_node_at_selector(dag_vertices_i_depends_on, 'depends_on')
+        call c%get(subconfig, 'dag', 'vertices', i)
+        call subconfig%get_node_at_selector(dag_vertices_i_edges, 'edges')
 
-        select type (dag_vertices_i_depends_on)
+        select type (dag_vertices_i_edges)
         class is (UnlimitedVector)
 
-          !allocate(d%vertices(i)%depends_on(dag_vertices_i_depends_on%size()))
+          allocate(me%vertices(i)%edges(dag_vertices_i_edges%size()))
 
-          !do j = 1,size(d%vertices(i)%depends_on)
-          !  d%vertices(i)%depends_on(j) = c%at('dag','vertices',i,'depends_on',j)
-          !end do
+          do j = 1,size(me%vertices(i)%edges)
+            me%vertices(i)%edges(j) = c%at('dag','vertices',i,'edges',j)
+          end do
         class default
-          error stop "unexpected dag_vertices_i_depends_on class"
+          error stop "unexpected dag_vertices_i_edges class"
         end select
 
       end do
 
     class default
-      error stop "unexpected dag_vertices class"
+       error stop "unexpected dag_vertices class"
     end select
-  end procedure
 
+  end procedure
 end submodule dag_implementation

@@ -4,3 +4,5 @@ add_executable( test-input-output
 target_link_libraries( test-input-output
   PRIVATE dag
 )
+file(COPY dag-vertices-edges.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
