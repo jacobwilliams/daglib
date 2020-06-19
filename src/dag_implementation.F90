@@ -1,5 +1,6 @@
 submodule(dag_interface) dag_implementation
   use assert_interface, only : assert
+  use yafyaml, only : Parser, Configuration, FileStream
   implicit none
 
 contains
@@ -228,7 +229,6 @@ contains
   end function integer_to_string
 
   module procedure output
-    use yafyaml, only : Parser, Configuration, FileStream
     use gFTL_UnlimitedVector, only : UnlimitedVector
 
     type(dag) d
