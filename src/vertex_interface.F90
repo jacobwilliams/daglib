@@ -38,6 +38,8 @@
         procedure :: add_edge
         procedure :: has_label
         procedure :: has_attributes
+        procedure :: write_formatted
+        generic :: write(formatted) => write_formatted
     end type vertex
 
 interface
@@ -205,6 +207,20 @@ interface
     class(vertex), intent(in) :: me
     logical allocated_attributes
     end function
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Write the vertex components to a file unit.
+
+    module subroutine write_formatted(this, unit, iotype, vlist, iostat, iomsg)
+    class(vertex), intent(in) :: this
+    integer, intent(in) :: unit
+    character (len=*), intent(in) :: iotype
+    integer, intent(in) :: vlist(:)
+    integer, intent(out) :: iostat
+    character (len=*), intent(inout) :: iomsg
+    end subroutine
 !*******************************************************************************
 
 

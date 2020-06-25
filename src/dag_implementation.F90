@@ -271,4 +271,8 @@ contains
     end select
 
   end procedure
+
+  module procedure write_formatted
+    write(unit,*) '{ "dag" : "vertices" : [ ', this%vertices,' ] }'
+  end procedure
 end submodule dag_implementation

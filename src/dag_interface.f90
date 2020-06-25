@@ -26,6 +26,8 @@
         procedure,public :: get_edges        => dag_get_edges
         procedure,public :: get_dependencies => dag_get_dependencies
         procedure,public :: input
+        procedure,public :: write_formatted
+        generic :: write(formatted) => write_formatted
     end type dag
 
 interface
@@ -156,12 +158,26 @@ interface
 
 !*******************************************************************************
 !>
-!  Write the dag components to a file or to the input_unit.
+!  Read the dag components from a file.
 
     module subroutine input(me,filename)
     implicit none
     class(dag),intent(out) :: me
     character(len=*),intent(in) :: filename !! file name for diagraph
+    end subroutine
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Write the dag components to a file unit.
+
+    module subroutine write_formatted(this, unit, iotype, vlist, iostat, iomsg)
+    class(dag), intent(in) :: this
+    integer, intent(in) :: unit
+    character (len=*), intent(in) :: iotype
+    integer, intent(in) :: vlist(:)
+    integer, intent(out) :: iostat
+    character (len=*), intent(inout) :: iomsg
     end subroutine
 !*******************************************************************************
 

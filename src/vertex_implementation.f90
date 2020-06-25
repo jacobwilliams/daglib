@@ -83,4 +83,8 @@ contains
     allocated_attributes = allocated(me%attributes)
   end procedure
 
+  module procedure write_formatted
+    write(unit,'(a,(*(G0:,",")),a)') '{ "edges" : [', this%edges, '] }'
+  end procedure
+
 end submodule
