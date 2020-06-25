@@ -51,6 +51,36 @@ find_package(GFTL REQUIRED)
 find_package(GFTL_SHARED REQUIRED VERSION 1.0.4)
 find_package(YAFYAML REQUIRED)
 
+include(CheckFortranSourceCompiles)
+
+check_fortran_source_compiles("
+  program main
+  integer :: i
+  i = 0
+  error stop i
+  end program
+"
+  HAVE_NON_CONSTANT_ERROR_STOP
+  SRC_EXT ".f90")
+if(HAVE_NON_CONSTANT_ERROR_STOP)
+  add_definitions(-DHAVE_NON_CONSTANT_ERROR_STOP)
+endif()
+
+check_fortran_source_compiles("
+  program main
+  contains
+  pure function foo() result(res)
+    error stop 'Error stop is supported in pure functions (F2018)'
+  end function
+  end program
+"
+  HAVE_ERROR_STOP_IN_PURE
+  SRC_EXT ".f90"
+  )
+if(HAVE_ERROR_STOP_IN_PURE)
+  add_definitions(-DHAVE_ERROR_STOP_IN_PURE)
+endif()
+
 foreach(directory src tests)
   add_subdirectory("${directory}")
 endforeach()

@@ -3,8 +3,8 @@ add_library(dag
   dag_implementation.F90
   vertex_interface.F90
   vertex_implementation.f90
-  assert_implementation.f90
-  assert_interface.f90
+  assert_implementation.F90
+  assert_interface.F90
 )
 target_link_libraries(dag
   PRIVATE yafyaml
@@ -22,3 +22,16 @@ export(TARGETS dag
 install(EXPORT dagConfig
   DESTINATION "${CMAKE_INSTALL_PREFIX}/dag/cmake"
 )
+
+#Toggle C preprocessor macro for turning assertions on or off
+if(NO_ASSERTIONS)
+  target_compile_definitions( dag
+    PUBLIC "-DUSE_ASSERTIONS=.false."
+  )
+else()
+  target_compile_definitions( dag
+    PUBLIC "-DUSE_ASSERTIONS=.true."
+  )
+endif()
+
+include(CheckFortranSourceCompiles)
