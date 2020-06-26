@@ -84,7 +84,9 @@ contains
   end procedure
 
   module procedure write_formatted
-    write(unit,'(a,(*(G0:,",")),a)') '{ "edges" : [', this%edges, '] }'
+    write(unit, '(a)') '{ "edges" : ['
+    write(unit, '(*(I0,:,","))') this%edges
+    write(unit, '(a)') '] }'
   end procedure
 
 end submodule
