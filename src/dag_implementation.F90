@@ -271,4 +271,19 @@ contains
     end select
 
   end procedure
+
+  module procedure write_formatted
+    integer i
+
+    write(unit,*) '{ "dag" : { "vertices" : [ '
+
+    associate(num_vertices=>size(this%vertices))
+      do i=1, num_vertices
+        write(unit,*) this%vertices(i), trim(merge(",", " ", i/=num_vertices))
+      end do
+    end associate
+
+    write(unit,*) '] } }'
+  end procedure
+
 end submodule dag_implementation
