@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
-set (DAGLIB_VERSION "1.0")
-
-project(daglib
-  VERSION "${DAGLIB_VERSION}"
+project(DAGLIB
+  VERSION "1.0.0"
   LANGUAGES Fortran
   DESCRIPTION "Directed Acyclic Graph Library"
 )

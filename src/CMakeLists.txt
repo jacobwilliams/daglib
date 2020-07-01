@@ -6,21 +6,30 @@ add_library(dag
   assert_implementation.F90
   assert_interface.F90
 )
+set_target_properties(dag
+  PROPERTIES Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include
+)
 target_link_libraries(dag
   PRIVATE yafyaml
 )
-target_include_directories(dag
-  PUBLIC $<TARGET_PROPERTY:yafyaml,Fortran_MODULE_DIRECTORY>
+set (dest
+  "DAGLIB-${DAGLIB_VERSION_MAJOR}.${DAGLIB_VERSION_MINOR}"
 )
-
+target_include_directories(dag PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+  $<INSTALL_INTERFACE:${dest}/include>
+)
 install(TARGETS dag
-  EXPORT dagConfig
+  EXPORT DAGLIBConfig
+  DESTINATION ${dest}/lib
 )
-export(TARGETS dag
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/dagConfig.cmake"
+install(
+  DIRECTORY ${PROJECT_BINARY_DIR}/include/
+  DESTINATION ${dest}/include
 )
-install(EXPORT dagConfig
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/dag/cmake"
+install(
+  EXPORT DAGLIBConfig
+  DESTINATION "${dest}/cmake"
 )
 
 #Toggle C preprocessor macro for turning assertions on or off
