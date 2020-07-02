@@ -15,20 +15,13 @@ target_link_libraries(dag
 set (dest
   "DAGLIB-${DAGLIB_VERSION_MAJOR}.${DAGLIB_VERSION_MINOR}"
 )
-target_include_directories(dag PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-  $<INSTALL_INTERFACE:${dest}/include>
-)
 install(TARGETS dag
-  EXPORT DAGLIBConfig
   DESTINATION ${dest}/lib
 )
-install(
-  DIRECTORY ${PROJECT_BINARY_DIR}/include/
+install(DIRECTORY ${PROJECT_BINARY_DIR}/include/
   DESTINATION ${dest}/include
 )
-install(
-  EXPORT DAGLIBConfig
+install(EXPORT DAGLIBConfig
   DESTINATION "${dest}/cmake"
 )
 
