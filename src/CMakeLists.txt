@@ -13,16 +13,13 @@ target_link_libraries(dag
   PRIVATE yafyaml
 )
 set (dest
-  "DAGLIB-${DAGLIB_VERSION_MAJOR}.${DAGLIB_VERSION_MINOR}"
+  "DAG-${DAG_VERSION_MAJOR}.${DAG_VERSION_MINOR}"
 )
 install(TARGETS dag
   DESTINATION ${dest}/lib
 )
 install(DIRECTORY ${PROJECT_BINARY_DIR}/include/
   DESTINATION ${dest}/include
-)
-install(EXPORT DAGLIBConfig
-  DESTINATION "${dest}/cmake"
 )
 
 #Toggle C preprocessor macro for turning assertions on or off
