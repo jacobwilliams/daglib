@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(DAG
+Project(DAG
   VERSION "1.0.0"
   LANGUAGES Fortran
   DESCRIPTION "Directed Acyclic Graph Library"
@@ -43,7 +43,7 @@ if(CMAKE_Fortran_COMPILER_ID MATCHES GNU)
   endif()
 endif()
 
-set(CMAKE_Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/include")
+set(CMAKE_Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/mod")
 
 find_package(GFTL REQUIRED)
 find_package(GFTL_SHARED REQUIRED VERSION 1.0.4)
