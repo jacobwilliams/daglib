@@ -11,18 +11,14 @@ set(install_dir "DAG-${DAG_VERSION}")
 set(dest "${CMAKE_INSTALL_PREFIX}/${install_dir}")
 
 target_include_directories (dag PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # for .mod files when building
   $<INSTALL_INTERFACE:${install_dir}/mod> # for client in install mode
 )
-
 target_link_libraries(dag
   PRIVATE yafyaml
 )
 set_target_properties(dag
  PROPERTIES Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/mod
 )
-
-
 install(TARGETS dag
   DESTINATION "${dest}/lib"
   EXPORT DAGConfig
@@ -34,7 +30,7 @@ export(TARGETS dag
   FILE "DAGConfig.cmake"
 )
 install(EXPORT DAGConfig
-  DESTINATION "${dest}/cmake"
+  DESTINATION "cmake"
 )
 
 #Toggle C preprocessor macro for turning assertions on or off
