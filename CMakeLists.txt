@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(DAGLIB
+Project(DAG
   VERSION "1.0.0"
   LANGUAGES Fortran
   DESCRIPTION "Directed Acyclic Graph Library"
 )
 
 file    (READ ${CMAKE_CURRENT_LIST_DIR}/media/text-art.txt LOGO)
-string  (JOIN "\n " GREETING "${LOGO}" "Version: ${DAGLIB_VERSION}\n Build type: ${CMAKE_BUILD_TYPE}\n")
+string  (JOIN "\n " GREETING "${LOGO}" "Version: ${DAG_VERSION}\n Build type: ${CMAKE_BUILD_TYPE}\n")
 message (STATUS "\n${GREETING}")
 
 if ("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")

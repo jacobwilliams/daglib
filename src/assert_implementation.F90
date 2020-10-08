@@ -25,7 +25,11 @@ contains
       end if
     end if
 
+#ifndef FORD
   contains
+#else
+    end procedure ! work around ford documentation generator bug
+#endif
 
     pure subroutine set(msg)
 
@@ -60,6 +64,8 @@ contains
 
     end subroutine
 
+#ifndef FORD
   end procedure
+#endif
 
 end submodule assert_implementation
