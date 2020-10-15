@@ -1,8 +1,8 @@
 project: Directed Acyclic Graph Library
 summary: A Fortran 2018 application programmer interface for representing directed acyclic graphs.
-src_dir: ./src
-src_dir: ./tests
-output_dir: ./doc
+src_dir: ../src
+src_dir: ../tests
+output_dir: html
 preprocess: true
 macro: FORD
 preprocessor: gfortran -E
@@ -28,4 +28,4 @@ predocmark: <
 docmark_alt:
 docmark: !
 
-{!README.md!}
+{!../README.md!}
