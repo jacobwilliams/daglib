@@ -7,3 +7,18 @@ copyright = "2020 Sourcery Institute"
 
 [dependencies]
 jsonff = {git = "https://gitlab.com/everythingfunctional/jsonff"}
+
+[[test]]
+name="jacobExample"
+source-dir="tests/integration/jacob-example"
+main="test-jacob-example.f90"
+
+[[test]]
+name="multipleIndependents"
+source-dir="tests/integration/multiple-independents"
+main="test-multiple-independents.f90"
+
+[[test]]
+name="inputOutput"
+source-dir="tests/unit/input-output"
+main="test-input-output.f90"
