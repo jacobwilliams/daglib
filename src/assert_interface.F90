@@ -1,5 +1,5 @@
 #ifndef USE_ASSERTIONS
-# define USE_ASSERTIONS .false.
+#define USE_ASSERTIONS .true.
 #endif
 module assert_interface
   !! author: Damian Rouson
@@ -43,10 +43,7 @@ module assert_interface
   logical, parameter :: assertions=USE_ASSERTIONS
 
   interface
-#ifdef HAVE_ERROR_STOP_IN_PURE
-    pure &
-#endif
-    module subroutine assert(assertion, description, diagnostic_data, success, error_message)
+    pure module subroutine assert(assertion, description, diagnostic_data, success, error_message)
       !! On false assertion, error-terminate or, if present(success), set success = assertion
       implicit none
       logical, intent(in) :: assertion
