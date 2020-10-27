@@ -16,7 +16,7 @@ might work also.
 Building and testing
 --------------------
 ### Serial builds
-Replace caf with gfortran in the parall build instructions below.
+Replace caf with gfortran in the parallel build instructions below.
 
 ### Parallel builds
 To clone, build, and test, execute the following in a `bash` shell:
