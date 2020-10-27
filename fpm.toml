@@ -1,0 +1,6 @@
+name = "dag"
+version = "1.0.0"
+license = "BSD"
+author = ["Damian Rouson", "Robert Singleterry", "Brad Richardson"]
+maintainer = "damian@sourceryinstitute.org"
+copyright = "2020 Sourcery Institute"
