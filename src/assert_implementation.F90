@@ -17,11 +17,7 @@ contains
       if (present(error_message)) error_message = message
 
       if (.not. present(success)) then
-#ifdef HAVE_VARIABLE_STOP_CODE
         error stop message
-#else
-        error stop "Assertion failed."
-#endif
       end if
     end if
 

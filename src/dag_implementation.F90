@@ -1,6 +1,5 @@
 submodule(dag_interface) dag_implementation
   use assert_interface, only : assert
-  use yafyaml, only : Parser, Configuration, FileStream
   implicit none
 
 contains
@@ -228,48 +227,10 @@ contains
 
   end function integer_to_string
 
-  module procedure input
+  module procedure read_formatted
     !! Read a dag from a JSON file
-    use gFTL_UnlimitedVector, only : UnlimitedVector
 
-    type(Parser) p
-    type(Configuration) c, subconfig
-
-    class(*), pointer :: dag_vertices=>null(), dag_vertices_i_edges=>null()
-    integer :: i, j
-
-    p = Parser('core')
-    c = p%load(FileStream(filename))
-    call c%get_node_at_selector(dag_vertices, 'dag', 'vertices')
-
-    select type (dag_vertices)
-    class is (UnlimitedVector)
-
-      allocate(me%vertices(dag_vertices%size()))
-
-      do i=1,size(me%vertices)
-
-        call c%get(subconfig, 'dag', 'vertices', i)
-        call subconfig%get_node_at_selector(dag_vertices_i_edges, 'edges')
-
-        select type (dag_vertices_i_edges)
-        class is (UnlimitedVector)
-
-          allocate(me%vertices(i)%edges(dag_vertices_i_edges%size()))
-
-          do j = 1,size(me%vertices(i)%edges)
-            me%vertices(i)%edges(j) = c%at('dag','vertices',i,'edges',j)
-          end do
-        class default
-          error stop "unexpected dag_vertices_i_edges class"
-        end select
-
-      end do
-
-    class default
-       error stop "unexpected dag_vertices class"
-    end select
-
+    error stop "dag%read_formatted unimplemented"
   end procedure
 
   module procedure write_formatted
@@ -277,9 +238,9 @@ contains
 
     write(unit,*) '{ "dag" : { "vertices" : [ '
 
-    associate(num_vertices=>size(this%vertices))
+    associate(num_vertices=>size(me%vertices))
       do i=1, num_vertices
-        write(unit,*) this%vertices(i), trim(merge(",", " ", i/=num_vertices))
+        write(unit,*) me%vertices(i), trim(merge(",", " ", i/=num_vertices))
       end do
     end associate
 

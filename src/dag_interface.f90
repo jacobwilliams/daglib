@@ -65,7 +65,8 @@
         procedure,public :: save_digraph     => dag_save_digraph
         procedure,public :: get_edges        => dag_get_edges
         procedure,public :: get_dependencies => dag_get_dependencies
-        procedure,public :: input
+        procedure,public :: read_formatted
+        generic :: read(formatted) => read_formatted
         procedure,public :: write_formatted
         generic :: write(formatted) => write_formatted
     end type dag
@@ -189,10 +190,14 @@ interface
 !>
 !  Read the dag components from a file.
 
-    module subroutine input(me,filename)
+    module subroutine read_formatted(me, unit, iotype, vlist, iostat, iomsg)
     implicit none
-    class(dag),intent(out) :: me
-    character(len=*),intent(in) :: filename !! file name for diagraph
+    class(dag),intent(inout) :: me
+    integer, intent(in) :: unit
+    character (len=*), intent(in) :: iotype
+    integer, intent(in) :: vlist(:)
+    integer, intent(out) :: iostat
+    character (len=*), intent(inout) :: iomsg
     end subroutine
 !*******************************************************************************
 
@@ -200,8 +205,8 @@ interface
 !>
 !  Write the dag components to a file unit.
 
-    module subroutine write_formatted(this, unit, iotype, vlist, iostat, iomsg)
-    class(dag), intent(in) :: this
+    module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
+    class(dag), intent(in) :: me
     integer, intent(in) :: unit
     character (len=*), intent(in) :: iotype
     integer, intent(in) :: vlist(:)

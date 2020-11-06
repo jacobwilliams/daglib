@@ -61,6 +61,6 @@ program multiple_independents
   end if
 
   sync all
-  if (this_image()==1) print *,"Test passed."
+  if (this_image()==1) print *,"Test passed: multiple_independents"
 
 end program multiple_independents
