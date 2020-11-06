@@ -19,10 +19,8 @@ To clone, build, and test, execute the following in a `bash` shell:
 ```
 git clone git@github.com:sourceryinstitute/dag
 fpm build --compiler caf
-fpm test --launcher cafrun
+fpm test --compiler caf --runner cafrun
 ```
-where the final line above is suggestive and not yet supported by [fpm].
-
 Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams], from which
 the current repository was forked.
 
