@@ -1,5 +1,4 @@
 !*******************************************************************************
-!>
 !  DAG Module.
 
     module dag_interface
@@ -12,7 +11,48 @@
     integer, parameter :: unset=0
 
     type,public :: dag
-        !! a directed acyclic graph (DAG)
+        !! A directed acyclic graph (DAG)
+        !!
+        !! Private type: vertex (vertex_interface) allocatable rank 1
+        !!
+        !! This data type represents the vertcies and edges of a DAG.
+        !!   vertex: a task to be performed number as label
+        !!   edge: incoming and outgoing dependences on that task to other task numbers
+        !!
+        !! Private DAG Interfaces:
+        !!
+        !!    None
+        !!
+        !! Public DAG Interfaces:
+        !!
+        !!    me%set_vertices ( Number of Vertices )
+        !!       Allocates the vertices variable and fills it with the array index number
+        !!
+        !!    me%set_edges ( Vertex Index, Edges for that Vertex )
+        !!       Allocates the edges for that vertex and fills them with the edges passed
+        !!
+        !!    me%set_vertex_info ( Vertex Index, Label (optional), Diagraph Attribute (optional) )
+        !!       Sets a default (Vertex Index) or input Label (me%vertices(index)%set_label)
+        !!       Sets a diagraph attribute if input (me%vertices(index)%set_atrributes
+        !!
+        !!   me%toposort ( Sorted Vertex Order, Status )
+        !!       Rank 1 integer array of vertex numbers/labels in order of execution that adheres to dependencies
+        !!       Status is 0 for no circular dependencies and 1 for circular dependencies
+        !!
+        !!   me%generate_digraph ( Rank Direction, DPI )
+        !!       Rank Direction which are applicable inputs to the -rankdir option on the digraph command
+        !!       DPI is the numerical dots per inch value
+        !!
+        !!   me%generate_dependency_matrix ( Dependencies )
+        !!       Output logical rank 2 array where .true. designates that rank 1 task depends on rank 2 task and .false. designates no dependence
+        !!
+        !!   me%save_digraph ( File Name, Rank Direction, DPI )
+        !!       The file name of the saved digraph file
+        !!       Rank Direction which are applicable inputs to the -rankdir option on the digraph command
+        !!       DPI is the numerical dots per inch value
+        !!
+        !!   me%get_edges ( 
+        !!
         private
         type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG.
     contains
@@ -33,7 +73,6 @@
 interface
 
 !*******************************************************************************
-!>
 !  get the edges for the vertex (all the the vertices
 !  that this vertex depends on).
 
@@ -46,7 +85,6 @@ interface
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  get all the vertices that depend on this vertex.
 
     pure module function dag_get_dependencies(me,ivertex) result(dep)
@@ -58,7 +96,6 @@ interface
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  set the number of vertices in the dag
 
     module subroutine dag_set_vertices(me,nvertices)
@@ -69,23 +106,19 @@ interface
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  set info about a vertex in a dag.
 
     module subroutine dag_set_vertex_info(me,ivertex,label,attributes)
     implicit none
     class(dag),intent(inout) :: me
     integer,intent(in)                   :: ivertex !! vertex number
-    character(len=*),intent(in),optional :: label !! if a label is not set,
-                                                  !! then the integer vertex
-                                                  !! number is used.
+    character(len=*),intent(in),optional :: label !! if a label is not set, then the integer vertex number is used.
     character(len=*),intent(in),optional :: attributes !! other attributes when
                                                        !! saving as a diagraph.
     end subroutine dag_set_vertex_info
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  set the edges for a vertex in a dag
 
     module subroutine dag_set_edges(me,ivertex,edges)
@@ -97,13 +130,12 @@ interface
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  Main toposort routine
 
     module subroutine dag_toposort(me,order,istat)
     implicit none
     class(dag),intent(inout) :: me
-    integer,dimension(:),allocatable,intent(out) :: order  !! the toposort order
+    integer,dimension(:),allocatable,intent(out) :: order  !! the output toposort order
     integer,intent(out) :: istat !! Status flag:
                                  !!
                                  !! * 0 if no errors
@@ -113,7 +145,6 @@ interface
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  Generate a Graphviz digraph structure for the DAG.
 !
 !### Example
@@ -130,7 +161,6 @@ interface
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  Generate the dependency matrix for the DAG.
 !
 !  This is an \(n \times n \) matrix with elements \(A_{ij}\),
@@ -144,7 +174,6 @@ interface
 !*******************************************************************************
 
 !*******************************************************************************
-!>
 !  Generate a Graphviz digraph structure for the DAG and write it to a file.
 
     module subroutine dag_save_digraph(me,filename,rankdir,dpi)
