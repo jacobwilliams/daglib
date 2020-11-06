@@ -1,0 +1,24 @@
+name = "dag"
+version = "1.0.0"
+license = "BSD"
+author = ["Damian Rouson", "Robert Singleterry", "Brad Richardson"]
+maintainer = "damian@sourceryinstitute.org"
+copyright = "2020 Sourcery Institute"
+
+[dependencies]
+jsonff = {git = "https://gitlab.com/everythingfunctional/jsonff"}
+
+[[test]]
+name="jacobExample"
+source-dir="tests/integration/jacob-example"
+main="test-jacob-example.f90"
+
+[[test]]
+name="multipleIndependents"
+source-dir="tests/integration/multiple-independents"
+main="test-multiple-independents.f90"
+
+[[test]]
+name="inputOutput"
+source-dir="tests/unit/input-output"
+main="test-input-output.f90"

@@ -25,6 +25,6 @@ program dag_input
   end block
 
   sync all
-  if (this_image()==1) print *,"Test passed."
+  if (this_image()==1) print *,"Test passed: input-output"
 
 end program dag_input

@@ -67,6 +67,6 @@ program dag_example
     end if
 
     sync all
-    if (this_image()==1) print *,"Test passed."
+    if (this_image()==1) print *,"Test passed: jacob-example"
 end program dag_example
 !*******************************************************************************
