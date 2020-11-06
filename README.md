@@ -11,7 +11,7 @@ might work also.
 
 1. A Fortran 2018 compiler (Recommended: [gfortran] 10 or later).
 2. [OpenCoarrays]  (Recommended: 2.9.0 or later)
-3. [fpm]  (downstream of commit [a07bf3])
+3. [fpm]  (Recommended: commit [3276af])
 
 Building and testing
 --------------------
@@ -47,4 +47,4 @@ This library is released under a [BSD-3 license].
 [gfortran]: https://gcc.gnu.org
 [BSD-3 license]: https://github.com/sourceryinstitute/dag/blob/master/LICENSE
 [fpm]: https://github.com/everythingfunctional/fpm
-[a07bf3]: https://github.com/everythingfunctional/fpm/commit/a07bf3fb3fc07a2c3bf13f8c36a158108a38cefa
+[3276af]: https://github.com/everythingfunctional/fpm/commit/3276af2e000d1b2c90f151148cd01cce0d3e886d
