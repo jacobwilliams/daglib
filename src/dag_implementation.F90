@@ -227,10 +227,10 @@ contains
 
   end function integer_to_string
 
-  module procedure input
+  module procedure read_formatted
     !! Read a dag from a JSON file
 
-    error stop "dag%input unimplemented"
+    error stop "dag%read_formatted unimplemented"
   end procedure
 
   module procedure write_formatted
@@ -238,9 +238,9 @@ contains
 
     write(unit,*) '{ "dag" : { "vertices" : [ '
 
-    associate(num_vertices=>size(this%vertices))
+    associate(num_vertices=>size(me%vertices))
       do i=1, num_vertices
-        write(unit,*) this%vertices(i), trim(merge(",", " ", i/=num_vertices))
+        write(unit,*) me%vertices(i), trim(merge(",", " ", i/=num_vertices))
       end do
     end associate
 
