@@ -10,26 +10,17 @@ The recommended versions below are the versions used in developing dag.  Earlier
 might work also.
 
 1. A Fortran 2018 compiler (Recommended: [gfortran] 10 or later).
-2. [OpenCoarrays]  (Recommended: 2.8.0 or later)
-3. [CMake]  (Recommended: 3.17 or later)
+2. [OpenCoarrays]  (Recommended: 2.9.0 or later)
+3. [fpm]  (downstream of commit [a07bf3])
 
 Building and testing
 --------------------
-### Serial builds
-Replace caf with gfortran in the parallel build instructions below.
-
-### Parallel builds
 To clone, build, and test, execute the following in a `bash` shell:
 ```
-git clone https://github.com/sourceryinstitute/dag
-mkdir -p dag/build
-cd dag/build
-export FC=caf
-cmake .. -DCMAKE_PREFIX_PATH=<insert-gFTL-gFTL-shared-yaFyaml-installation-root-directory-here>
-ctest
+git clone git@github.com:sourceryinstitute/dag
+fpm build --compiler caf
+fpm test --compiler caf --runner cafrun
 ```
-or the corresponding commands for other shells.
-
 Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams], from which
 the current repository was forked.
 
@@ -55,3 +46,5 @@ This library is released under a [BSD-3 license].
 [CMake]: https://www.cmake.org
 [gfortran]: https://gcc.gnu.org
 [BSD-3 license]: https://github.com/sourceryinstitute/dag/blob/master/LICENSE
+[fpm]: https://github.com/everythingfunctional/fpm
+[a07bf3]: https://github.com/everythingfunctional/fpm/commit/a07bf3fb3fc07a2c3bf13f8c36a158108a38cefa
