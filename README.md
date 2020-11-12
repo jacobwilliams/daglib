@@ -6,23 +6,26 @@ It includes a topological sort feature, and it generates files in the [GraphViz]
 
 Prerequisites
 -------------
-The recommended versions below are the versions used in developing dag.  Earlier versions
-might work also.
+DAG was developed with the following prerequisite package versions:
 
-1. A Fortran 2018 compiler (Recommended: [gfortran] 10 or later).
-2. [OpenCoarrays]  (Recommended: 2.9.0 or later)
-3. [fpm]  (Recommended: commit [3276af])
+1. [gfortran] 10.2.0
+2. [OpenCoarrays]  2.8.0-46-g5853542
+3. [fpm]   commit [3276af]
+4. [graphviz] 2.44.1
+
+Earlier versions might work also.
 
 Building and testing
 --------------------
 To clone, build, and test, execute the following in a `bash` shell:
 ```
 git clone git@github.com:sourceryinstitute/dag
-fpm build --compiler caf
 fpm test --compiler caf --runner "cafrun -n 1"
 ```
 replacing `1` in the last line with the desired number of images to execute in parallel for
-each test.  Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams],
+each test.  Please report any test failures by submitting an [issue] on the DAG repository.
+
+Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams],
 from which the current repository was forked.
 
 Example
@@ -30,9 +33,9 @@ Example
 
 The [jacob-example] test provides a short example of the use of dag, including checks
 
-for the expected results.  That test also writes the following image to a `.png` file:
+for the expected results.  That test also writes the following image to a `.pdf` file:
 
-<img src="https://raw.githubusercontent.com/sourceryinstitute/dag/master/media/dag_example.png" width="500">
+<img src="https://user-images.githubusercontent.com/13108868/99005591-f0c59480-24f5-11eb-96a3-c5416f197360.png" width="500">
 
 License
 -------
