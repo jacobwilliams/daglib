@@ -19,10 +19,11 @@ To clone, build, and test, execute the following in a `bash` shell:
 ```
 git clone git@github.com:sourceryinstitute/dag
 fpm build --compiler caf
-fpm test --compiler caf --runner cafrun
+fpm test --compiler caf --runner "cafrun -n 1"
 ```
-Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams], from which
-the current repository was forked.
+replacing `1` in the last line with the desired number of images to execute in parallel for
+each test.  Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams],
+from which the current repository was forked.
 
 Example
 -------
