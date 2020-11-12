@@ -14,7 +14,7 @@ jobs:
 
     - name: Install GFortran and OpenCoarrays
       run: |
-        sudo apt install -y gfortran-10 open-coarrays-bin mpich
+        sudo apt install -y gfortran-10 open-coarrays-bin libopenmpi-dev
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-10 \
         --slave /usr/bingcov gcov /usr/bin/gcov-10
