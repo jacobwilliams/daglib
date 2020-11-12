@@ -1,0 +1,50 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Install GFortran and OpenCoarrays
+      run: |
+        sudo apt install -y gfortran-10 open-coarrays-bin libopenmpi-dev graphviz
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 \
+        --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-10 \
+        --slave /usr/bingcov gcov /usr/bin/gcov-10
+
+    - name: Get Time
+      id: time
+      uses: nanzm/get-time-action@v1.0
+      with:
+        format: 'YYYY-MM'
+
+    - name: Setup cache for stack to speed up fpm build
+      id: cache
+      uses: actions/cache@v2
+      with:
+        path: "/home/runner/.stack/"
+        key: ${{ steps.time.outputs.time }}
+
+    - name: Install fpm
+      run: |
+        git init fpm
+        git -C fpm fetch https://github.com/fortran-lang/fpm.git ffd95a4179276d49fd4d2a277c2eba905dc43b7a
+        git -C fpm checkout -qf FETCH_HEAD
+        cd fpm/bootstrap
+        stack build
+        stack install
+
+    - name: put fpm to PATH
+      run: |
+          sudo cp /home/runner/.local/bin/fpm /usr/local/bin
+
+    - name: Build and test
+      run: |
+        fpm test --compiler caf --runner "cafrun -n 1"
