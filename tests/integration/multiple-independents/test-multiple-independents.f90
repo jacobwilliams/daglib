@@ -47,8 +47,8 @@ program multiple_independents
   do i = 1, n_nodes
     call d%set_vertex_info(i, attributes = merge(gray_square, silk_circle, any(i==[1,2,12,13,14])))
   end do
-  call d%save_digraph('test2.dot','RL',300) ! TODO: verify internal generate_diagraph result against expected result
-  call execute_command_line('dot -T'//filetype//' -o test2.'//filetype//' test2.dot')
+  call d%save_digraph('output/multiple-indepenendts.dot','RL',300) ! TODO: verify internal generate_diagraph result against expected result
+  call execute_command_line('dot -T'//filetype//' -o output/multiple-indepenendts.'//filetype//' output/multiple-indepenendts.dot')
 
   call d%generate_dependency_matrix(mat)
 

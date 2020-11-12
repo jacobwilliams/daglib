@@ -20,7 +20,7 @@ program dag_input_output
     integer, parameter :: success = 0
     character(len=128) :: error_message
 
-    open(newunit=file_unit, file="dag-output.json", status="unknown", iostat=io_status, iomsg=error_message)
+    open(newunit=file_unit, file="output/dag-output.json", status="unknown", iostat=io_status, iomsg=error_message)
     call assert(io_status==success, "io_status==0", error_message)
 
     write(file_unit,*) dependency_graph
