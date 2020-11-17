@@ -1,5 +1,5 @@
 program multiple_independents
-  !!  Test topological sort and dependency matrix for a DAG with multiple independent nodes.
+!!  Test topological sort and dependency matrix for a DAG with multiple independent nodes.
   use iso_fortran_env, only : error_unit
   use dag_interface, only : dag
   implicit none
@@ -47,7 +47,8 @@ program multiple_independents
   do i = 1, n_nodes
     call d%set_vertex_info(i, attributes = merge(gray_square, silk_circle, any(i==[1,2,12,13,14])))
   end do
-  call d%save_digraph('test2.dot','RL',300) ! TODO: verify internal generate_diagraph result against expected result
+! TODO: verify internal generate_diagraph result against expected result
+  call d%save_digraph('test2.dot','RL',300)
   call execute_command_line('dot -T'//filetype//' -o test2.'//filetype//' test2.dot')
 
   call d%generate_dependency_matrix(mat)
@@ -59,6 +60,8 @@ program multiple_independents
     end do
     error stop
   end if
+
+! TODO: test get_edges() and get%dependencies()
 
   sync all
   if (this_image()==1) print *,"Test passed: multiple_independents"

@@ -1,16 +1,19 @@
-!*******************************************************************************
-!>
-!  DAG Module.
-
-    module vertex_interface
+module vertex_interface
 
     implicit none
 
     private
+
     public :: vertex
 
     type :: vertex
-        !! a vertex of a directed acyclic graph (DAG)
+!! author: Jacob Williams, Damian Rouson, Robert Singleterry, Brad Richardson
+!! version: v1.0
+!! date: 2020-Nov-30
+!! license: Copyright (c) 2020, Sourcery Institute, BSD 3-clause license Copyright (c) 2018 Jacob Williams
+!!<hr />
+!! Vertex Module
+!!<hr />
         private
 #ifdef __GFORTRAN__
         integer, public, allocatable :: edges(:) !! vertices on which this vertex depends

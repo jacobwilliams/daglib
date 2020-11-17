@@ -32,4 +32,7 @@
 build
 lib
 bin
-html
+doc/html
+
+# FORD Documentation
+*.s
