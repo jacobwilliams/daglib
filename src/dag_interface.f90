@@ -25,6 +25,14 @@ module dag_interface
 !!   - vertex: a task to be performed number as label
 !!   - edge: incoming and outgoing dependences on that task to other task numbers
 !!
+!! A GCC bug exists from vertex_interface/vertex_implementation which effects these modules:
+!!
+!!   - dag_get_edges
+!!   - dag_get_dependencies
+!!   - dag_toposort/dfs
+!!   - dag_generate_digraph
+!!   - dag_generate_dependency_matrix
+!!
 !!<hr />
 !! Public DAG Interfaces:
 !!
@@ -94,6 +102,7 @@ module dag_interface
 !!
 !!    call d%set_vertices(n_nodes)     ! set the number of nodes
 !!
+!!    call d%set_edges( 1,[2,3])       !  1 depends on  2 and 3
 !!    call d%set_edges( 2,[integer::]) !  2 depends on nothing
 !!    call d%set_edges( 3,[integer::]) !  3 depends on nothing
 !!    call d%set_edges( 4,[3])         !  4 depends on  3
@@ -108,7 +117,7 @@ module dag_interface
 !!    call d%set_edges(13,[10])        ! 13 depends on 10
 !!    call d%set_edges(14,[11])        ! 14 depends on 11
 !!
-!!    call d%toposort(order,istat)     ! perform the sort
+!!    call d%toposort(order,istat)     ! perform the sort, istat = 0, no errors ; istat = 1, circular
 !!
 !!<hr />
 !! Call order to create a digraph:
@@ -158,10 +167,10 @@ module dag_interface
         procedure,public  :: get_edges                  => dag_get_edges
         procedure,public  :: get_dependencies           => dag_get_dependencies
 
-        procedure,public  :: read_formatted
-        generic :: read(formatted) => read_formatted
-        procedure,public :: write_formatted
-        generic :: write(formatted) => write_formatted
+        procedure,private :: read_formatted
+        generic,  public  :: read(formatted) => read_formatted
+        procedure,private :: write_formatted
+        generic,  public  :: write(formatted) => write_formatted
     end type dag
 
     interface
@@ -239,7 +248,7 @@ module dag_interface
          integer, intent(in) :: vlist(:)
          integer, intent(out) :: iostat
          character (len=*), intent(inout) :: iomsg
-       end subroutine
+       end subroutine read_formated
 !*******************************************************************************
        module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
          class(dag), intent(in) :: me
@@ -248,7 +257,7 @@ module dag_interface
          integer, intent(in) :: vlist(:)
          integer, intent(out) :: iostat
          character (len=*), intent(inout) :: iomsg
-       end subroutine
+       end subroutine write_formatted
 !*******************************************************************************
 
     end interface

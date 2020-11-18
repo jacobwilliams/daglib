@@ -249,6 +249,7 @@ contains
   end function integer_to_string
  
 !*******************************************************************************
+
   module procedure read_formatted
 
     error stop "dag%read_formatted unimplemented"
