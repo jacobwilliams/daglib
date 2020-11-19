@@ -1,12 +1,22 @@
 module dag_input_output_test
   !!  Test DAG input/output.
   implicit none
+  private
 
+  public :: test_dag_input_output
 contains
+  function test_dag_input_output() result(tests)
+    use vegetables_m, only: TestItem_t, describe, it
+
+    type(TestItem_t) :: tests
+
+    tests = describe("a dependency graph", &
+        [it("can be written to a file", check_input_output)])
+  end function
 
   function check_input_output() result(io_result)
     use dag_interface, only : dag
-    use vegetables, only : result_t, succeed
+    use vegetables_m, only : result_t, assertEquals
 
     type(result_t) io_result
     type(dag) :: dependency_graph
@@ -28,7 +38,7 @@ contains
       if (this_image()==1) then
 
         open(newunit=file_unit, file="output/dag-output.json", status="unknown", iostat=io_status, iomsg=error_message)
-        io_result = asertEquals(io_status,0)
+        io_result = assertEquals(io_status,0, "opening the file was successful", "openning the file failed")
 
         write(file_unit,*) dependency_graph
         close(file_unit)

@@ -24,4 +24,4 @@ main="test-multiple-independents.f90"
 [[test]]
 name="inputOutput"
 source-dir="tests/unit/input-output"
-main="test-input-output.f90"
+main="main.f90"

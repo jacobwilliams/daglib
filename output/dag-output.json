@@ -1,0 +1,1 @@
+  { "dag" : { "vertices" : [  { "edges" : [] } , { "edges" : [1] } , { "edges" : [5,1] } , { "edges" : [5] } , { "edges" : [2] } , { "edges" : [2,4] }  ] } }
