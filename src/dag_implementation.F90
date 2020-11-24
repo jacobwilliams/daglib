@@ -1,8 +1,12 @@
 submodule(dag_interface) dag_implementation
+
   use assert_interface, only : assert
+
   implicit none
 
 contains
+
+!*******************************************************************************
 
   module procedure dag_get_edges
 
@@ -11,9 +15,11 @@ contains
 
   end procedure
 
+!*******************************************************************************
+
   module procedure dag_get_dependencies
 
-    integer :: i !! vertex counter
+    integer :: i
 
     call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_dependencies: index in bounds")
 
@@ -27,6 +33,8 @@ contains
 
   end procedure
 
+!*******************************************************************************
+
   module procedure dag_set_vertices
 
     integer :: i
@@ -36,12 +44,13 @@ contains
 
   end procedure
 
+!*******************************************************************************
+
   module procedure dag_set_vertex_info
 
     if (present(label)) then
         call me%vertices(ivertex)%set_label(label)
     else
-        ! just use the vertex number
         call me%vertices(ivertex)%set_label(integer_to_string(ivertex))
     end if
 
@@ -49,11 +58,15 @@ contains
 
   end procedure
 
+!*******************************************************************************
+
   module procedure dag_set_edges
 
     call me%vertices(ivertex)%set_edges(edges)
 
   end procedure
+
+!*******************************************************************************
 
   module procedure dag_toposort
 
@@ -80,9 +93,9 @@ contains
     end procedure ! work around ford documentation generator bug
 #endif
 
-    recursive subroutine dfs(v)
+!*******************************************************************************
 
-        !! depth-first graph traversal
+    recursive subroutine dfs(v)
 
       type(vertex),intent(inout) :: v
       integer :: j
@@ -116,14 +129,16 @@ contains
   end procedure dag_toposort
 #endif
 
+!*******************************************************************************
+
   module procedure dag_generate_digraph
 
-    integer :: i,j     !! counter
-    integer :: n_edges !! number of edges
+    integer :: i,j
+    integer :: n_edges
     character(len=:),allocatable :: attributes, label
 
-    character(len=*),parameter :: tab = '  '               !! for indenting
-    character(len=*),parameter :: newline = new_line(' ')  !! line break character
+    character(len=*),parameter :: tab = '  '
+    character(len=*),parameter :: newline = new_line(' ')
 
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
@@ -170,9 +185,11 @@ contains
 
   end procedure dag_generate_digraph
 
+!*******************************************************************************
+
   module procedure dag_generate_dependency_matrix
 
-    integer :: i !! vertex counter
+    integer :: i
 
     associate(num_vertices => size(me%vertices))
       if (num_vertices > 0) then
@@ -190,6 +207,8 @@ contains
     end associate
 
   end procedure
+
+!*******************************************************************************
 
   module procedure dag_save_digraph
 
@@ -210,6 +229,8 @@ contains
 
   end procedure
 
+!*******************************************************************************
+
   pure function integer_to_string(i) result(s)
 
     integer,intent(in) :: i
@@ -226,14 +247,19 @@ contains
     end if
 
   end function integer_to_string
+ 
+!*******************************************************************************
 
   module procedure read_formatted
-    !! Read a dag from a JSON file
 
     error stop "dag%read_formatted unimplemented"
+
   end procedure
 
+!*******************************************************************************
+
   module procedure write_formatted
+
     integer i
 
     write(unit,*) '{ "dag" : { "vertices" : [ '
@@ -245,6 +271,9 @@ contains
     end associate
 
     write(unit,*) '] } }'
+
   end procedure
+
+!*******************************************************************************
 
 end submodule dag_implementation
