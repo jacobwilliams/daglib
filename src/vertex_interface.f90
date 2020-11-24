@@ -228,7 +228,7 @@ module vertex_interface
          character (len=*), intent(inout) :: iomsg
        end subroutine read_formatted
 !*******************************************************************************
-       module subroutine write_formatted(tme, unit, iotype, vlist, iostat, iomsg)
+       module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
          class(vertex), intent(in) :: me
          integer, intent(in) :: unit
          character (len=*), intent(in) :: iotype
