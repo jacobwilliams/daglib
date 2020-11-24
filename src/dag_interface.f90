@@ -248,7 +248,7 @@ module dag_interface
          integer, intent(in) :: vlist(:)
          integer, intent(out) :: iostat
          character (len=*), intent(inout) :: iomsg
-       end subroutine read_formated
+       end subroutine
 !*******************************************************************************
        module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
          class(dag), intent(in) :: me
