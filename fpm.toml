@@ -8,6 +8,9 @@ copyright = "2020 Sourcery Institute"
 [dependencies]
 jsonff = {git = "https://gitlab.com/everythingfunctional/jsonff", tag = "v1.2.0"}
 
+[dev-dependencies]
+vegetables = {git = "https://gitlab.com/everythingfunctional/vegetables", tag = "v5.1.1"}
+
 [[test]]
 name="jacobExample"
 source-dir="tests/integration/jacob-example"
@@ -21,4 +24,4 @@ main="test-multiple-independents.f90"
 [[test]]
 name="inputOutput"
 source-dir="tests/unit/input-output"
-main="test-input-output.f90"
+main="main.f90"
