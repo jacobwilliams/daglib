@@ -6,7 +6,7 @@ maintainer = "damian@sourceryinstitute.org"
 copyright = "2020 Sourcery Institute"
 
 [dependencies]
-jsonff = {git = "https://gitlab.com/everythingfunctional/jsonff"}
+jsonff = {git = "https://gitlab.com/everythingfunctional/jsonff", tag = "v1.2.0"}
 
 [[test]]
 name="jacobExample"

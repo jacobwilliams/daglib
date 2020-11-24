@@ -54,8 +54,8 @@ program dag_example
     do i = 1, n_nodes
       call d%set_vertex_info(i, attributes = merge(gray_square, silk_circle, any(i==[3,6])))
     end do
-    call d%save_digraph('test.dot','RL',300) ! TODO: verify internal generate_diagraph result against expected result
-    call execute_command_line('dot -T'//filetype//' -o test.'//filetype//' test.dot')
+    call d%save_digraph('output/jacob-example.dot','RL',300) ! TODO: verify internal generate_diagraph result against expected result
+    call execute_command_line('dot -T'//filetype//' -o output/jacob-example.'//filetype//' output/jacob-example.dot')
 
     call d%generate_dependency_matrix(mat)
     if (any(mat .neqv. expected_mat)) then

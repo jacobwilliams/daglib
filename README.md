@@ -6,41 +6,36 @@ It includes a topological sort feature, and it generates files in the [GraphViz]
 
 Prerequisites
 -------------
-The recommended versions below are the versions used in developing dag.  Earlier versions
-might work also.
+DAG was developed with the following prerequisite package versions:
 
-1. A Fortran 2018 compiler (Recommended: [gfortran] 10 or later).
-2. [OpenCoarrays]  (Recommended: 2.8.0 or later)
-3. [CMake]  (Recommended: 3.17 or later)
+1. [gfortran] 10.2.0
+2. [OpenCoarrays]  2.8.0-46-g5853542
+3. [fpm]   commit [3276af]
+4. [graphviz] 2.44.1
+
+Earlier versions might work also.
 
 Building and testing
 --------------------
-### Serial builds
-Replace caf with gfortran in the parallel build instructions below.
-
-### Parallel builds
 To clone, build, and test, execute the following in a `bash` shell:
 ```
-git clone https://github.com/sourceryinstitute/dag
-mkdir -p dag/build
-cd dag/build
-export FC=caf
-cmake .. -DCMAKE_PREFIX_PATH=<insert-gFTL-gFTL-shared-yaFyaml-installation-root-directory-here>
-ctest
+git clone git@github.com:sourceryinstitute/dag
+fpm test --compiler caf --runner "cafrun -n 1"
 ```
-or the corresponding commands for other shells.
+replacing `1` in the last line with the desired number of images to execute in parallel for
+each test.  Please report any test failures by submitting an [issue] on the DAG repository.
 
-Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams], from which
-the current repository was forked.
+Users who prefer a [FoBiS] build system, please see [daglib by Jacob Williams],
+from which the current repository was forked.
 
 Example
 -------
 
 The [jacob-example] test provides a short example of the use of dag, including checks
 
-for the expected results.  That test also writes the following image to a `.png` file:
+for the expected results.  That test also writes the following image to a `.pdf` file:
 
-<img src="https://raw.githubusercontent.com/sourceryinstitute/dag/master/media/dag_example.png" width="500">
+<img src="https://user-images.githubusercontent.com/13108868/99005591-f0c59480-24f5-11eb-96a3-c5416f197360.png" width="500">
 
 License
 -------
@@ -55,3 +50,5 @@ This library is released under a [BSD-3 license].
 [CMake]: https://www.cmake.org
 [gfortran]: https://gcc.gnu.org
 [BSD-3 license]: https://github.com/sourceryinstitute/dag/blob/master/LICENSE
+[fpm]: https://github.com/everythingfunctional/fpm
+[3276af]: https://github.com/everythingfunctional/fpm/commit/3276af2e000d1b2c90f151148cd01cce0d3e886d
