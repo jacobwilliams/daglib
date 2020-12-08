@@ -1,6 +1,6 @@
 submodule(dag_interface) dag_implementation
 
-  use assert_interface, only : assert
+  use assertions_interface, only : assert
 
   implicit none
 
@@ -247,7 +247,7 @@ contains
     end if
 
   end function integer_to_string
- 
+
 !*******************************************************************************
 
   module procedure read_formatted
