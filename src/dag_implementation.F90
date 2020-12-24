@@ -167,13 +167,16 @@ contains
         character(len=max_iomsg_len) io_message
         type(JsonObject_t) :: me_json
 
-        open(newunit=unit, file='dag_generate_diagraph-test-data.json', status= 'REPLACE', iostat=io_status, iomsg=io_message)
+        open( &
+            newunit = unit, &
+            file = 'output/dag_generate_diagraph-test-data.json', &
+            status = 'REPLACE', &
+            iostat = io_status, &
+            iomsg = io_message)
         call assert(io_status==success, "dag%dag_generate_digraph: io_status==success", io_message)
 
-
-
         me_json = me%to_json()
-        call put(me_json%toExpandedString())
+        call put(unit, me_json%toExpandedString())
 
         !write(unit,*) '{ "dag_generate_digraph" : "str" : "'    , trim(adjustl(str)),     '"'
         !if (present(rankdir)) write(unit,*)   ',  "rankdir" : "', trim(adjustl(rankdir)), '"'
