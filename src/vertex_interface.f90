@@ -128,6 +128,10 @@ module vertex_interface
         generic,   public  :: write(formatted) => write_formatted
     end type vertex
 
+    interface vertex
+      procedure from_json
+    end interface
+
     interface
 
 !*******************************************************************************
@@ -141,6 +145,12 @@ module vertex_interface
          implicit none
          class(vertex), intent(in) :: me
          type(JsonObject_t) :: me_json
+       end function
+!*******************************************************************************
+       pure module function from_json(me_json) result(me)
+         implicit none
+         type(JsonObject_t), intent(in) :: me_json
+         type(vertex) :: me
        end function
 !*******************************************************************************
        module subroutine add_edge(me,edge)

@@ -174,6 +174,10 @@ module dag_interface
         generic,  public  :: write(formatted) => write_formatted
     end type dag
 
+    interface dag
+      procedure from_json
+    end interface
+
     interface
 
 !*******************************************************************************
@@ -181,6 +185,12 @@ module dag_interface
          implicit none
          class(dag), intent(in) :: me
          type(JsonObject_t) :: me_json
+       end function
+!*******************************************************************************
+       pure module function from_json(me_json) result(me)
+         implicit none
+         type(JsonObject_t) :: me_json
+         type(dag), intent(out) :: me
        end function
 !*******************************************************************************
        pure module function dag_get_edges(me,ivertex) result(edges)

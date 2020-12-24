@@ -1,8 +1,10 @@
 submodule(dag_interface) dag_implementation
   use assertions_interface, only : assert
-  use jsonff, only : JsonArray_t, JsonObject_t, JsonString, JsonString_t
+  use jsonff, only : &
+      JsonArray_t, JsonElement_t, JsonObject_t, JsonString, JsonString_t, parseJson
   use erloff, only : ErrorList_t
-  use iso_varying_string, only : char, put
+  use iso_fortran_env, only: iostat_end
+  use iso_varying_string, only : varying_string, char, get, put
 
   implicit none
 
@@ -23,6 +25,32 @@ contains
      call JsonString("vertices", errors, vertices_key)
      call assert(.not. errors%hasany(), "dag%to_json: .not. errors%hasany()", char(errors%toString()))
      call me_json%add(vertices_key, vertices_value)
+   end procedure
+
+   module procedure dag_from_json
+     type(ErrorList_t) :: errors
+     integer :: i
+     type(JsonElement_t) :: vertices_element
+
+     call me_json%getElement("vertices", errors, vertices_element)
+     call assert(.not. errors%hasany(), "dag%from_json: .not. errors%hasany()", char(errors%toString()))
+     select type (vertices => vertices_element%element)
+     type is (JsonArray_t)
+       call me%set_vertices(vertices%length())
+       do i = 1, vertices%length()
+         call vertices%getElement(i, errors, vertex_element)
+         call assert(.not. errors%hasany(), "dag%from_json: .not. errors%hasany()", char(errors%toString()))
+         select type (vertex_json => vertex_element)
+         type is (JsonObject_t)
+           dag_vertex = vertex(vertex_json)
+           me%set_edges(i, dag_vertex%edges)
+         class default
+           call assert(.false., "dag%from_json: vertex was not an object", char(vertex%toCompactString()))
+         end select
+       end do
+     class default
+       call assert(.false., "dag%from_json: vertices was not an array", char(vertices%toCompactString()))
+     end select
    end procedure
 
 !*******************************************************************************
@@ -296,6 +324,31 @@ contains
 !*******************************************************************************
 
   module procedure read_formatted
+
+    character(len=*), parameter :: NEWLINE = NEW_LINE('A')
+    type(varying_string) :: contents
+    type(ErrorList_t) :: errors
+    type(JsonElement_t) :: json
+    type(varying_string) :: tmp
+
+    call get(unit, contents, iostat = iostat)
+    if (iostat == iostat_end) return
+    do
+      call get(file_unit, tmp, iostat = iostat)
+      if (iostat == iostat_end) exit
+      contents = contents // NEWLINE // tmp
+    end do
+
+    call parseJson(contents, errors, json)
+    call assert(.not. errors%hasany(), "dag%read_formatted: .not. errors%hasany()", char(errors%toString()))
+
+    select type (object => json%element)
+    type is (JsonObject_t)
+      me = from_json(object)
+      ! call assert(me%defined(), me%error_message)
+    class default
+      call assert(.false., "dag%read_formatted: didn't get a json object")
+    end select
 
     error stop "dag%read_formatted unimplemented"
 
