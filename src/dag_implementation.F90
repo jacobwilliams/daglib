@@ -165,7 +165,6 @@ contains
         integer unit, io_status
         integer, parameter :: success=0, max_iomsg_len=128
         character(len=max_iomsg_len) io_message
-        type(JsonObject_t) :: me_json
 
         open( &
             newunit = unit, &
@@ -175,8 +174,7 @@ contains
             iomsg = io_message)
         call assert(io_status==success, "dag%dag_generate_digraph: io_status==success", io_message)
 
-        me_json = me%to_json()
-        call put(unit, me_json%toExpandedString())
+        write(unit, *) me
 
         !write(unit,*) '{ "dag_generate_digraph" : "str" : "'    , trim(adjustl(str)),     '"'
         !if (present(rankdir)) write(unit,*)   ',  "rankdir" : "', trim(adjustl(rankdir)), '"'
@@ -307,17 +305,10 @@ contains
 
   module procedure write_formatted
 
-    integer i
+    type(JsonObject_t) :: me_json
 
-    write(unit,*) '{ "dag" : { "vertices" : [ '
-
-    associate(num_vertices=>size(me%vertices))
-      do i=1, num_vertices
-        write(unit,*) me%vertices(i), trim(merge(",", " ", i/=num_vertices))
-      end do
-    end associate
-
-    write(unit,*) '] } }'
+    me_json = me%to_json()
+    write(unit,*) char(me_json%toExpandedString())
 
   end procedure
 
