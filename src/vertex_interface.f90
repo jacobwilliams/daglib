@@ -1,4 +1,5 @@
 module vertex_interface
+    use jsonff, only : JsonObject_t
 
     implicit none
 
@@ -110,6 +111,7 @@ module vertex_interface
         logical                       :: checking = .false., marked = .false.
         character(len=:), allocatable :: label, attributes
     contains
+        procedure, public  :: to_json
         procedure, private ::              set_edge_vector, add_edge
         generic,   public  :: set_edges => set_edge_vector, add_edge
         procedure, public  :: get_edges
@@ -134,6 +136,12 @@ module vertex_interface
          class(vertex),intent(inout)     :: me
          integer,dimension(:),intent(in) :: edges
        end subroutine set_edge_vector
+!*******************************************************************************
+       pure module function to_json(me) result(me_json)
+         implicit none
+         class(vertex), intent(in) :: me
+         type(JsonObject_t) :: me_json
+       end function
 !*******************************************************************************
        module subroutine add_edge(me,edge)
          implicit none

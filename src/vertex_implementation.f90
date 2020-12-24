@@ -1,9 +1,27 @@
 submodule(vertex_interface) vertex_implementation
-
+  use jsonff, only : JsonArray_t, JsonNumber_t, JsonNumber, JsonArray, JsonString_t, JsonString, JsonElement
+  use erloff, only : ErrorList_t
+  use iso_varying_string, only : char
+  use iso_fortran_env, only : real64
+  use assertions_interface, only : assert
   implicit none
 
 contains
 
+!*******************************************************************************
+  module procedure to_json
+    integer i
+    type(JsonString_t) :: edges_key
+    type(JsonArray_t) :: edges_value
+    type(ErrorList_t) :: errors
+
+    do i= lbound(me%edges, 1), ubound(me%edges, 1)
+      call edges_value%append(JsonNumber(real(me%edges(i), real64)))
+    end do
+    call JsonString("edges", errors, edges_key)
+    call assert(.not. errors%hasany(), "vertex%to_json: .not. errors%hasany()", char(errors%toString()))
+    call me_json%add(edges_key, edges_value)
+  end procedure
 !*******************************************************************************
 
   module procedure set_edge_vector

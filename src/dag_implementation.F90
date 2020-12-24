@@ -1,10 +1,29 @@
 submodule(dag_interface) dag_implementation
-
   use assertions_interface, only : assert
+  use jsonff, only : JsonArray_t, JsonObject_t, JsonString, JsonString_t
+  use erloff, only : ErrorList_t
+  use iso_varying_string, only : char, put
 
   implicit none
 
 contains
+
+!*******************************************************************************
+
+   module procedure to_json
+     type(JsonString_t) vertices_key
+     type(JsonArray_t) vertices_value
+     type(ErrorList_t) errors
+     integer i
+
+     do i=1, size(me%vertices)
+       call vertices_value%append(me%vertices(i)%to_json())
+     end do
+
+     call JsonString("vertices", errors, vertices_key)
+     call assert(.not. errors%hasany(), "dag%to_json: .not. errors%hasany()", char(errors%toString()))
+     call me_json%add(vertices_key, vertices_value)
+   end procedure
 
 !*******************************************************************************
 
@@ -139,6 +158,31 @@ contains
 
     character(len=*),parameter :: tab = '  '
     character(len=*),parameter :: newline = new_line(' ')
+    logical, parameter :: capture_test_data = .true.
+
+    if (capture_test_data) then
+      block
+        integer unit, io_status
+        integer, parameter :: success=0, max_iomsg_len=128
+        character(len=max_iomsg_len) io_message
+        type(JsonObject_t) :: me_json
+
+        open(newunit=unit, file='dag_generate_diagraph-test-data.json', status= 'REPLACE', iostat=io_status, iomsg=io_message)
+        call assert(io_status==success, "dag%dag_generate_digraph: io_status==success", io_message)
+
+
+
+        me_json = me%to_json()
+        call put(me_json%toExpandedString())
+
+        !write(unit,*) '{ "dag_generate_digraph" : "str" : "'    , trim(adjustl(str)),     '"'
+        !if (present(rankdir)) write(unit,*)   ',  "rankdir" : "', trim(adjustl(rankdir)), '"'
+        !if (present(dpi)) write(unit,*)       ',  "dpi" : '     , dpi
+        !write(unit,*) '}'
+
+        close(unit)
+      end block
+    end if
 
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
