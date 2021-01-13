@@ -16,7 +16,7 @@ contains
 
   function check_input_output() result(io_result)
     use dag_interface, only : dag
-    use vegetables_m, only : result_t, assertEquals
+    use vegetables_m, only : result_t, assertEquals, succeed
 
     type(result_t) io_result
     type(dag) :: dependency_graph
@@ -35,7 +35,9 @@ contains
       integer, parameter :: success = 0
       character(len=128) :: error_message
 
-      if (this_image()==1) then
+      if (this_image()/=1) then
+        io_result = succeed("no writing to do on images other than image 1")
+      else
 
         open(newunit=file_unit, file="output/dag-output.json", status="unknown", iostat=io_status, iomsg=error_message)
         io_result = assertEquals(io_status,0, "opening the file was successful", "openning the file failed")
@@ -43,6 +45,7 @@ contains
         write(file_unit,*) dependency_graph
         close(file_unit)
       end if
+
     end block
 
   end function
