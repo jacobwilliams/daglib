@@ -189,8 +189,8 @@ module dag_interface
 !*******************************************************************************
        pure module function from_json(me_json) result(me)
          implicit none
-         type(JsonObject_t) :: me_json
-         type(dag), intent(out) :: me
+         type(JsonObject_t), intent(in) :: me_json
+         type(dag) :: me
        end function
 !*******************************************************************************
        pure module function dag_get_edges(me,ivertex) result(edges)
