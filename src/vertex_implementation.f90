@@ -1,5 +1,5 @@
 submodule(vertex_interface) vertex_implementation
-  use jsonff, only : JsonArray_t, JsonNumber_t, JsonNumber, JsonArray, JsonString_t, JsonString, JsonElement
+  use jsonff, only : JsonArray_t, JsonElement_t, JsonNumber_t, JsonNumber, JsonArray, JsonString_t, JsonString, JsonElement
   use erloff, only : ErrorList_t
   use iso_varying_string, only : char
   use iso_fortran_env, only : real64
@@ -21,6 +21,32 @@ contains
     call JsonString("edges", errors, edges_key)
     call assert(.not. errors%hasany(), "vertex%to_json: .not. errors%hasany()", char(errors%toString()))
     call me_json%add(edges_key, edges_value)
+  end procedure
+!*******************************************************************************
+  module procedure from_json
+    type(ErrorList_t) :: errors
+    type(JsonElement_t) :: edge_element
+    type(JsonElement_t) :: edges_element
+    integer :: i
+
+    call me_json%getElement("edges", errors, edges_element)
+    call assert(.not. errors%hasany(), "vertex%from_json: .not. errors%hasany()", char(errors%toString()))
+    select type (edges => edges_element%element)
+    type is (JsonArray_t)
+      allocate(me%edges(edges%length()))
+      do i = 1, edges%length()
+        call edges%getElement(i, errors, edge_element)
+        call assert(.not. errors%hasany(), "vertex%from_json: .not. errors%hasany()", char(errors%toString()))
+        select type (edge => edge_element%element)
+        type is (JsonNumber_t)
+          me%edges(i) = int(edge%getValue())
+        class default
+          call assert(.false., "vertex%from_json: edge was not a number", char(edge%toCompactString()))
+        end select
+      end do
+    class default
+      call assert(.false., "vertex%from_json: edges was not an array", char(edges%toCompactString()))
+    end select
   end procedure
 !*******************************************************************************
 

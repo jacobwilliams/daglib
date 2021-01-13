@@ -147,7 +147,7 @@ module vertex_interface
          type(JsonObject_t) :: me_json
        end function
 !*******************************************************************************
-       pure module function from_json(me_json) result(me)
+       module function from_json(me_json) result(me)
          implicit none
          type(JsonObject_t), intent(in) :: me_json
          type(vertex) :: me
