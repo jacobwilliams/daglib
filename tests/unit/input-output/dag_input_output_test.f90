@@ -1,4 +1,7 @@
 module dag_input_output_test
+  use dag_interface, only: dag
+  use vegetables, only: &
+      result_t, test_item_t, assert_equals, describe, it, succeed
   !!  Test DAG input/output.
   implicit none
   private
@@ -6,18 +9,13 @@ module dag_input_output_test
   public :: test_dag_input_output
 contains
   function test_dag_input_output() result(tests)
-    use vegetables_m, only: TestItem_t, describe, it
-
-    type(TestItem_t) :: tests
+    type(test_item_t) :: tests
 
     tests = describe("a dependency graph", &
         [it("can be written to a file", check_input_output)])
   end function
 
   function check_input_output() result(io_result)
-    use dag_interface, only : dag
-    use vegetables_m, only : result_t, assertEquals, succeed
-
     type(result_t) io_result
     type(dag) :: dependency_graph
     integer, parameter :: n_nodes = 6, success=0
@@ -40,7 +38,7 @@ contains
       else
 
         open(newunit=file_unit, file="output/dag-output.json", status="unknown", iostat=io_status, iomsg=error_message)
-        io_result = assertEquals(io_status,0, "opening the file was successful", "openning the file failed")
+        io_result = assert_equals(0, io_status, "opening the file was successful", "openning the file failed")
 
         write(file_unit,*) dependency_graph
         close(file_unit)

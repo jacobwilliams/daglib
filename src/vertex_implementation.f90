@@ -1,6 +1,12 @@
 submodule(vertex_interface) vertex_implementation
-  use jsonff, only : JsonArray_t, JsonElement_t, JsonNumber_t, JsonNumber, JsonArray, JsonString_t, JsonString, JsonElement
-  use erloff, only : ErrorList_t
+  use jsonff, only : &
+      fallible_json_string_t, &
+      fallible_json_value_t, &
+      json_array_t, &
+      json_element_t, &
+      json_number_t, &
+      json_string_t
+  use erloff, only : error_list_t
   use iso_varying_string, only : char
   use iso_fortran_env, only : real64
   use assertions_interface, only : assert
@@ -11,41 +17,48 @@ contains
 !*******************************************************************************
   module procedure to_json
     integer i
-    type(JsonString_t) :: edges_key
-    type(JsonArray_t) :: edges_value
-    type(ErrorList_t) :: errors
+    type(json_string_t) :: edges_key
+    type(json_array_t) :: edges_value
+    type(error_list_t) :: errors
+    type(fallible_json_string_t) :: maybe_key
 
-    do i= lbound(me%edges, 1), ubound(me%edges, 1)
-      call edges_value%append(JsonNumber(real(me%edges(i), real64)))
-    end do
-    call JsonString("edges", errors, edges_key)
-    call assert(.not. errors%hasany(), "vertex%to_json: .not. errors%hasany()", char(errors%toString()))
-    call me_json%add(edges_key, edges_value)
+    if (allocated(me%edges)) then
+      do i = lbound(me%edges, 1), ubound(me%edges, 1)
+        call edges_value%append(json_number_t(real(me%edges(i), real64)))
+      end do
+    end if
+    maybe_key = fallible_json_string_t("edges")
+    errors = maybe_key%errors()
+    call assert(.not. errors%has_any(), "vertex%to_json: .not. errors%has_any()", char(errors%to_string()))
+    edges_key = maybe_key%string()
+    me_json = json_object_t([edges_key], [json_element_t(edges_value)])
   end procedure
 !*******************************************************************************
   module procedure from_json
-    type(ErrorList_t) :: errors
-    type(JsonElement_t) :: edge_element
-    type(JsonElement_t) :: edges_element
+    type(error_list_t) :: errors
+    type(fallible_json_value_t) :: maybe_edge
+    type(fallible_json_value_t) :: maybe_edges
     integer :: i
 
-    call me_json%getElement("edges", errors, edges_element)
-    call assert(.not. errors%hasany(), "vertex%from_json: .not. errors%hasany()", char(errors%toString()))
-    select type (edges => edges_element%element)
-    type is (JsonArray_t)
+    maybe_edges = me_json%get_element("edges")
+    errors = maybe_edges%errors()
+    call assert(.not. errors%has_any(), "vertex%from_json: .not. errors%has_any()", char(errors%to_string()))
+    select type (edges => maybe_edges%value_())
+    type is (json_array_t)
       allocate(me%edges(edges%length()))
       do i = 1, edges%length()
-        call edges%getElement(i, errors, edge_element)
-        call assert(.not. errors%hasany(), "vertex%from_json: .not. errors%hasany()", char(errors%toString()))
-        select type (edge => edge_element%element)
-        type is (JsonNumber_t)
-          me%edges(i) = int(edge%getValue())
+        maybe_edge = edges%get_element(i)
+        errors = maybe_edge%errors()
+        call assert(.not. errors%has_any(), "vertex%from_json: .not. errors%has_any()", char(errors%to_string()))
+        select type (edge => maybe_edge%value_())
+        type is (json_number_t)
+          me%edges(i) = int(edge%get_value())
         class default
-          call assert(.false., "vertex%from_json: edge was not a number", char(edge%toCompactString()))
+          call assert(.false., "vertex%from_json: edge was not a number", char(edge%to_compact_string()))
         end select
       end do
     class default
-      call assert(.false., "vertex%from_json: edges was not an array", char(edges%toCompactString()))
+      call assert(.false., "vertex%from_json: edges was not an array", char(edges%to_compact_string()))
     end select
   end procedure
 !*******************************************************************************

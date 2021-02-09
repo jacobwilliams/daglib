@@ -1,8 +1,13 @@
 submodule(dag_interface) dag_implementation
   use assertions_interface, only : assert
-  use jsonff, only : &
-      JsonArray_t, JsonElement_t, JsonObject_t, JsonString, JsonString_t, parseJson
-  use erloff, only : ErrorList_t
+  use jsonff, only: &
+      fallible_json_string_t, &
+      fallible_json_value_t, &
+      json_array_t, &
+      json_element_t, &
+      json_string_t, &
+      parse_json
+  use erloff, only : error_list_t
   use iso_fortran_env, only: iostat_end
   use iso_varying_string, only : varying_string, operator(//), char, get, put
 
@@ -13,45 +18,48 @@ contains
 !*******************************************************************************
 
    module procedure to_json
-     type(JsonString_t) vertices_key
-     type(JsonArray_t) vertices_value
-     type(ErrorList_t) errors
-     integer i
+     type(error_list_t) :: errors
+     type(fallible_json_string_t) :: maybe_key
+     type(json_string_t) :: vertices_key
+     type(json_array_t) vertices_value
 
-     do i=1, size(me%vertices)
-       call vertices_value%append(me%vertices(i)%to_json())
-     end do
-
-     call JsonString("vertices", errors, vertices_key)
-     call assert(.not. errors%hasany(), "dag%to_json: .not. errors%hasany()", char(errors%toString()))
-     call me_json%add(vertices_key, vertices_value)
+     vertices_value = json_array_t(json_element_t(me%vertices%to_json()))
+     maybe_key = fallible_json_string_t("vertices")
+     errors = maybe_key%errors()
+     call assert(.not. errors%has_any(), "dag%to_json: .not. errors%has_any()", char(errors%to_string()))
+     vertices_key = maybe_key%string()
+     me_json = json_object_t([vertices_key], [json_element_t(vertices_value)])
    end procedure
 
    module procedure from_json
      type(vertex) :: dag_vertex
-     type(ErrorList_t) :: errors
+     type(error_list_t) :: errors
      integer :: i
-     type(JsonElement_t) :: vertex_element
-     type(JsonElement_t) :: vertices_element
+     type(fallible_json_value_t) :: maybe_vertices
+     type(fallible_json_value_t) :: maybe_vertex
+     type(json_element_t) :: vertex_element
+     type(json_element_t) :: vertices_element
 
-     call me_json%getElement("vertices", errors, vertices_element)
-     call assert(.not. errors%hasany(), "dag%from_json: .not. errors%hasany()", char(errors%toString()))
-     select type (vertices => vertices_element%element)
-     type is (JsonArray_t)
+     maybe_vertices = me_json%get_element("vertices")
+     errors = maybe_vertices%errors()
+     call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+     select type (vertices => maybe_vertices%value_())
+     type is (json_array_t)
        call me%set_vertices(vertices%length())
        do i = 1, vertices%length()
-         call vertices%getElement(i, errors, vertex_element)
-         call assert(.not. errors%hasany(), "dag%from_json: .not. errors%hasany()", char(errors%toString()))
-         select type (vertex_json => vertex_element%element)
-         type is (JsonObject_t)
+         maybe_vertex = vertices%get_element(i)
+         errors = maybe_vertex%errors()
+         call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+         select type (vertex_json => maybe_vertex%value_())
+         type is (json_object_t)
            dag_vertex = vertex(vertex_json)
            call me%set_edges(i, dag_vertex%edges)
          class default
-           call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%toCompactString()))
+           call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%to_compact_string()))
          end select
        end do
      class default
-       call assert(.false., "dag%from_json: vertices was not an array", char(vertices%toCompactString()))
+       call assert(.false., "dag%from_json: vertices was not an array", char(vertices%to_compact_string()))
      end select
    end procedure
 
@@ -329,8 +337,8 @@ contains
 
     character(len=*), parameter :: NEWLINE = NEW_LINE('A')
     type(varying_string) :: contents
-    type(ErrorList_t) :: errors
-    type(JsonElement_t) :: json
+    type(error_list_t) :: errors
+    type(fallible_json_value_t) :: maybe_json
     type(dag) :: me_local
     type(varying_string) :: tmp
 
@@ -342,11 +350,12 @@ contains
       contents = contents // NEWLINE // tmp
     end do
 
-    call parseJson(contents, errors, json)
-    call assert(.not. errors%hasany(), "dag%read_formatted: .not. errors%hasany()", char(errors%toString()))
+    maybe_json = parse_json(contents)
+    errors = maybe_json%errors()
+    call assert(.not. errors%has_any(), "dag%read_formatted: .not. errors%has_any()", char(errors%to_string()))
 
-    select type (object => json%element)
-    type is (JsonObject_t)
+    select type (object => maybe_json%value_())
+    type is (json_object_t)
       me_local = from_json(object)
       me%vertices = me_local%vertices
       ! call assert(me%defined(), me%error_message)
@@ -360,10 +369,10 @@ contains
 
   module procedure write_formatted
 
-    type(JsonObject_t) :: me_json
+    type(json_object_t) :: me_json
 
     me_json = me%to_json()
-    write(unit,*) char(me_json%toExpandedString())
+    write(unit,*) char(me_json%to_expanded_string())
 
   end procedure
 

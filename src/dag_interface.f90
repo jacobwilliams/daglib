@@ -1,6 +1,6 @@
 module dag_interface
     use vertex_interface, only : vertex
-    use jsonff, only : JsonObject_t
+    use jsonff, only : json_object_t
 
     implicit none
 
@@ -181,15 +181,15 @@ module dag_interface
     interface
 
 !*******************************************************************************
-       pure module function to_json(me) result(me_json)
+       module function to_json(me) result(me_json)
          implicit none
          class(dag), intent(in) :: me
-         type(JsonObject_t) :: me_json
+         type(json_object_t) :: me_json
        end function
 !*******************************************************************************
        module function from_json(me_json) result(me)
          implicit none
-         type(JsonObject_t), intent(in) :: me_json
+         type(json_object_t), intent(in) :: me_json
          type(dag) :: me
        end function
 !*******************************************************************************
