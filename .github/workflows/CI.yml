@@ -19,7 +19,7 @@ jobs:
         format: 'YYYY-MM'
 
     - name: Setup cache for opencoarrays
-      id: cache
+      id: cache-opencoarrays
       uses: actions/cache@v2
       with:
         path: "OpenCoarrays-2.9.2/"
@@ -34,7 +34,7 @@ jobs:
         if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
 
     - name: Setup cache for stack to speed up fpm build
-      id: cache
+      id: cache-fpm
       uses: actions/cache@v2
       with:
         path: "/home/runner/.stack/"
