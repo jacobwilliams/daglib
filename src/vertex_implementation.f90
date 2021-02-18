@@ -1,9 +1,66 @@
 submodule(vertex_interface) vertex_implementation
-
+  use jsonff, only : &
+      fallible_json_string_t, &
+      fallible_json_value_t, &
+      json_array_t, &
+      json_element_t, &
+      json_number_t, &
+      json_string_t
+  use erloff, only : error_list_t
+  use iso_varying_string, only : char
+  use iso_fortran_env, only : real64
+  use assertions_interface, only : assert
   implicit none
 
 contains
 
+!*******************************************************************************
+  module procedure to_json
+    integer i
+    type(json_string_t) :: edges_key
+    type(json_array_t) :: edges_value
+    type(error_list_t) :: errors
+    type(fallible_json_string_t) :: maybe_key
+
+    if (allocated(me%edges)) then
+      do i = lbound(me%edges, 1), ubound(me%edges, 1)
+        call edges_value%append(json_number_t(real(me%edges(i), real64)))
+      end do
+    end if
+    maybe_key = fallible_json_string_t("edges")
+    errors = maybe_key%errors()
+    call assert(.not. errors%has_any(), "vertex%to_json: .not. errors%has_any()", char(errors%to_string()))
+    edges_key = maybe_key%string()
+    me_json = json_object_t([edges_key], [json_element_t(edges_value)])
+  end procedure
+!*******************************************************************************
+  module procedure from_json
+    type(error_list_t) :: errors
+    type(fallible_json_value_t) :: maybe_edge
+    type(fallible_json_value_t) :: maybe_edges
+    integer :: i
+
+    maybe_edges = me_json%get_element("edges")
+    errors = maybe_edges%errors()
+    call assert(.not. errors%has_any(), "vertex%from_json: .not. errors%has_any()", char(errors%to_string()))
+    select type (edges => maybe_edges%value_())
+    type is (json_array_t)
+      allocate(me%edges(edges%length()))
+      do i = 1, edges%length()
+        maybe_edge = edges%get_element(i)
+        errors = maybe_edge%errors()
+        call assert(.not. errors%has_any(), "vertex%from_json: .not. errors%has_any()", char(errors%to_string()))
+        select type (edge => maybe_edge%value_())
+        type is (json_number_t)
+          me%edges(i) = int(edge%get_value())
+        class default
+          call assert(.false., "vertex%from_json: edge was not a number", char(edge%to_compact_string()))
+        end select
+      end do
+    class default
+      call assert(.false., "vertex%from_json: edges was not an array", char(edges%to_compact_string()))
+    end select
+  end procedure
 !*******************************************************************************
 
   module procedure set_edge_vector

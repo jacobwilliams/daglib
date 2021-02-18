@@ -1,6 +1,6 @@
 module dag_interface
-
     use vertex_interface, only : vertex
+    use jsonff, only : json_object_t
 
     implicit none
 
@@ -156,6 +156,7 @@ module dag_interface
         private
         type(vertex),dimension(:),allocatable :: vertices
     contains
+        procedure,public  :: to_json
         procedure,private :: generate_digraph           => dag_generate_digraph
 
         procedure,public  :: set_vertices               => dag_set_vertices
@@ -173,8 +174,24 @@ module dag_interface
         generic,  public  :: write(formatted) => write_formatted
     end type dag
 
+    interface dag
+      procedure from_json
+    end interface
+
     interface
 
+!*******************************************************************************
+       module function to_json(me) result(me_json)
+         implicit none
+         class(dag), intent(in) :: me
+         type(json_object_t) :: me_json
+       end function
+!*******************************************************************************
+       module function from_json(me_json) result(me)
+         implicit none
+         type(json_object_t), intent(in) :: me_json
+         type(dag) :: me
+       end function
 !*******************************************************************************
        pure module function dag_get_edges(me,ivertex) result(edges)
          implicit none

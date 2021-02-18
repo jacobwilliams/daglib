@@ -1,10 +1,67 @@
 submodule(dag_interface) dag_implementation
-
   use assertions_interface, only : assert
+  use jsonff, only: &
+      fallible_json_string_t, &
+      fallible_json_value_t, &
+      json_array_t, &
+      json_element_t, &
+      json_string_t, &
+      parse_json
+  use erloff, only : error_list_t
+  use iso_fortran_env, only: iostat_end
+  use iso_varying_string, only : varying_string, operator(//), char, get, put
 
   implicit none
 
 contains
+
+!*******************************************************************************
+
+   module procedure to_json
+     type(error_list_t) :: errors
+     type(fallible_json_string_t) :: maybe_key
+     type(json_string_t) :: vertices_key
+     type(json_array_t) vertices_value
+
+     vertices_value = json_array_t(json_element_t(me%vertices%to_json()))
+     maybe_key = fallible_json_string_t("vertices")
+     errors = maybe_key%errors()
+     call assert(.not. errors%has_any(), "dag%to_json: .not. errors%has_any()", char(errors%to_string()))
+     vertices_key = maybe_key%string()
+     me_json = json_object_t([vertices_key], [json_element_t(vertices_value)])
+   end procedure
+
+   module procedure from_json
+     type(vertex) :: dag_vertex
+     type(error_list_t) :: errors
+     integer :: i
+     type(fallible_json_value_t) :: maybe_vertices
+     type(fallible_json_value_t) :: maybe_vertex
+     type(json_element_t) :: vertex_element
+     type(json_element_t) :: vertices_element
+
+     maybe_vertices = me_json%get_element("vertices")
+     errors = maybe_vertices%errors()
+     call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+     select type (vertices => maybe_vertices%value_())
+     type is (json_array_t)
+       call me%set_vertices(vertices%length())
+       do i = 1, vertices%length()
+         maybe_vertex = vertices%get_element(i)
+         errors = maybe_vertex%errors()
+         call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+         select type (vertex_json => maybe_vertex%value_())
+         type is (json_object_t)
+           dag_vertex = vertex(vertex_json)
+           call me%set_edges(i, dag_vertex%edges)
+         class default
+           call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%to_compact_string()))
+         end select
+       end do
+     class default
+       call assert(.false., "dag%from_json: vertices was not an array", char(vertices%to_compact_string()))
+     end select
+   end procedure
 
 !*******************************************************************************
 
@@ -139,6 +196,32 @@ contains
 
     character(len=*),parameter :: tab = '  '
     character(len=*),parameter :: newline = new_line(' ')
+    logical, parameter :: capture_test_data = .true.
+
+    if (capture_test_data) then
+      block
+        integer unit, io_status
+        integer, parameter :: success=0, max_iomsg_len=128
+        character(len=max_iomsg_len) io_message
+
+        open( &
+            newunit = unit, &
+            file = 'output/dag_generate_diagraph-test-data.json', &
+            status = 'REPLACE', &
+            iostat = io_status, &
+            iomsg = io_message)
+        call assert(io_status==success, "dag%dag_generate_digraph: io_status==success", io_message)
+
+        write(unit, *) me
+
+        !write(unit,*) '{ "dag_generate_digraph" : "str" : "'    , trim(adjustl(str)),     '"'
+        !if (present(rankdir)) write(unit,*)   ',  "rankdir" : "', trim(adjustl(rankdir)), '"'
+        !if (present(dpi)) write(unit,*)       ',  "dpi" : '     , dpi
+        !write(unit,*) '}'
+
+        close(unit)
+      end block
+    end if
 
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
@@ -252,7 +335,33 @@ contains
 
   module procedure read_formatted
 
-    error stop "dag%read_formatted unimplemented"
+    character(len=*), parameter :: NEWLINE = NEW_LINE('A')
+    type(varying_string) :: contents
+    type(error_list_t) :: errors
+    type(fallible_json_value_t) :: maybe_json
+    type(dag) :: me_local
+    type(varying_string) :: tmp
+
+    call get(unit, contents, iostat = iostat)
+    if (iostat == iostat_end) return
+    do
+      call get(unit, tmp, iostat = iostat)
+      if (iostat == iostat_end) exit
+      contents = contents // NEWLINE // tmp
+    end do
+
+    maybe_json = parse_json(contents)
+    errors = maybe_json%errors()
+    call assert(.not. errors%has_any(), "dag%read_formatted: .not. errors%has_any()", char(errors%to_string()))
+
+    select type (object => maybe_json%value_())
+    type is (json_object_t)
+      me_local = from_json(object)
+      me%vertices = me_local%vertices
+      ! call assert(me%defined(), me%error_message)
+    class default
+      call assert(.false., "dag%read_formatted: didn't get a json object")
+    end select
 
   end procedure
 
@@ -260,17 +369,10 @@ contains
 
   module procedure write_formatted
 
-    integer i
+    type(json_object_t) :: me_json
 
-    write(unit,*) '{ "dag" : { "vertices" : [ '
-
-    associate(num_vertices=>size(me%vertices))
-      do i=1, num_vertices
-        write(unit,*) me%vertices(i), trim(merge(",", " ", i/=num_vertices))
-      end do
-    end associate
-
-    write(unit,*) '] } }'
+    me_json = me%to_json()
+    write(unit,*) char(me_json%to_expanded_string())
 
   end procedure
 
