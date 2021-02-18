@@ -33,12 +33,6 @@ jobs:
         --slave /usr/bingcov gcov /usr/bin/gcov-10
         if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
 
-    - name: Get Time
-      id: time
-      uses: nanzm/get-time-action@v1.0
-      with:
-        format: 'YYYY-MM'
-
     - name: Setup cache for stack to speed up fpm build
       id: cache
       uses: actions/cache@v2
