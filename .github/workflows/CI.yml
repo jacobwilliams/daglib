@@ -32,7 +32,7 @@ jobs:
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-10 \
         --slave /usr/bingcov gcov /usr/bin/gcov-10
         if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
-        wget https://github.com/fortran-lang/fpm/releases/download/v0.1.3/fpm-0.1.3-linux-x86_64 && sudo cp fpm-0.1.3-linux-x86_64 /usr/local/bin/fpm
+        wget https://github.com/fortran-lang/fpm/releases/download/v0.1.3/fpm-0.1.3-linux-x86_64 && sudo cp fpm-0.1.3-linux-x86_64 /usr/local/bin/fpm && chmod a+x /usr/local/bin/fpm
 
     - name: Build and test
       run: |
