@@ -12,12 +12,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v1
 
+    - name: Get Time
+      id: time
+      uses: nanzm/get-time-action@v1.0
+      with:
+        format: 'YYYY-MM'
+
+    - name: Setup cache for opencoarrays
+      id: cache
+      uses: actions/cache@v2
+      with:
+        path: "OpenCoarrays-2.9.2/"
+        key: ${{ steps.time.outputs.time }}
+
     - name: Install GFortran and OpenCoarrays
       run: |
-        sudo apt install -y gfortran-10 open-coarrays-bin libopenmpi-dev graphviz
+        sudo apt install -y gfortran-10 graphviz
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-10 \
         --slave /usr/bingcov gcov /usr/bin/gcov-10
+        if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
 
     - name: Get Time
       id: time
@@ -47,4 +61,5 @@ jobs:
 
     - name: Build and test
       run: |
+        source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
         fpm test --compiler caf --runner "cafrun -n 1"
