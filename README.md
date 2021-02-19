@@ -9,8 +9,8 @@ Prerequisites
 DAG was developed with the following prerequisite package versions:
 
 1. [gfortran] 10.2.0
-2. [OpenCoarrays]  2.8.0-46-g5853542
-3. [fpm]   commit [3276af]
+2. [OpenCoarrays]  2.9.2
+3. [fpm] 0.1.3
 4. [graphviz] 2.44.1
 
 Earlier versions might work also.
