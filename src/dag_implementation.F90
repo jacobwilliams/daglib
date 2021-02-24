@@ -32,7 +32,7 @@ contains
    end procedure
 
    module procedure from_json
-     type(vertex) :: dag_vertex
+     type(vertex_t) :: dag_vertex
      type(error_list_t) :: errors
      integer :: i
      type(fallible_json_value_t) :: maybe_vertices
@@ -52,7 +52,7 @@ contains
          call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
          select type (vertex_json => maybe_vertex%value_())
          type is (json_object_t)
-           dag_vertex = vertex(vertex_json)
+           dag_vertex = vertex_t(vertex_json)
            call me%set_edges(i, dag_vertex%edges)
          class default
            call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%to_compact_string()))
@@ -154,7 +154,7 @@ contains
 
     recursive subroutine dfs(v)
 
-      type(vertex),intent(inout) :: v
+      type(vertex_t),intent(inout) :: v
       integer :: j
 
       if (istat==-1) return

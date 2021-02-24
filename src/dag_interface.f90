@@ -1,5 +1,5 @@
 module dag_interface
-    use vertex_interface, only : vertex
+    use vertex_interface, only : vertex_t
     use jsonff, only : json_object_t
 
     implicit none
@@ -154,7 +154,7 @@ module dag_interface
 !!<hr />
 !
         private
-        type(vertex),dimension(:),allocatable :: vertices
+        type(vertex_t),dimension(:),allocatable :: vertices
     contains
         procedure,public  :: to_json
         procedure,private :: generate_digraph           => dag_generate_digraph
