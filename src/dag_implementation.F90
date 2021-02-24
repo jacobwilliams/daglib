@@ -339,7 +339,7 @@ contains
     type(varying_string) :: contents
     type(error_list_t) :: errors
     type(fallible_json_value_t) :: maybe_json
-    type(dag) :: me_local
+    type(dag_t) :: me_local
     type(varying_string) :: tmp
 
     call get(unit, contents, iostat = iostat)
