@@ -5,11 +5,11 @@
 program dag_example
 
     use iso_fortran_env, only : error_unit
-    use dag_interface, only : dag
+    use dag_interface, only : dag_t
 
     implicit none
 
-    type(dag) :: d
+    type(dag_t) :: d
 
     integer, allocatable :: order(:) !! topological sort
     logical, allocatable :: mat(:,:) !! dependency matrix

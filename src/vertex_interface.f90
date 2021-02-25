@@ -5,9 +5,9 @@ module vertex_interface
 
     private
 
-    public :: vertex
+    public :: vertex_t
 
-    type :: vertex
+    type :: vertex_t
 !! author: Jacob Williams, Damian Rouson, Robert Singleterry, Brad Richardson
 !! version: v1.0
 !! date: 2020-Nov-30
@@ -126,9 +126,9 @@ module vertex_interface
         generic,   public  :: read(formatted) => read_formatted
         procedure, private :: write_formatted
         generic,   public  :: write(formatted) => write_formatted
-    end type vertex
+    end type vertex_t
 
-    interface vertex
+    interface vertex_t
       procedure from_json
     end interface
 
@@ -137,108 +137,108 @@ module vertex_interface
 !*******************************************************************************
        module subroutine set_edge_vector(me,edges)
          implicit none
-         class(vertex),intent(inout)     :: me
+         class(vertex_t),intent(inout)     :: me
          integer,dimension(:),intent(in) :: edges
        end subroutine set_edge_vector
 !*******************************************************************************
        impure elemental module function to_json(me) result(me_json)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          type(json_object_t) :: me_json
        end function
 !*******************************************************************************
        module function from_json(me_json) result(me)
          implicit none
          type(json_object_t), intent(in) :: me_json
-         type(vertex) :: me
+         type(vertex_t) :: me
        end function
 !*******************************************************************************
        module subroutine add_edge(me,edge)
          implicit none
-         class(vertex),intent(inout) :: me
+         class(vertex_t),intent(inout) :: me
          integer,intent(in) :: edge
        end subroutine add_edge
 !*******************************************************************************
        module subroutine set_checking(me,checking)
          implicit none
-         class(vertex), intent(inout) :: me
+         class(vertex_t), intent(inout) :: me
          logical, intent(in) :: checking
        end subroutine
 !*******************************************************************************
        module subroutine set_marked(me,marked)
          implicit none
-         class(vertex), intent(inout) :: me
+         class(vertex_t), intent(inout) :: me
          logical, intent(in) :: marked
        end subroutine
 !*******************************************************************************
        elemental module subroutine set_vertex_id(me,id)
          implicit none
-         class(vertex),intent(inout) :: me
+         class(vertex_t),intent(inout) :: me
          integer, intent(in) :: id
        end subroutine set_vertex_id
 !*******************************************************************************
        elemental module subroutine set_label(me,label)
          implicit none
-         class(vertex),intent(inout) :: me
+         class(vertex_t),intent(inout) :: me
          character(len=*), intent(in) :: label
        end subroutine set_label
 !*******************************************************************************
        elemental module subroutine set_attributes(me,attributes)
          implicit none
-         class(vertex),intent(inout) :: me
+         class(vertex_t),intent(inout) :: me
          character(len=*), intent(in) :: attributes
        end subroutine set_attributes
 !*******************************************************************************
        pure module function get_vertex_id(me) result(my_vertex_id)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          integer my_vertex_id
        end function get_vertex_id
 !*******************************************************************************
        pure module function get_edges(me) result(my_edges)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          integer :: my_edges(size(me%edges))
        end function get_edges
 !*******************************************************************************
        pure module function get_checking(me) result(my_checking)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          logical my_checking
        end function get_checking
 !*******************************************************************************
        pure module function get_marked(me) result(my_marked)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          logical my_marked
        end function get_marked
 !*******************************************************************************
        pure module function get_label(me) result(my_label)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          character(len=len(me%label)) my_label
        end function get_label
 !*******************************************************************************
        pure module function get_attributes(me) result(my_attributes)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          character(len=len(me%attributes)) my_attributes
        end function get_attributes
 !*******************************************************************************
        pure module function has_label(me) result(allocated_label)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          logical allocated_label
        end function has_label
 !*******************************************************************************
        pure module function has_attributes(me) result(allocated_attributes)
          implicit none
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          logical allocated_attributes
        end function has_attributes
 !*******************************************************************************
        module subroutine read_formatted(me, unit, iotype, vlist, iostat, iomsg)
-         class(vertex), intent(inout) :: me
+         class(vertex_t), intent(inout) :: me
          integer, intent(in) :: unit
          character (len=*), intent(in) :: iotype
          integer, intent(in) :: vlist(:)
@@ -247,7 +247,7 @@ module vertex_interface
        end subroutine read_formatted
 !*******************************************************************************
        module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
-         class(vertex), intent(in) :: me
+         class(vertex_t), intent(in) :: me
          integer, intent(in) :: unit
          character (len=*), intent(in) :: iotype
          integer, intent(in) :: vlist(:)

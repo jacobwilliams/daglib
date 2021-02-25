@@ -1,5 +1,5 @@
 module dag_interface
-    use vertex_interface, only : vertex
+    use vertex_interface, only : vertex_t
     use jsonff, only : json_object_t
 
     implicit none
@@ -8,7 +8,7 @@ module dag_interface
 
     integer, parameter :: unset=0
 
-    type,public :: dag
+    type,public :: dag_t
 !! author: Jacob Williams, Damian Rouson, Robert Singleterry, Brad Richardson
 !! version: v1.0
 !! date: 2020-Nov-30
@@ -154,7 +154,7 @@ module dag_interface
 !!<hr />
 !
         private
-        type(vertex),dimension(:),allocatable :: vertices
+        type(vertex_t),dimension(:),allocatable :: vertices
     contains
         procedure,public  :: to_json
         procedure,private :: generate_digraph           => dag_generate_digraph
@@ -172,7 +172,7 @@ module dag_interface
         generic,  public  :: read(formatted) => read_formatted
         procedure,private :: write_formatted
         generic,  public  :: write(formatted) => write_formatted
-    end type dag
+    end type dag_t
 
     interface dag
       procedure from_json
@@ -183,39 +183,39 @@ module dag_interface
 !*******************************************************************************
        module function to_json(me) result(me_json)
          implicit none
-         class(dag), intent(in) :: me
+         class(dag_t), intent(in) :: me
          type(json_object_t) :: me_json
        end function
 !*******************************************************************************
        module function from_json(me_json) result(me)
          implicit none
          type(json_object_t), intent(in) :: me_json
-         type(dag) :: me
+         type(dag_t) :: me
        end function
 !*******************************************************************************
        pure module function dag_get_edges(me,ivertex) result(edges)
          implicit none
-         class(dag),intent(in)            :: me
+         class(dag_t),intent(in)            :: me
          integer,intent(in)               :: ivertex
          integer,dimension(:),allocatable :: edges
        end function dag_get_edges
 !*******************************************************************************
        pure module function dag_get_dependencies(me,ivertex) result(dep)
          implicit none
-         class(dag),intent(in)            :: me
+         class(dag_t),intent(in)            :: me
          integer,intent(in)               :: ivertex
          integer,dimension(:),allocatable :: dep
        end function dag_get_dependencies
 !*******************************************************************************
        module subroutine dag_set_vertices(me,nvertices)
          implicit none
-         class(dag),intent(inout)         :: me
+         class(dag_t),intent(inout)         :: me
          integer,intent(in)               :: nvertices
        end subroutine dag_set_vertices
 !*******************************************************************************
        module subroutine dag_set_vertex_info(me,ivertex,label,attributes)
          implicit none
-         class(dag),intent(inout)             :: me
+         class(dag_t),intent(inout)             :: me
          integer,intent(in)                   :: ivertex
          character(len=*),intent(in),optional :: label
          character(len=*),intent(in),optional :: attributes
@@ -223,21 +223,21 @@ module dag_interface
 !*******************************************************************************
        module subroutine dag_set_edges(me,ivertex,edges)
          implicit none
-         class(dag),intent(inout)        :: me
+         class(dag_t),intent(inout)        :: me
          integer,intent(in)              :: ivertex
          integer,dimension(:),intent(in) :: edges
        end subroutine dag_set_edges
 !*******************************************************************************
        module subroutine dag_toposort(me,order,istat)
          implicit none
-         class(dag),intent(inout)                     :: me
+         class(dag_t),intent(inout)                     :: me
          integer,dimension(:),allocatable,intent(out) :: order
          integer,intent(out)                          :: istat
        end subroutine dag_toposort
 !*******************************************************************************
        module function dag_generate_digraph(me,rankdir,dpi) result(str)
          implicit none
-         class(dag),intent(in)                :: me
+         class(dag_t),intent(in)                :: me
          character(len=:),allocatable         :: str
          character(len=*),intent(in),optional :: rankdir
          integer,intent(in),optional          :: dpi
@@ -245,13 +245,13 @@ module dag_interface
 !*******************************************************************************
        module subroutine dag_generate_dependency_matrix(me,mat)
          implicit none
-         class(dag),intent(in) :: me
+         class(dag_t),intent(in) :: me
          logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
        end subroutine dag_generate_dependency_matrix
 !*******************************************************************************
        module subroutine dag_save_digraph(me,filename,rankdir,dpi)
          implicit none
-         class(dag),intent(in) :: me
+         class(dag_t),intent(in) :: me
          character(len=*),intent(in),optional :: filename !! file name for diagraph
          character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
          integer,intent(in),optional :: dpi !! resolution (e.g. 300)
@@ -259,7 +259,7 @@ module dag_interface
 !*******************************************************************************
        module subroutine read_formatted(me, unit, iotype, vlist, iostat, iomsg)
          implicit none
-         class(dag),intent(inout) :: me
+         class(dag_t),intent(inout) :: me
          integer, intent(in) :: unit
          character (len=*), intent(in) :: iotype
          integer, intent(in) :: vlist(:)
@@ -268,7 +268,7 @@ module dag_interface
        end subroutine
 !*******************************************************************************
        module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
-         class(dag), intent(in) :: me
+         class(dag_t), intent(in) :: me
          integer, intent(in) :: unit
          character (len=*), intent(in) :: iotype
          integer, intent(in) :: vlist(:)

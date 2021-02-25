@@ -1,5 +1,5 @@
 module dag_input_output_test
-  use dag_interface, only: dag
+  use dag_interface, only: dag_t
   use vegetables, only: &
       result_t, test_item_t, assert_equals, describe, it, succeed
   !!  Test DAG input/output.
@@ -17,7 +17,7 @@ contains
 
   function check_input_output() result(io_result)
     type(result_t) io_result
-    type(dag) :: dependency_graph
+    type(dag_t) :: dependency_graph
     integer, parameter :: n_nodes = 6, success=0
     integer istat
 
