@@ -165,6 +165,7 @@ module dag_interface
         procedure,public  :: toposort                   => dag_toposort
         procedure,public  :: generate_dependency_matrix => dag_generate_dependency_matrix
         procedure,public  :: save_digraph               => dag_save_digraph
+        procedure,public  :: get_num_vertices           => dag_get_num_vertices
         procedure,public  :: get_edges                  => dag_get_edges
         procedure,public  :: get_dependencies           => dag_get_dependencies
 
@@ -191,6 +192,12 @@ module dag_interface
          implicit none
          type(json_object_t), intent(in) :: me_json
          type(dag_t) :: me
+       end function
+!*******************************************************************************
+       pure module function dag_get_num_vertices(me) result(num_vertices)
+         implicit none
+         class(dag_t), intent(in) :: me
+         integer num_vertices
        end function
 !*******************************************************************************
        pure module function dag_get_edges(me,ivertex) result(edges)

@@ -65,6 +65,10 @@ contains
 
 !*******************************************************************************
 
+  module procedure dag_get_num_vertices
+    num_vertices = size(me%vertices)
+  end procedure
+
   module procedure dag_get_edges
 
     call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_edges: index in bounds")
