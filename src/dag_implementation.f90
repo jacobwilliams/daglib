@@ -194,32 +194,6 @@ contains
 
     character(len=*),parameter :: tab = '  '
     character(len=*),parameter :: newline = new_line(' ')
-    logical, parameter :: capture_test_data = .true.
-
-    if (capture_test_data) then
-      block
-        integer unit, io_status
-        integer, parameter :: success=0, max_iomsg_len=128
-        character(len=max_iomsg_len) io_message
-
-        open( &
-            newunit = unit, &
-            file = 'output/dag_generate_diagraph-test-data.json', &
-            status = 'REPLACE', &
-            iostat = io_status, &
-            iomsg = io_message)
-        call assert(io_status==success, "dag%dag_generate_digraph: io_status==success", io_message)
-
-        write(unit, *) me
-
-        !write(unit,*) '{ "dag_generate_digraph" : "str" : "'    , trim(adjustl(str)),     '"'
-        !if (present(rankdir)) write(unit,*)   ',  "rankdir" : "', trim(adjustl(rankdir)), '"'
-        !if (present(dpi)) write(unit,*)       ',  "dpi" : '     , dpi
-        !write(unit,*) '}'
-
-        close(unit)
-      end block
-    end if
 
     str = 'digraph G {'//newline//newline
     if (present(rankdir)) &
