@@ -148,11 +148,7 @@ contains
 
     if (istat==-1) deallocate(order)
 
-#ifndef FORD
   contains
-#else
-    end procedure ! work around ford documentation generator bug
-#endif
 
 !*******************************************************************************
 
@@ -186,9 +182,7 @@ contains
 
     end subroutine dfs
 
-#ifndef FORD
   end procedure dag_toposort
-#endif
 
 !*******************************************************************************
 
