@@ -1,5 +1,5 @@
 submodule(dag_interface) dag_implementation
-  use assertions_interface, only : assert
+  use assert_m, only : assert
   use jsonff, only: &
       fallible_json_string_t, &
       fallible_json_value_t, &

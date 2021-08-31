@@ -9,7 +9,7 @@ submodule(vertex_interface) vertex_implementation
   use erloff, only : error_list_t
   use iso_varying_string, only : char
   use iso_fortran_env, only : real64
-  use assertions_interface, only : assert
+  use assert_m, only : assert
   implicit none
 
 contains
