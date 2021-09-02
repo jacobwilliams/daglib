@@ -106,6 +106,14 @@ contains
   end procedure
 
 !*******************************************************************************
+  module procedure set_vertex_label
+    call me%vertices(ivertex)%set_label(label)
+  end procedure
+!*******************************************************************************
+  module procedure set_vertex_attributes
+    call me%vertices(ivertex)%set_attributes(attributes)
+  end procedure
+!*******************************************************************************
 
   module procedure dag_set_vertex_info
 
@@ -201,12 +209,25 @@ contains
     if (present(dpi)) &
         str = str//tab//'graph [ dpi = '//integer_to_string(dpi)//' ]'//newline//newline
 
+    block
+      logical, parameter :: temporary_debugging=.true.
+
+      if (temporary_debugging) print *,"size(me%vertices) ", size(me%vertices)
+    end block
+
     ! define the vertices:
     do i=1,size(me%vertices)
       associate( &
         has_label      => me%vertices(i)%has_label(), &
         has_attributes => me%vertices(i)%has_attributes() &
       )
+
+        block
+          logical, parameter :: temporary_debugging=.true.
+
+          if (temporary_debugging) print *,"vertex ",i," has label ", trim(adjustl(me%vertices(i)%get_label()))
+        end block
+
         if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%get_label()))//'"'
         if (has_label .and. has_attributes) then
             attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//','//label//']'
@@ -270,7 +291,9 @@ contains
     integer :: iunit, istat
     character(len=:),allocatable :: diagraph
 
+    print *,"dag_dave_digraph: calling generate_digraph"
     diagraph = me%generate_digraph(rankdir,dpi)
+    print *,"dag_dave_digraph: generate_digraph completed"
 
     open(newunit=iunit,file=filename,status='REPLACE',iostat=istat)
 

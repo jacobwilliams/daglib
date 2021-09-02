@@ -158,7 +158,8 @@ module dag_interface
     contains
         procedure,public  :: to_json
         procedure,private :: generate_digraph           => dag_generate_digraph
-
+        procedure         :: set_vertex_label
+        procedure         :: set_vertex_attributes
         procedure,public  :: set_vertices               => dag_set_vertices
         procedure,public  :: set_edges                  => dag_set_edges
         procedure,public  :: set_vertex_info            => dag_set_vertex_info
@@ -219,6 +220,20 @@ module dag_interface
          class(dag_t),intent(inout)         :: me
          integer,intent(in)               :: nvertices
        end subroutine dag_set_vertices
+!*******************************************************************************
+      module subroutine set_vertex_label(me, ivertex, label)
+        implicit none
+        class(dag_t), intent(inout)  :: me
+        integer, intent(in)          :: ivertex
+        character(len=*), intent(in) :: label
+      end subroutine
+!*******************************************************************************
+      module subroutine set_vertex_attributes(me, ivertex, attributes)
+        implicit none
+        class(dag_t), intent(inout)  :: me
+        integer, intent(in)          :: ivertex
+        character(len=*), intent(in) :: attributes
+      end subroutine
 !*******************************************************************************
        module subroutine dag_set_vertex_info(me,ivertex,label,attributes)
          implicit none
