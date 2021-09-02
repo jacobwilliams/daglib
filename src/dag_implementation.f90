@@ -106,25 +106,26 @@ contains
   end procedure
 
 !*******************************************************************************
+
   module procedure set_vertex_label
-    call me%vertices(ivertex)%set_label(label)
-  end procedure
-!*******************************************************************************
-  module procedure set_vertex_attributes
-    call me%vertices(ivertex)%set_attributes(attributes)
-  end procedure
-!*******************************************************************************
-
-  module procedure dag_set_vertex_info
-
     if (present(label)) then
         call me%vertices(ivertex)%set_label(label)
     else
         call me%vertices(ivertex)%set_label(integer_to_string(ivertex))
     end if
+  end procedure
 
-    if (present(attributes)) call me%vertices(ivertex)%set_attributes(attributes)
+!*******************************************************************************
 
+  module procedure set_vertex_attributes
+    call me%vertices(ivertex)%set_attributes(attributes)
+  end procedure
+
+!*******************************************************************************
+
+  module procedure dag_set_vertex_info
+    call me%set_vertex_label(ivertex, label)
+    call me%set_vertex_attributes(ivertex, attributes)
   end procedure
 
 !*******************************************************************************

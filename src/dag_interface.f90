@@ -225,7 +225,7 @@ module dag_interface
         implicit none
         class(dag_t), intent(inout)  :: me
         integer, intent(in)          :: ivertex
-        character(len=*), intent(in) :: label
+        character(len=*), intent(in), optional :: label
       end subroutine
 !*******************************************************************************
       module subroutine set_vertex_attributes(me, ivertex, attributes)

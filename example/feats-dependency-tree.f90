@@ -13,12 +13,12 @@ program labeled_dag_output
     ! a topologically sorted enumeration of the items in the dependency tree
     enumerator :: &
     build_feats=1, application_generator_m, image_m, data_location_map_m, application_m, dag_interface, task_item_m, & 
-    payload_m, task_m, mailbox_m, assertions_interface, application_s, payload_s, data_location_map_s, image_s, task_item_s
+    payload_m, task_m, mailbox_m, assert_m, application_s, payload_s, data_location_map_s, image_s, task_item_s
   end enum
 
   integer, parameter :: vertices(*) = [ &
     build_feats,   application_generator_m, image_m, data_location_map_m, application_m, dag_interface, task_item_m, & 
-    payload_m, task_m, mailbox_m, assertions_interface, application_s, payload_s, data_location_map_s, image_s, task_item_s &
+    payload_m, task_m, mailbox_m, assert_m, application_s, payload_s, data_location_map_s, image_s, task_item_s &
   ]
   integer, parameter :: num_vertices = size(vertices)
 
@@ -34,7 +34,7 @@ program labeled_dag_output
   name_list(payload_m              ) = module_name_t("payload_m")
   name_list(task_m                 ) = module_name_t("task_m")
   name_list(mailbox_m              ) = module_name_t("mailbox_m")
-  name_list(assertions_interface   ) = module_name_t("assertions_interface")
+  name_list(assert_m   ) = module_name_t("assert_m")
   name_list(application_s          ) = module_name_t("application_s")
   name_list(payload_s              ) = module_name_t("payload_s")
   name_list(data_location_map_s    ) = module_name_t("data_location_map_s")
@@ -46,7 +46,7 @@ program labeled_dag_output
     integer i
 
     do i = 1, num_vertices
-      call module_dependencies%set_vertex_info(i, label=name_list(i)%module_name)
+      call module_dependencies%set_vertex_label(i, name_list(i)%module_name)
     end do
 
   end block
@@ -56,7 +56,7 @@ program labeled_dag_output
   call module_dependencies%set_edges(task_item_m, [data_location_map_m, payload_m, task_m])
   call module_dependencies%set_edges(task_m, [data_location_map_m, payload_m])
   call module_dependencies%set_edges(mailbox_m, [payload_m])
-  call module_dependencies%set_edges(application_s, [application_m, assertions_interface])
+  call module_dependencies%set_edges(application_s, [application_m, assert_m])
   call module_dependencies%set_edges(payload_s, [payload_m])
   call module_dependencies%set_edges(data_location_map_s, [data_location_map_m])
   call module_dependencies%set_edges(image_s, [image_m])
@@ -68,11 +68,11 @@ program labeled_dag_output
     character(len=len(non_leaf_color)), parameter :: leaf_color     = 'shape=circle,fillcolor="cornsilk",style=filled'
     integer, parameter :: leaf_nodes(*) = &
       [application_generator_m, data_location_map_m, dag_interface, payload_m, &
-      assertions_interface, application_s, payload_s, data_location_map_s, image_s, task_item_s]
+      assert_m, application_s, payload_s, data_location_map_s, image_s, task_item_s]
     
     do i = 1, num_vertices
       associate(node_color => merge(leaf_color, non_leaf_color, any(i==leaf_nodes)))
-        call module_dependencies%set_vertex_info(i, attributes = node_color)
+        call module_dependencies%set_vertex_attributes(i, node_color)
       end associate
     end do
 
@@ -85,7 +85,7 @@ program labeled_dag_output
 
     call module_dependencies%save_digraph(digraph_file, 'RL', 300)
     call execute_command_line('dot -Tpdf -o ' // output_file // ' ' // digraph_file)
-    print *, new_line(''), " ----- application_generator(): module_depenencies DAG written to " // output_file
+    print *, new_line(''), " main: module_depenencies DAG written to " // output_file
   end block
 
 end program
