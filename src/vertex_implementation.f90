@@ -7,7 +7,7 @@ submodule(vertex_interface) vertex_implementation
       json_number_t, &
       json_string_t
   use erloff, only : error_list_t
-  use iso_varying_string, only : char
+  use iso_varying_string, only : char, assignment(=)
   use iso_fortran_env, only : real64
   use assert_m, only : assert
   implicit none
@@ -100,6 +100,7 @@ contains
 
   module procedure set_label
     me%label = label
+    me%has_label_ = .true.
   end procedure
 
 !*******************************************************************************
@@ -162,7 +163,7 @@ contains
 !*******************************************************************************
 
   module procedure has_label
-    allocated_label = allocated(me%label)
+    allocated_label = me%has_label_
   end procedure
 
 !*******************************************************************************

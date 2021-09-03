@@ -1,5 +1,6 @@
 module vertex_interface
     use jsonff, only : json_object_t
+    use iso_varying_string, only : varying_string, len
 
     implicit none
 
@@ -108,8 +109,9 @@ module vertex_interface
         integer, public, allocatable  :: edges(:)
 !        integer, allocatable          :: edges(:)  -  should be private, but a bug in GCC needs it to be public.  When fixed, this will be private again
         integer                       :: ivertex = 0
-        logical                       :: checking = .false., marked = .false.
-        character(len=:), allocatable :: label, attributes
+        logical                       :: checking = .false., marked = .false., has_label_ = .false.
+        type(varying_string)          :: label
+        character(len=:), allocatable :: attributes
     contains
         procedure, public  :: to_json
         procedure, private ::              set_edge_vector, add_edge
@@ -181,7 +183,7 @@ module vertex_interface
        elemental module subroutine set_label(me,label)
          implicit none
          class(vertex_t),intent(inout) :: me
-         character(len=*), intent(in) :: label
+         type(varying_string), intent(in) :: label
        end subroutine set_label
 !*******************************************************************************
        elemental module subroutine set_attributes(me,attributes)

@@ -10,7 +10,7 @@ submodule(dag_interface) dag_implementation
       parse_json
   use erloff, only : error_list_t
   use iso_fortran_env, only: iostat_end
-  use iso_varying_string, only : varying_string, operator(//), char, get, put, var_str, char
+  use iso_varying_string, only : varying_string, operator(//), char, get, put, var_str
 
   implicit none
 
@@ -118,10 +118,10 @@ contains
       
       if (present(label)) then
         do i=1, num_labels
-          call me%vertices(i)%set_label(char(label(i)))
+          call me%vertices(i)%set_label(label(i))
         end do
       else
-          call me%vertices%set_label(integer_to_string(ivertex))
+        call me%vertices%set_label(var_str(integer_to_string(ivertex)))
       end if
     end associate
 
