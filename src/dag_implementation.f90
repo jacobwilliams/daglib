@@ -1,5 +1,6 @@
 submodule(dag_interface) dag_implementation
   use assert_m, only : assert
+  use intrinsic_array_m, only : intrinsic_array_t
   use jsonff, only: &
       fallible_json_string_t, &
       fallible_json_value_t, &
@@ -9,7 +10,7 @@ submodule(dag_interface) dag_implementation
       parse_json
   use erloff, only : error_list_t
   use iso_fortran_env, only: iostat_end
-  use iso_varying_string, only : varying_string, operator(//), char, get, put
+  use iso_varying_string, only : varying_string, operator(//), char, get, put, var_str, char
 
   implicit none
 
@@ -108,11 +109,22 @@ contains
 !*******************************************************************************
 
   module procedure set_vertex_label
-    if (present(label)) then
-        call me%vertices(ivertex)%set_label(label)
-    else
-        call me%vertices(ivertex)%set_label(integer_to_string(ivertex))
-    end if
+    integer i
+    
+    associate(num_vertices => size(me%vertices), num_labels => size(label))
+    
+      call assert(num_vertices == num_labels, "dag_t%set_vertex_label: num_vertices == num_labels", &
+        intrinsic_array_t([num_vertices, num_labels]))
+      
+      if (present(label)) then
+        do i=1, num_labels
+          call me%vertices(i)%set_label(char(label(i)))
+        end do
+      else
+          call me%vertices%set_label(integer_to_string(ivertex))
+      end if
+    end associate
+
   end procedure
 
 !*******************************************************************************
@@ -124,7 +136,7 @@ contains
 !*******************************************************************************
 
   module procedure dag_set_vertex_info
-    call me%set_vertex_label(ivertex, label)
+    call me%set_vertex_label([ivertex], [var_str(label)])
     call me%set_vertex_attributes(ivertex, attributes)
   end procedure
 
@@ -296,14 +308,14 @@ contains
 
 !*******************************************************************************
 
-  pure function integer_to_string(i) result(s)
+  elemental function integer_to_string(i) result(s)
 
     integer,intent(in) :: i
-    character(len=:),allocatable :: s
+    integer, parameter :: max_number_width = 64
+    character(len=max_number_width) :: s
 
     integer :: istat
 
-    allocate( character(len=64) :: s )  ! should be big enough
     write(s,fmt='(ss,I0)',iostat=istat) i
     if (istat==0) then
         s = trim(adjustl(s))

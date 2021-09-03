@@ -1,6 +1,7 @@
 module dag_interface
     use vertex_interface, only : vertex_t
     use jsonff, only : json_object_t
+    use iso_varying_string, only : varying_string
 
     implicit none
 
@@ -224,8 +225,8 @@ module dag_interface
       module subroutine set_vertex_label(me, ivertex, label)
         implicit none
         class(dag_t), intent(inout)  :: me
-        integer, intent(in)          :: ivertex
-        character(len=*), intent(in), optional :: label
+        integer, intent(in)          :: ivertex(:)
+        type(varying_string), intent(in), optional :: label(:)
       end subroutine
 !*******************************************************************************
       module subroutine set_vertex_attributes(me, ivertex, attributes)

@@ -119,7 +119,8 @@ module vertex_interface
         procedure, public  :: set_checking,   get_checking
         procedure, public  :: set_marked,     get_marked
         procedure, public  :: set_vertex_id,  get_vertex_id
-        procedure, public  :: set_label,      get_label,      has_label
+        procedure, public  :: set_label
+        procedure, public  :: get_label,      has_label
         procedure, public  :: set_attributes, get_attributes, has_attributes
 
         procedure, private :: read_formatted
