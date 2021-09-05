@@ -36,7 +36,7 @@ module dag_interface
       generic,  public  :: write(formatted) => write_formatted
     end type dag_t
 
-    interface dag
+    interface dag_t
       procedure from_json
     end interface
 
