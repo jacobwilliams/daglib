@@ -1,159 +1,21 @@
 module dag_interface
-    use vertex_interface, only : vertex_t
-    use jsonff, only : json_object_t
-    use iso_varying_string, only : varying_string
+  !! summary: A directed acyclic graph (DAG) abstraction.
+  !! author: Jacob Williams, Damian Rouson, Robert Singleterry, Brad Richardson
+  !! version: v1.0
+  !! date: 2020-Nov-30
+  !! license: Copyright (c) 2020, Sourcery Institute, BSD 3-clause license Copyright (c) 2018 Jacob Williams
+  use vertex_interface, only : vertex_t
+  use jsonff, only : json_object_t
+  use iso_varying_string, only : varying_string
 
-    implicit none
+  implicit none
 
-    private
+  private
 
-    integer, parameter :: unset=0
+  integer, parameter :: unset=0
 
-    type,public :: dag_t
-!! author: Jacob Williams, Damian Rouson, Robert Singleterry, Brad Richardson
-!! version: v1.0
-!! date: 2020-Nov-30
-!! license: Copyright (c) 2020, Sourcery Institute, BSD 3-clause license Copyright (c) 2018 Jacob Williams
-!!<hr />
-!! DAG Module
-!!<hr />
-!! A directed acyclic graph (DAG) described at <https://en.wikipedia.org/wiki/Directed_acyclic_graph>
-!! A graph that does not have any circular references or no path that can start at vertex v and end up at vertex v again.
-!!
-!! Private data type: vertex (from vertex_interface) and is an allocatable rank 1 array
-!!
-!! This data type represents the vertcies and edges of a DAG.
-!!   - vertex: a task to be performed number as label
-!!   - edge: incoming and outgoing dependences on that task to other task numbers
-!!
-!! A GCC bug exists from vertex_interface/vertex_implementation which effects these modules:
-!!
-!!   - dag_get_edges
-!!   - dag_get_dependencies
-!!   - dag_toposort/dfs
-!!   - dag_generate_digraph
-!!   - dag_generate_dependency_matrix
-!!
-!!<hr />
-!! Public DAG Interfaces:
-!!
-!!    me%set_vertices ( Number of Vertices )
-!!
-!!       - Allocates the vertices variable and fills it with the array index number
-!!
-!!    me%set_edges ( Vertex Index, Edges for that Vertex )
-!!
-!!       - Allocates the edges for that vertex and fills them with the edges passed
-!!
-!!    me%set_vertex_info ( Vertex Index, Label (optional), Diagraph Attribute (optional) )
-!!
-!!       - Sets a default (Vertex Index) or input Label (me%vertices(index)%set_label)
-!!       - Sets a diagraph attribute if input (me%vertices(index)%set_atrributes
-!!
-!!    me%toposort ( Sorted Vertex Order, Status )
-!!
-!!       - Rank 1 integer array of vertex numbers/labels in order of execution that adheres to dependencies
-!!       - Status is 0 for no circular dependencies and 1 for circular dependencies
-!!
-!!    me%save_digraph ( File Name, Rank Direction, DPI )
-!!
-!!       - The file name of the saved digraph file
-!!       - Rank Direction which are applicable inputs to the -rankdir option on the digraph command
-!!       - DPI is the numerical dots per inch value
-!!
-!!    me%generate_dependency_matrix ( Dependencies )
-!!
-!!       - Output logical rank 2 array where .true. designates that rank 1 task depends on rank 2 task and .false. designates no dependence
-!!
-!!    edges = me%get_edges ( Vertex Index )
-!!
-!!       - Result: an allocatable rank 1 array of the vertices that this vertex (Vertex Index) depends on
-!!
-!!    deps = me%get_dependencies ( Vertix Index )
-!!
-!!       - Result: an allocatable rank 1 array of the vertices that depends on this vertex (Vertex Index)
-!!
-!!<hr />
-!! Private DAG Interfaces:
-!!
-!!    str = me%dag_generate_digraph ( Rank Direction, DPI )
-!!
-!!       - Result is the string to write out to a file (.dot)
-!!       - Rank Direction which are applicable inputs to the -rankdir option on the digraph command
-!!       - DPI is the numerical dots per inch value
-!!       - Called by dag_save_digraph()
-!!
-!!<hr />
-!! Read and Write formatted input/output:
-!!
-!!    read_formatted ()
-!!
-!!       - Read a DAG from a JSON file using Everythingfunctional/jsonff
-!!
-!!    write_formatted ()
-!!
-!!       - Write a DAG to a JSON file using Everythingfunctional/jsonff
-!!
-!!<hr />
-!! Call order to create a sorted list of tasks that satisfies the graph:
-!!
-!!    type ( dag ) :: d                ! set the DAG to the variable d
-!!    integer :: n_nodes = 14          ! number of vertices
-!!    integer, allocatable :: order(:) ! output for topo sort
-!!
-!!    call d%set_vertices(n_nodes)     ! set the number of nodes
-!!
-!!    call d%set_edges( 1,[2,3])       !  1 depends on  2 and 3
-!!    call d%set_edges( 2,[integer::]) !  2 depends on nothing
-!!    call d%set_edges( 3,[integer::]) !  3 depends on nothing
-!!    call d%set_edges( 4,[3])         !  4 depends on  3
-!!    call d%set_edges( 5,[4])         !  5 depends on  4
-!!    call d%set_edges( 6,[3])         !  6 depends on  3
-!!    call d%set_edges( 7,[4])         !  7 depends on  4
-!!    call d%set_edges( 8,[5])         !  8 depends on  5
-!!    call d%set_edges( 9,[6])         !  9 depends on  6
-!!    call d%set_edges(10,[6,7])       ! 10 depends on  6 and 7
-!!    call d%set_edges(11,[7,8])       ! 11 depends on  7 and 8
-!!    call d%set_edges(12,[9])         ! 12 depends on  9
-!!    call d%set_edges(13,[10])        ! 13 depends on 10
-!!    call d%set_edges(14,[11])        ! 14 depends on 11
-!!
-!!    call d%toposort(order,istat)     ! perform the sort, istat = 0, no errors ; istat = 1, circular
-!!
-!!<hr />
-!! Call order to create a digraph:
-!!
-!!    character(len=*), parameter :: gray_square = 'shape=square,fillcolor="SlateGray1",style=filled'
-!!    character(len=len(gray_square)), parameter :: silk_circle = 'shape=circle,fillcolor="cornsilk",style=filled'
-!!
-!!    do i = 1, n_nodes
-!!      call d%set_vertex_info(i, attributes = merge(gray_square, silk_circle, any(i==[1,2,12,13,14])))
-!!    end do
-!!
-!!    call d%save_digraph('test.dot','RL',300)
-!!
-!! A digraph file (.dot) is written by dag_save_digraph and can be converted to a PDF using dot:
-!!
-!!    % dot -Tpdf -o test.pdf test.dot
-!!
-!!<hr />
-!! Call order to generate the dependency matrix:
-!!
-!!    logical, allocatable :: mat(:,:)
-!!
-!!    call d%generate_dependency_matrix(mat)
-!!
-!!<hr />
-!! Call order to get dependancy information for vertex V
-!!
-!!    integer :: v = 10
-!!    integer,allocatable,dimension(:) :: edges, deps
-!!
-!!    edges = me%get_edges ( v )              ! result: [6,7]
-!!    deps  = me%get_dependencies ( v )       ! result: [13]
-!!
-!!<hr />
-!
+  type,public :: dag_t
+    !! Encapsulate a graph as an array of vertices, each storing dependency information
         private
         type(vertex_t),dimension(:),allocatable :: vertices
     contains
@@ -163,7 +25,6 @@ module dag_interface
         procedure         :: set_vertex_attributes
         procedure,public  :: set_vertices               => dag_set_vertices
         procedure,public  :: set_edges                  => dag_set_edges
-        procedure,public  :: set_vertex_info            => dag_set_vertex_info
         procedure,public  :: toposort                   => dag_toposort
         procedure,public  :: generate_dependency_matrix => dag_generate_dependency_matrix
         procedure,public  :: save_digraph               => dag_save_digraph
@@ -203,6 +64,7 @@ module dag_interface
        end function
 !*******************************************************************************
        pure module function dag_get_edges(me,ivertex) result(edges)
+         !! Result: array of the vertex numbers on which this vertex depends
          implicit none
          class(dag_t),intent(in)            :: me
          integer,intent(in)               :: ivertex
@@ -210,6 +72,7 @@ module dag_interface
        end function dag_get_edges
 !*******************************************************************************
        pure module function dag_get_dependencies(me,ivertex) result(dep)
+         !! Result: array of the vertices that depend on ivertex vertex
          implicit none
          class(dag_t),intent(in)            :: me
          integer,intent(in)               :: ivertex
@@ -217,6 +80,7 @@ module dag_interface
        end function dag_get_dependencies
 !*******************************************************************************
        module subroutine dag_set_vertices(me,nvertices)
+         !! Allocates the vertices variable and fills it with the array index number
          implicit none
          class(dag_t),intent(inout)         :: me
          integer,intent(in)               :: nvertices
@@ -236,37 +100,35 @@ module dag_interface
         character(len=*), intent(in) :: attributes
       end subroutine
 !*******************************************************************************
-       module subroutine dag_set_vertex_info(me,ivertex,label,attributes)
-         implicit none
-         class(dag_t),intent(inout)             :: me
-         integer,intent(in)                   :: ivertex
-         character(len=*),intent(in),optional :: label
-         character(len=*),intent(in),optional :: attributes
-       end subroutine dag_set_vertex_info
-!*******************************************************************************
        module subroutine dag_set_edges(me,ivertex,edges)
+         !! Allocates the edges for that vertex and fills them with the edges passed
          implicit none
          class(dag_t),intent(inout)        :: me
-         integer,intent(in)              :: ivertex
+         integer,intent(in)              :: ivertex 
          integer,dimension(:),intent(in) :: edges
        end subroutine dag_set_edges
 !*******************************************************************************
        module subroutine dag_toposort(me,order,istat)
+         !! Provide array of vertex numbers order in a way that respects dependencies
          implicit none
-         class(dag_t),intent(inout)                     :: me
-         integer,dimension(:),allocatable,intent(out) :: order
-         integer,intent(out)                          :: istat
+         class(dag_t),intent(inout)                   :: me
+         integer,dimension(:),allocatable,intent(out) :: order !! sorted vertex order
+         integer,intent(out)                          :: istat !! 0 for no circular dependencies, 1 for circular dependencies
        end subroutine dag_toposort
 !*******************************************************************************
        module function dag_generate_digraph(me,rankdir,dpi) result(str)
+         !! - Result is the string to write out to a *.dot file. (Called by dag_save_digraph())
          implicit none
          class(dag_t),intent(in)                :: me
          character(len=:),allocatable         :: str
          character(len=*),intent(in),optional :: rankdir
+           !! - Rank Direction which are applicable inputs to the -rankdir option on the digraph command
          integer,intent(in),optional          :: dpi
+           !! - dots per inch 
        end function dag_generate_digraph
 !*******************************************************************************
        module subroutine dag_generate_dependency_matrix(me,mat)
+         !! Output array in which .true. elements are located at locations corresponding to dependencies
          implicit none
          class(dag_t),intent(in) :: me
          logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
@@ -275,12 +137,13 @@ module dag_interface
        module subroutine dag_save_digraph(me,filename,rankdir,dpi)
          implicit none
          class(dag_t),intent(in) :: me
-         character(len=*),intent(in),optional :: filename !! file name for diagraph
-         character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
-         integer,intent(in),optional :: dpi !! resolution (e.g. 300)
+         character(len=*),intent(in),optional :: filename !! digraph output file name
+         character(len=*),intent(in),optional :: rankdir !! rank direction with right-to-left orientation (e.g. 'RL')
+         integer,intent(in),optional :: dpi !! resolution in dots per inch (e.g. 300)
        end subroutine dag_save_digraph
 !*******************************************************************************
        module subroutine read_formatted(me, unit, iotype, vlist, iostat, iomsg)
+         !! Read a DAG from a JSON file using Everythingfunctional/jsonff
          implicit none
          class(dag_t),intent(inout) :: me
          integer, intent(in) :: unit
@@ -291,6 +154,7 @@ module dag_interface
        end subroutine
 !*******************************************************************************
        module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
+         !! Write a DAG to a JSON file using Everythingfunctional/jsonff
          class(dag_t), intent(in) :: me
          integer, intent(in) :: unit
          character (len=*), intent(in) :: iotype

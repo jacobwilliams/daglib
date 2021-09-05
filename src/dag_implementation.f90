@@ -135,13 +135,6 @@ contains
 
 !*******************************************************************************
 
-  module procedure dag_set_vertex_info
-    call me%set_vertex_label([ivertex], [var_str(label)])
-    call me%set_vertex_attributes(ivertex, attributes)
-  end procedure
-
-!*******************************************************************************
-
   module procedure dag_set_edges
 
     call me%vertices(ivertex)%set_edges(edges)
