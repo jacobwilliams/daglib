@@ -16,8 +16,6 @@ submodule(dag_interface) dag_implementation
 
 contains
 
-!*******************************************************************************
-
    module procedure to_json
      type(error_list_t) :: errors
      type(fallible_json_string_t) :: maybe_key
@@ -64,8 +62,6 @@ contains
      end select
    end procedure
 
-!*******************************************************************************
-
   module procedure dag_get_num_vertices
     num_vertices = size(me%vertices)
   end procedure
@@ -76,8 +72,6 @@ contains
     edges = me%vertices(ivertex)%edges
 
   end procedure
-
-!*******************************************************************************
 
   module procedure dag_get_dependencies
 
@@ -95,8 +89,6 @@ contains
 
   end procedure
 
-!*******************************************************************************
-
   module procedure dag_set_vertices
 
     integer :: i
@@ -105,8 +97,6 @@ contains
     call me%vertices%set_vertex_id( [(i,i=1,nvertices)] )
 
   end procedure
-
-!*******************************************************************************
 
   module procedure set_vertex_label
     integer i
@@ -127,21 +117,15 @@ contains
 
   end procedure
 
-!*******************************************************************************
-
   module procedure set_vertex_attributes
     call me%vertices(ivertex)%set_attributes(attributes)
   end procedure
-
-!*******************************************************************************
 
   module procedure dag_set_edges
 
     call me%vertices(ivertex)%set_edges(edges)
 
   end procedure
-
-!*******************************************************************************
 
   module procedure dag_toposort
 
@@ -163,8 +147,6 @@ contains
     if (istat==-1) deallocate(order)
 
   contains
-
-!*******************************************************************************
 
     recursive subroutine dfs(v)
 
@@ -197,8 +179,6 @@ contains
     end subroutine dfs
 
   end procedure dag_toposort
-
-!*******************************************************************************
 
   module procedure dag_generate_digraph
 
@@ -255,8 +235,6 @@ contains
 
   end procedure dag_generate_digraph
 
-!*******************************************************************************
-
   module procedure dag_generate_dependency_matrix
 
     integer :: i
@@ -278,8 +256,6 @@ contains
 
   end procedure
 
-!*******************************************************************************
-
   module procedure dag_save_digraph
 
     integer :: iunit, istat
@@ -299,8 +275,6 @@ contains
 
   end procedure
 
-!*******************************************************************************
-
   elemental function integer_to_string(i) result(s)
 
     integer,intent(in) :: i
@@ -317,8 +291,6 @@ contains
     end if
 
   end function integer_to_string
-
-!*******************************************************************************
 
   module procedure read_formatted
 
@@ -352,8 +324,6 @@ contains
 
   end procedure
 
-!*******************************************************************************
-
   module procedure write_formatted
 
     type(json_object_t) :: me_json
@@ -362,7 +332,5 @@ contains
     write(unit,*) char(me_json%to_expanded_string())
 
   end procedure
-
-!*******************************************************************************
 
 end submodule dag_implementation
