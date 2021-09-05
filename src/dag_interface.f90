@@ -12,8 +12,6 @@ module dag_interface
 
   private
 
-  integer, parameter :: unset=0
-
   type,public :: dag_t
     !! Encapsulate a graph as an array of vertices, each storing dependency information
       private
