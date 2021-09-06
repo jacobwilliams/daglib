@@ -41,7 +41,13 @@ module vertex_interface
     end type vertex_t
 
     interface vertex_t
-      procedure from_json
+      
+      module function from_json(me_json) result(me)
+        implicit none
+        type(json_object_t), intent(in) :: me_json
+        type(vertex_t) :: me
+      end function
+      
     end interface
 
     interface
@@ -57,12 +63,6 @@ module vertex_interface
          implicit none
          class(vertex_t), intent(in) :: me
          type(json_object_t) :: me_json
-       end function
-
-       module function from_json(me_json) result(me)
-         implicit none
-         type(json_object_t), intent(in) :: me_json
-         type(vertex_t) :: me
        end function
 
        module subroutine add_edge(me,edge)
