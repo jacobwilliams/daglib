@@ -14,7 +14,6 @@ submodule(vertex_interface) vertex_implementation
 
 contains
 
-!*******************************************************************************
   module procedure to_json
     integer i
     type(json_string_t) :: edges_key
@@ -33,7 +32,7 @@ contains
     edges_key = maybe_key%string()
     me_json = json_object_t([edges_key], [json_element_t(edges_value)])
   end procedure
-!*******************************************************************************
+
   module procedure from_json
     type(error_list_t) :: errors
     type(fallible_json_value_t) :: maybe_edge
@@ -61,7 +60,6 @@ contains
       call assert(.false., "vertex%from_json: edges was not an array", char(edges%to_compact_string()))
     end select
   end procedure
-!*******************************************************************************
 
   module procedure set_edge_vector
 
@@ -78,74 +76,50 @@ contains
 
   end procedure
 
-!*******************************************************************************
-
   module procedure set_vertex_id
     me%ivertex = id
   end procedure
-
-!*******************************************************************************
 
   module procedure set_checking
     me%checking = checking
   end procedure
 
-!*******************************************************************************
-
   module procedure set_marked
     me%marked = marked
   end procedure
-
-!*******************************************************************************
 
   module procedure set_label
     me%label = label
     me%has_label_ = .true.
   end procedure
 
-!*******************************************************************************
-
   module procedure set_attributes
     me%attributes = attributes
   end procedure
-
-!*******************************************************************************
 
   module procedure get_vertex_id
     my_vertex_id = me%ivertex
   end procedure
 
-!*******************************************************************************
-
   module procedure get_edges
     my_edges = me%edges
   end procedure
-
-!*******************************************************************************
 
   module procedure get_checking
     my_checking = me%checking
   end procedure
 
-!*******************************************************************************
-
   module procedure get_marked
     my_marked = me%marked
   end procedure
-
-!*******************************************************************************
 
   module procedure get_label
     my_label = me%label
   end procedure
 
-!*******************************************************************************
-
   module procedure get_attributes
     my_attributes = me%attributes
   end procedure
-
-!*******************************************************************************
 
   module procedure add_edge
 
@@ -160,32 +134,22 @@ contains
 
   end procedure
 
-!*******************************************************************************
-
   module procedure has_label
     allocated_label = me%has_label_
   end procedure
-
-!*******************************************************************************
 
   module procedure has_attributes
     allocated_attributes = allocated(me%attributes)
   end procedure
 
-!*******************************************************************************
-
   module procedure read_formatted
     error stop "vertex%read_formatted unimplemented"
   end procedure
-
-!*******************************************************************************
 
   module procedure write_formatted
     write(unit, '(a)') '{ "edges" : ['
     write(unit, '(*(I0,:,","))') me%edges
     write(unit, '(a)') '] }'
   end procedure
-
-!*******************************************************************************
 
 end submodule
