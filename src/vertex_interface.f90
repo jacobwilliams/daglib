@@ -17,8 +17,8 @@ module vertex_interface
         private
         integer, public, allocatable  :: edges(:)
 !        integer, allocatable          :: edges(:)  -  should be private, but a bug in GCC needs it to be public.  When fixed, this will be private again
-        integer                       :: ivertex = 0
-        logical                       :: checking = .false., marked = .false., has_label_ = .false.
+        integer                       :: identifier_
+        logical                       :: checking = .false., marked = .false., has_label_ = .false., defined_ = .false.
         type(varying_string)          :: label
         character(len=:), allocatable :: attributes
     contains
@@ -46,6 +46,15 @@ module vertex_interface
         implicit none
         type(json_object_t), intent(in) :: me_json
         type(vertex_t) :: me
+      end function
+  
+      pure module function construct(identifier, edges, label, attributes) result(new_vertex)
+        implicit none
+        integer, intent(in) :: identifier
+        integer, intent(in) :: edges(:)
+        type(varying_string), intent(in) :: label
+        character(len=*), intent(in) :: attributes
+        type(vertex_t) new_vertex
       end function
       
     end interface

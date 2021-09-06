@@ -37,7 +37,19 @@ module dag_interface
     end type dag_t
 
     interface dag_t
-      procedure from_json
+
+      module function from_json(me_json) result(me)
+        implicit none
+        type(json_object_t), intent(in) :: me_json
+        type(dag_t) :: me
+      end function
+
+      module function construct(vertices) result(new_dag)
+        implicit none
+        type(vertex_t), intent(in) :: vertices(:)
+        type(dag_t) new_dag
+      end function
+
     end interface
 
     interface
@@ -46,12 +58,6 @@ module dag_interface
         implicit none
         class(dag_t), intent(in) :: me
         type(json_object_t) :: me_json
-      end function
-
-      module function from_json(me_json) result(me)
-        implicit none
-        type(json_object_t), intent(in) :: me_json
-        type(dag_t) :: me
       end function
 
       pure module function dag_get_num_vertices(me) result(num_vertices)

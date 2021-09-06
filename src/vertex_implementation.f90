@@ -33,6 +33,15 @@ contains
     me_json = json_object_t([edges_key], [json_element_t(edges_value)])
   end procedure
 
+  module procedure construct
+    new_vertex%identifier_ = identifier
+    new_vertex%edges = edges
+    new_vertex%label = label
+    new_vertex%attributes = attributes
+    new_vertex%has_label_ = .true.
+    new_vertex%defined_ = .true.
+  end procedure
+
   module procedure from_json
     type(error_list_t) :: errors
     type(fallible_json_value_t) :: maybe_edge
@@ -77,7 +86,7 @@ contains
   end procedure
 
   module procedure set_vertex_id
-    me%ivertex = id
+    me%identifier_ = id
   end procedure
 
   module procedure set_checking
@@ -98,7 +107,7 @@ contains
   end procedure
 
   module procedure get_vertex_id
-    my_vertex_id = me%ivertex
+    my_vertex_id = me%identifier_
   end procedure
 
   module procedure get_edges

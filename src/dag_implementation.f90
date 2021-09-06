@@ -30,6 +30,10 @@ contains
      me_json = json_object_t([vertices_key], [json_element_t(vertices_value)])
    end procedure
 
+   module procedure construct
+     new_dag%vertices = vertices
+   end procedure
+
    module procedure from_json
      type(vertex_t) :: dag_vertex
      type(error_list_t) :: errors
