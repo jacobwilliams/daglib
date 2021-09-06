@@ -9,18 +9,20 @@ authors:
   - name: Damian Rouson^[Corresponding author.]
     orcid: 0000-0002-2344-868X
     affiliation: 1
-  - name: Brad Richardson
-    orcid: 0000-0002-3205-2169
-    affiliation: 1
   - name: Robert Singleterry
     orcid: 0000-0002-5725-8825
     affiliation: 2
+  - name: Brad Richardson
+    orcid: 0000-0002-3205-2169
+    affiliation: 3
 affiliations:
- - name: Sourcery Institute
+ - name: Lawrence Berkeley National Laboratory and Archaeologic Inc.
    index: 1
  - name: NASA Langley Research Center
    index: 2
-date: 24 November 2020
+ - name: Archaeologic Inc.
+   index: 3
+date: 5 September 2021
 bibliography: paper.bib
 
 ---
