@@ -1,91 +1,81 @@
 program labeled_dag_output
   use dag_interface, only : dag_t
+  use vertex_interface, only : vertex_t
+  use iso_varying_string, only : var_str, varying_string
   implicit none
 
-  type module_name_t
-    character(len=:), allocatable :: module_name
-  end type
-
-  type(module_name_t), allocatable :: name_list(:)
-  type(dag_t) :: module_dependencies
-
   enum, bind(C)
-    ! a topologically sorted enumeration of the items in the dependency tree
     enumerator :: &
-    build_feats=1, application_generator_m, image_m, data_location_map_m, application_m, dag_interface, task_item_m, & 
-    payload_m, task_m, mailbox_m, assert_m, application_s, payload_s, data_location_map_s, image_s, task_item_s
+    assert_m=1, dag_m, payload_m, compile_m, data_loc_map_m, task_m, task_item_m, app_m, app_generator_m, image_m, main, &
+    task_item_s, compile_s, app_generator_s, data_loc_map_s, payload_s, app_s, mailbox_m, image_s, final_task_m, final_task_s
   end enum
 
-  integer, parameter :: vertices(*) = [ &
-    build_feats,   application_generator_m, image_m, data_location_map_m, application_m, dag_interface, task_item_m, & 
-    payload_m, task_m, mailbox_m, assert_m, application_s, payload_s, data_location_map_s, image_s, task_item_s &
-  ]
-  integer, parameter :: num_vertices = size(vertices)
+  integer, parameter ::  num_vertices = size([ &
+    assert_m, dag_m, payload_m, compile_m, data_loc_map_m, task_m, task_item_m, app_m, app_generator_m, image_m, main, &
+    task_item_s, compile_s, app_generator_s, data_loc_map_s, payload_s, app_s, mailbox_m, image_s , final_task_m, final_task_s &
+  ])
 
-  allocate(name_list(num_vertices))
+  type(varying_string) names(num_vertices)
 
-  name_list(build_feats)             = module_name_t("build_feats")
-  name_list(application_generator_m) = module_name_t("application_generator_m")
-  name_list(image_m                ) = module_name_t("image_m")
-  name_list(data_location_map_m    ) = module_name_t("data_location_map_m")
-  name_list(application_m          ) = module_name_t("application_m")
-  name_list(dag_interface          ) = module_name_t("dag_interface")
-  name_list(task_item_m            ) = module_name_t("task_item_m")
-  name_list(payload_m              ) = module_name_t("payload_m")
-  name_list(task_m                 ) = module_name_t("task_m")
-  name_list(mailbox_m              ) = module_name_t("mailbox_m")
-  name_list(assert_m   ) = module_name_t("assert_m")
-  name_list(application_s          ) = module_name_t("application_s")
-  name_list(payload_s              ) = module_name_t("payload_s")
-  name_list(data_location_map_s    ) = module_name_t("data_location_map_s")
-  name_list(image_s                ) = module_name_t("image_s")
-  name_list(task_item_s            ) = module_name_t("task_item_s")
-
-  call module_dependencies%set_vertices(num_vertices)
-  block 
-    integer i
-
-    do i = 1, num_vertices
-      call module_dependencies%set_vertex_label(i, name_list(i)%module_name)
-    end do
-
-  end block
-  call module_dependencies%set_edges(build_feats, [application_generator_m, image_m])   
-  call module_dependencies%set_edges(image_m, [data_location_map_m, application_m])
-  call module_dependencies%set_edges(application_m, [dag_interface, task_item_m])
-  call module_dependencies%set_edges(task_item_m, [data_location_map_m, payload_m, task_m])
-  call module_dependencies%set_edges(task_m, [data_location_map_m, payload_m])
-  call module_dependencies%set_edges(mailbox_m, [payload_m])
-  call module_dependencies%set_edges(application_s, [application_m, assert_m])
-  call module_dependencies%set_edges(payload_s, [payload_m])
-  call module_dependencies%set_edges(data_location_map_s, [data_location_map_m])
-  call module_dependencies%set_edges(image_s, [image_m])
-  call module_dependencies%set_edges(task_item_s, [task_item_m])
- 
-  block
-    integer i
-    character(len=*),                   parameter :: non_leaf_color = 'shape=square,fillcolor="SlateGray1",style=filled'
-    character(len=len(non_leaf_color)), parameter :: leaf_color     = 'shape=circle,fillcolor="cornsilk",style=filled'
-    integer, parameter :: leaf_nodes(*) = &
-      [application_generator_m, data_location_map_m, dag_interface, payload_m, &
-      assert_m, application_s, payload_s, data_location_map_s, image_s, task_item_s]
+  names(assert_m) = var_str("assert_m")
+  names(dag_m) = var_str("dag_m")
+  names(payload_m) = var_str("payload_m")
+  names(compile_m) = var_str("compile_m")
+  names(data_loc_map_m) = var_str("data_loc_map_m")
+  names(task_m) = var_str("task_m")
+  names(task_item_m) = var_str("task_item_m")
+  names(app_m) = var_str("app_m")
+  names(app_generator_m) = var_str("app_generator_m")
+  names(image_m) = var_str("image_m")
+  names(main) = var_str("main")
+  names(task_item_s) = var_str("task_item_s")
+  names(compile_s) = var_str("compile_s")
+  names(app_generator_s) = var_str("app_generator_s")
+  names(data_loc_map_s) = var_str("data_loc_map_s")
+  names(payload_s) = var_str("payload_s")
+  names(app_s) = var_str("app_s")
+  names(mailbox_m) = var_str("mailbox_m")
+  names(image_s) = var_str("image_s")
+  names(final_task_m) = var_str("final_task_m")
+  names(final_task_s) = var_str("final_task_s")
     
-    do i = 1, num_vertices
-      associate(node_color => merge(leaf_color, non_leaf_color, any(i==leaf_nodes)))
-        call module_dependencies%set_vertex_attributes(i, node_color)
-      end associate
-    end do
-
-  end block
-
   block
+    character(len=*),                   parameter :: external_ = 'shape=square,fillcolor="green",style=filled'
+    character(len=*),                   parameter :: root     = 'shape=circle,fillcolor="white",style=filled'
+    character(len=*),                   parameter :: branch = 'shape=square,fillcolor="SlateGray1",style=filled'
+    character(len=len(branch)), parameter :: leaf     = 'shape=circle,fillcolor="cornsilk",style=filled'
     character(len=*), parameter :: base_name= 'feats-dependencies'
     character(len=*), parameter :: digraph_file = base_name // '.dot'
     character(len=*), parameter :: output_file = base_name // '.pdf'
-
-    call module_dependencies%save_digraph(digraph_file, 'RL', 300)
-    call execute_command_line('dot -Tpdf -o ' // output_file // ' ' // digraph_file)
-    print *, new_line(''), " main: module_depenencies DAG written to " // output_file
+    
+    associate(feats => &
+      dag_t([ &
+        vertex_t(assert_m,        [integer::],                            names(assert_m), var_str(external_)) &
+       ,vertex_t(dag_m,           [integer:: ],                           names(dag_m), var_str(external_)) &
+       ,vertex_t(payload_m,       [integer::],                            names(payload_m), var_str(leaf)) &
+       ,vertex_t(compile_m,       [integer:: ],                           names(compile_m), var_str(leaf)) &
+       ,vertex_t(data_loc_map_m,  [integer::],                            names(data_loc_map_m), var_str(leaf)) &
+       ,vertex_t(task_m,          [payload_m],                            names(task_m), var_str(branch)) &
+       ,vertex_t(task_item_m,     [task_m],                               names(task_item_m), var_str(leaf)) &
+       ,vertex_t(app_m,           [dag_m, task_item_m],                   names(app_m), var_str(branch)) &
+       ,vertex_t(app_generator_m, [app_m, dag_m, task_item_m, compile_m], names(app_generator_m), var_str(branch)) &
+       ,vertex_t(image_m,         [app_m, data_loc_map_m],                names(image_m), var_str(branch)) &
+       ,vertex_t(main,            [app_generator_m, image_m],             names(main), var_str(root)) &
+       ,vertex_t(task_item_s,     [task_item_m],                          names(task_item_s), var_str(root)) &
+       ,vertex_t(compile_s,       [compile_m],                            names(compile_s), var_str(branch)) &
+       ,vertex_t(app_generator_s, [app_generator_m],                      names(app_generator_s), var_str(root)) &
+       ,vertex_t(data_loc_map_s,  [data_loc_map_m],                       names(data_loc_map_s), var_str(root)) &
+       ,vertex_t(payload_s,       [payload_m],                            names(payload_s), var_str(root)) &
+       ,vertex_t(app_s,           [app_m, assert_m],                      names(app_s), var_str(root)) &
+       ,vertex_t(mailbox_m,       [payload_m],                            names(mailbox_m), var_str(branch)) &
+       ,vertex_t(image_s,         [image_m, mailbox_m],                   names(image_s), var_str(root)) &
+       ,vertex_t(final_task_m,    [data_loc_map_m, payload_m, task_m],    names(final_task_m), var_str(branch)) &
+       ,vertex_t(final_task_s,    [final_task_m],                         names(final_task_s), var_str(root)) &
+      ]))
+      call feats%save_digraph(digraph_file, 'RL', 300)
+      call execute_command_line('dot -Tpdf -o ' // output_file // ' ' // digraph_file)
+      print *, new_line(''), " main: feats DAG written to " // output_file
+    end associate
   end block
 
 end program

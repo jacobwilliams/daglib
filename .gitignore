@@ -36,3 +36,7 @@ doc/html
 
 # FORD Documentation
 *.s
+
+# Output files
+*.dot
+*.pdf
