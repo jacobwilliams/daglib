@@ -52,8 +52,7 @@ module vertex_interface
         implicit none
         integer, intent(in) :: identifier
         integer, intent(in) :: edges(:)
-        type(varying_string), intent(in) :: label
-        character(len=*), intent(in) :: attributes
+        type(varying_string), intent(in) :: label, attributes
         type(vertex_t) new_vertex
       end function
       

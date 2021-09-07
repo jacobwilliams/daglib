@@ -37,7 +37,7 @@ contains
     new_vertex%identifier_ = identifier
     new_vertex%edges = edges
     new_vertex%label = label
-    new_vertex%attributes = attributes
+    new_vertex%attributes = char(attributes)
     new_vertex%has_label_ = .true.
     new_vertex%defined_ = .true.
   end procedure
