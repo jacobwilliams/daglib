@@ -5,14 +5,14 @@ program main
     call run()
 contains
     subroutine run()
-        use dag_input_output_test, only: &
-                dag_input_output_dag_input_output => test_dag_input_output
+        use dag_test, only: &
+                dag_dag_construction => test_dag_construction
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
         type(test_item_t) :: individual_tests(1)
 
-        individual_tests(1) = dag_input_output_dag_input_output()
+        individual_tests(1) = dag_dag_construction()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
