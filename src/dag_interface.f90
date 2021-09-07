@@ -17,24 +17,19 @@ module dag_interface
     private
     type(vertex_t),dimension(:),allocatable :: vertices
   contains
-    procedure, public :: to_json
-    procedure, public :: save_digraph => dag_save_digraph
-    generic, public :: write(formatted) => write_formatted
-    generic, public :: read(formatted) => read_formatted
+    procedure :: to_json
+    procedure :: save_digraph => dag_save_digraph
+    generic :: write(formatted) => write_formatted
+    generic :: read(formatted) => read_formatted
 
     procedure,private :: write_formatted
     procedure,private :: read_formatted
 
-    procedure, private :: generate_digraph           => dag_generate_digraph
-    procedure, private         :: set_vertex_label
-    procedure, private         :: set_vertex_attributes
+    procedure, private  :: set_vertex_label
     procedure, private  :: set_vertices               => dag_set_vertices
     procedure, private  :: set_edges                  => dag_set_edges
     procedure, private  :: toposort                   => dag_toposort
     procedure, private  :: generate_dependency_matrix => dag_generate_dependency_matrix
-    procedure, private  :: get_num_vertices           => dag_get_num_vertices
-    procedure, private  :: get_edges                  => dag_get_edges
-    procedure, private  :: get_dependencies           => dag_get_dependencies
   end type
 
   interface dag_t
@@ -61,28 +56,6 @@ module dag_interface
       type(json_object_t) :: me_json
     end function
 
-    pure module function dag_get_num_vertices(me) result(num_vertices)
-      implicit none
-      class(dag_t), intent(in) :: me
-      integer num_vertices
-    end function
-
-    pure module function dag_get_edges(me,ivertex) result(edges)
-      !! Result: array of the vertex numbers on which this vertex depends
-      implicit none
-      class(dag_t),intent(in)            :: me
-      integer,intent(in)               :: ivertex
-      integer,dimension(:),allocatable :: edges
-    end function dag_get_edges
-
-    pure module function dag_get_dependencies(me,ivertex) result(dep)
-      !! Result: array of the vertices that depend on ivertex vertex
-      implicit none
-      class(dag_t),intent(in)            :: me
-      integer,intent(in)               :: ivertex
-      integer,dimension(:),allocatable :: dep
-    end function dag_get_dependencies
-
     module subroutine dag_set_vertices(me,nvertices)
       !! Allocates the vertices variable and fills it with the array index number
       implicit none
@@ -95,13 +68,6 @@ module dag_interface
       class(dag_t), intent(inout)  :: me
       integer, intent(in)          :: ivertex(:)
       type(varying_string), intent(in), optional :: label(:)
-    end subroutine
-
-    module subroutine set_vertex_attributes(me, ivertex, attributes)
-      implicit none
-      class(dag_t), intent(inout)  :: me
-      integer, intent(in)          :: ivertex
-      character(len=*), intent(in) :: attributes
     end subroutine
 
     module subroutine dag_set_edges(me,ivertex,edges)
@@ -119,17 +85,6 @@ module dag_interface
       integer,dimension(:),allocatable,intent(out) :: order !! sorted vertex order
       integer,intent(out)                          :: istat !! 0 for no circular dependencies, 1 for circular dependencies
     end subroutine dag_toposort
-
-    module function dag_generate_digraph(me,rankdir,dpi) result(str)
-      !! - Result is the string to write out to a *.dot file. (Called by dag_save_digraph())
-      implicit none
-      class(dag_t),intent(in)                :: me
-      character(len=:),allocatable         :: str
-      character(len=*),intent(in),optional :: rankdir
-        !! - Rank Direction which are applicable inputs to the -rankdir option on the digraph command
-      integer,intent(in),optional          :: dpi
-        !! - dots per inch 
-    end function dag_generate_digraph
 
     module subroutine dag_generate_dependency_matrix(me,mat)
       !! Output array in which .true. elements are located at locations corresponding to dependencies

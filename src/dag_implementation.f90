@@ -66,33 +66,6 @@ contains
      end select
    end procedure
 
-  module procedure dag_get_num_vertices
-    num_vertices = size(me%vertices)
-  end procedure
-
-  module procedure dag_get_edges
-
-    call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_edges: index in bounds")
-    edges = me%vertices(ivertex)%edges
-
-  end procedure
-
-  module procedure dag_get_dependencies
-
-    integer :: i
-
-    call assert(ivertex>=lbound(me%vertices,1) .and. ivertex<=ubound(me%vertices,1),"dag_get_dependencies: index in bounds")
-
-    allocate(dep(0))
-
-    do i=1, size(me%vertices)
-      if (allocated(me%vertices(i)%edges)) then
-        if (any(me%vertices(i)%edges == ivertex)) dep = [dep, i]
-      end if
-    end do
-
-  end procedure
-
   module procedure dag_set_vertices
 
     integer :: i
@@ -119,10 +92,6 @@ contains
       end if
     end associate
 
-  end procedure
-
-  module procedure set_vertex_attributes
-    call me%vertices(ivertex)%set_attributes(attributes)
   end procedure
 
   module procedure dag_set_edges
@@ -184,60 +153,6 @@ contains
 
   end procedure dag_toposort
 
-  module procedure dag_generate_digraph
-
-    integer :: i,j
-    integer :: n_edges
-    character(len=:),allocatable :: attributes, label
-
-    character(len=*),parameter :: tab = '  '
-    character(len=*),parameter :: newline = new_line(' ')
-
-    str = 'digraph G {'//newline//newline
-    if (present(rankdir)) &
-        str = str//tab//'rankdir='//rankdir//newline//newline
-    if (present(dpi)) &
-        str = str//tab//'graph [ dpi = '//integer_to_string(dpi)//' ]'//newline//newline
-
-    ! define the vertices:
-    do i=1,size(me%vertices)
-      associate( &
-        has_label      => me%vertices(i)%has_label(), &
-        has_attributes => me%vertices(i)%has_attributes() &
-      )
-
-        if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%get_label()))//'"'
-        if (has_label .and. has_attributes) then
-            attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//','//label//']'
-        elseif (has_label .and. .not. has_attributes) then
-            attributes = '['//label//']'
-        elseif (.not. has_label .and. has_attributes) then
-            attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//']'
-        else ! neither
-            attributes = ''
-        end if
-      end associate
-      str = str//tab//integer_to_string(i)//' '//attributes//newline
-      if (i==size(me%vertices)) str = str//newline
-    end do
-
-    ! define the dependencies:
-    do i=1,size(me%vertices)
-        if (allocated(me%vertices(i)%edges)) then
-            n_edges = size(me%vertices(i)%edges)
-            str = str//tab//integer_to_string(i)//merge(' -> ','    ',n_edges/=0)
-            do j=1,n_edges
-                ! comma-separated list:
-                str = str//integer_to_string(me%vertices(i)%edges(j))
-                if (n_edges>1 .and. j<n_edges) str = str//','
-            end do
-            str = str//';'//newline
-        end if
-    end do
-
-    str = str//newline//'}'
-
-  end procedure dag_generate_digraph
 
   module procedure dag_generate_dependency_matrix
 
@@ -265,7 +180,7 @@ contains
     integer :: iunit, istat
     character(len=:),allocatable :: diagraph
 
-    diagraph = me%generate_digraph(rankdir,dpi)
+    diagraph = generate_digraph(me, rankdir, dpi)
 
     open(newunit=iunit,file=filename,status='REPLACE',iostat=istat)
 
@@ -276,6 +191,70 @@ contains
     end if
 
     close(iunit,iostat=istat)
+  contains
+
+    function generate_digraph(me,rankdir,dpi) result(str)
+      !! - Result is the string to write out to a *.dot file. (Called by dag_save_digraph())
+      implicit none
+      class(dag_t),intent(in)                :: me
+      character(len=:),allocatable         :: str 
+      character(len=*),intent(in),optional :: rankdir
+        !! - Rank Direction which are applicable inputs to the -rankdir option on the digraph command
+      integer,intent(in),optional          :: dpi 
+        !! - dots per inch 
+
+      integer :: i,j
+      integer :: n_edges
+      character(len=:),allocatable :: attributes, label
+
+      character(len=*),parameter :: tab = '  '
+      character(len=*),parameter :: newline = new_line(' ')
+
+      str = 'digraph G {'//newline//newline
+      if (present(rankdir)) &
+          str = str//tab//'rankdir='//rankdir//newline//newline
+      if (present(dpi)) &
+          str = str//tab//'graph [ dpi = '//integer_to_string(dpi)//' ]'//newline//newline
+
+      ! define the vertices:
+      do i=1,size(me%vertices)
+        associate( &
+          has_label      => me%vertices(i)%has_label(), &
+          has_attributes => me%vertices(i)%has_attributes() &
+        )
+
+          if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%get_label()))//'"'
+          if (has_label .and. has_attributes) then
+              attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//','//label//']'
+          elseif (has_label .and. .not. has_attributes) then
+              attributes = '['//label//']'
+          elseif (.not. has_label .and. has_attributes) then
+              attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//']'
+          else ! neither
+              attributes = ''
+          end if
+        end associate
+        str = str//tab//integer_to_string(i)//' '//attributes//newline
+        if (i==size(me%vertices)) str = str//newline
+      end do
+
+      ! define the dependencies:
+      do i=1,size(me%vertices)
+          if (allocated(me%vertices(i)%edges)) then
+              n_edges = size(me%vertices(i)%edges)
+              str = str//tab//integer_to_string(i)//merge(' -> ','    ',n_edges/=0)
+              do j=1,n_edges
+                  ! comma-separated list:
+                  str = str//integer_to_string(me%vertices(i)%edges(j))
+                  if (n_edges>1 .and. j<n_edges) str = str//','
+              end do
+              str = str//';'//newline
+          end if
+      end do
+
+      str = str//newline//'}'
+
+    end function generate_digraph
 
   end procedure
 
