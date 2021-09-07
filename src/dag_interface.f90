@@ -22,12 +22,9 @@ module dag_interface
     generic :: write(formatted) => write_formatted
     generic :: read(formatted) => read_formatted
 
-    procedure,private :: write_formatted
-    procedure,private :: read_formatted
+    procedure, private :: write_formatted
+    procedure, private :: read_formatted
 
-    procedure, private  :: set_vertex_label
-    procedure, private  :: set_vertices               => dag_set_vertices
-    procedure, private  :: set_edges                  => dag_set_edges
     procedure, private  :: toposort                   => dag_toposort
     procedure, private  :: generate_dependency_matrix => dag_generate_dependency_matrix
   end type
@@ -55,28 +52,6 @@ module dag_interface
       class(dag_t), intent(in) :: me
       type(json_object_t) :: me_json
     end function
-
-    module subroutine dag_set_vertices(me,nvertices)
-      !! Allocates the vertices variable and fills it with the array index number
-      implicit none
-      class(dag_t),intent(inout)         :: me
-      integer,intent(in)               :: nvertices
-    end subroutine dag_set_vertices
-
-    module subroutine set_vertex_label(me, ivertex, label)
-      implicit none
-      class(dag_t), intent(inout)  :: me
-      integer, intent(in)          :: ivertex(:)
-      type(varying_string), intent(in), optional :: label(:)
-    end subroutine
-
-    module subroutine dag_set_edges(me,ivertex,edges)
-      !! Allocates the edges for that vertex and fills them with the edges passed
-      implicit none
-      class(dag_t),intent(inout)        :: me
-      integer,intent(in)              :: ivertex 
-      integer,dimension(:),intent(in) :: edges
-    end subroutine dag_set_edges
 
     module subroutine dag_toposort(me,order,istat)
       !! Provide array of vertex numbers order in a way that respects dependencies
