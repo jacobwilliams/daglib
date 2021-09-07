@@ -17,24 +17,26 @@ module dag_interface
       private
       type(vertex_t),dimension(:),allocatable :: vertices
     contains
-      procedure,public  :: to_json
-      procedure,private :: generate_digraph           => dag_generate_digraph
-      procedure         :: set_vertex_label
-      procedure         :: set_vertex_attributes
-      procedure,public  :: set_vertices               => dag_set_vertices
-      procedure,public  :: set_edges                  => dag_set_edges
-      procedure,public  :: toposort                   => dag_toposort
-      procedure,public  :: generate_dependency_matrix => dag_generate_dependency_matrix
-      procedure,public  :: save_digraph               => dag_save_digraph
-      procedure,public  :: get_num_vertices           => dag_get_num_vertices
-      procedure,public  :: get_edges                  => dag_get_edges
-      procedure,public  :: get_dependencies           => dag_get_dependencies
+      procedure, public :: to_json
+      procedure, public :: save_digraph => dag_save_digraph
+      generic, public :: write(formatted) => write_formatted
+      generic, public :: read(formatted) => read_formatted
 
-      procedure,private :: read_formatted
-      generic,  public  :: read(formatted) => read_formatted
       procedure,private :: write_formatted
-      generic,  public  :: write(formatted) => write_formatted
-    end type dag_t
+      procedure,private :: read_formatted
+
+      procedure, private :: generate_digraph           => dag_generate_digraph
+      procedure, private         :: set_vertex_label
+      procedure, private         :: set_vertex_attributes
+      procedure, private  :: set_vertices               => dag_set_vertices
+      procedure, private  :: set_edges                  => dag_set_edges
+      procedure, private  :: toposort                   => dag_toposort
+      procedure, private  :: generate_dependency_matrix => dag_generate_dependency_matrix
+      procedure, private  :: get_num_vertices           => dag_get_num_vertices
+      procedure, private  :: get_edges                  => dag_get_edges
+      procedure, private  :: get_dependencies           => dag_get_dependencies
+
+    end type
 
     interface dag_t
 
