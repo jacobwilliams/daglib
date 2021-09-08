@@ -18,15 +18,15 @@ module dag_interface
     type(vertex_t),dimension(:),allocatable :: vertices
   contains
     procedure :: to_json
-    procedure :: save_digraph => dag_save_digraph
+    procedure :: save_digraph
+    procedure :: dependency_matrix
     generic :: write(formatted) => write_formatted
     generic :: read(formatted) => read_formatted
 
     procedure, private :: write_formatted
     procedure, private :: read_formatted
 
-    procedure, private  :: toposort                   => dag_toposort
-    procedure, private  :: generate_dependency_matrix => dag_generate_dependency_matrix
+    procedure, private  :: toposort
   end type
 
   interface dag_t
@@ -34,47 +34,47 @@ module dag_interface
     module function from_json(json_object) result(dag)
       implicit none
       type(json_object_t), intent(in) :: json_object
-      type(dag_t) :: dag
+      type(dag_t) dag
     end function
 
-    module function construct(vertices) result(new_dag)
+    module function construct(vertices) result(dag)
       implicit none
       type(vertex_t), intent(in) :: vertices(:)
-      type(dag_t) new_dag
+      type(dag_t) dag
     end function
 
   end interface
 
   interface
 
-    module function to_json(me) result(me_json)
+    module function to_json(me) result(json_object)
       implicit none
       class(dag_t), intent(in) :: me
-      type(json_object_t) :: me_json
+      type(json_object_t) json_object
     end function
 
-    module subroutine dag_toposort(me,order,istat)
+    module subroutine toposort(me,order,istat)
       !! Provide array of vertex numbers order in a way that respects dependencies
       implicit none
-      class(dag_t),intent(inout)                   :: me
-      integer,dimension(:),allocatable,intent(out) :: order !! sorted vertex order
-      integer,intent(out)                          :: istat !! 0 for no circular dependencies, 1 for circular dependencies
-    end subroutine dag_toposort
+      class(dag_t), intent(inout) :: me
+      integer, allocatable, intent(out) :: order(:) !! sorted vertex order
+      integer, intent(out) :: istat !! 0 for no circular dependencies, 1 for circular dependencies
+    end subroutine
 
-    module subroutine dag_generate_dependency_matrix(me,mat)
+    module subroutine dependency_matrix(me,mat)
       !! Output array in which .true. elements are located at locations corresponding to dependencies
       implicit none
       class(dag_t),intent(in) :: me
       logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
-    end subroutine dag_generate_dependency_matrix
+    end subroutine
 
-    module subroutine dag_save_digraph(me,filename,rankdir,dpi)
+    module subroutine save_digraph(me,filename,rankdir,dpi)
       implicit none
       class(dag_t),intent(in) :: me
       character(len=*),intent(in),optional :: filename !! digraph output file name
       character(len=*),intent(in),optional :: rankdir !! rank direction with right-to-left orientation (e.g. 'RL')
       integer,intent(in),optional :: dpi !! resolution in dots per inch (e.g. 300)
-    end subroutine dag_save_digraph
+    end subroutine
 
     module subroutine read_formatted(me, unit, iotype, vlist, iostat, iomsg)
       !! Read a DAG from a JSON file using Everythingfunctional/jsonff

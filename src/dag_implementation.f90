@@ -17,34 +17,31 @@ submodule(dag_interface) dag_implementation
 contains
 
   module procedure from_json
-    !type(fallible_json_value_t) :: maybe_vertices
-    type(fallible_json_value_t) :: maybe_vertex
+    type(fallible_json_value_t) :: maybe_vertices
 
-    associate(maybe_vertices => json_object%get_element("vertices"))
-      associate(errors => maybe_vertices%errors())
-        call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+    associate(errors => maybe_vertices%errors())
+      call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+    end associate
+
+    select type (vertices => maybe_vertices%value_())
+    type is (json_array_t)
+
+      associate(nvertices => vertices%length())
+        allocate(dag%vertices(nvertices))
+        block
+          integer i
+          call dag%vertices%set_vertex_id( [(i,i=1,nvertices)] )
+        end block
       end associate
 
-      select type (vertices => maybe_vertices%value_())
-      class default
-        call assert(.false., "dag%from_json: vertices was not an array", char(vertices%to_compact_string()))
-      type is (json_array_t)
-
-        associate(nvertices => vertices%length())
-          allocate(dag%vertices(nvertices))
-          block
-            integer :: i
-            call dag%vertices%set_vertex_id( [(i,i=1,nvertices)] )
-          end block
-        end associate
-
-        block
-          integer :: i
-          do i = 1, vertices%length()
-            maybe_vertex = vertices%get_element(i)
+      block
+        integer i
+        do i = 1, vertices%length()
+          associate(maybe_vertex => vertices%get_element(i))
             associate(errors => maybe_vertex%errors())
               call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
             end associate
+
             select type (vertex_json => maybe_vertex%value_())
             class default
               call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%to_compact_string()))
@@ -53,33 +50,33 @@ contains
                 call dag%vertices(i)%set_edges(dag_vertex%edges)
               end associate
             end select
-          end do
-        end block
-      end select
-    end associate
+          end associate
+        end do
+      end block
+
+    class default
+      call assert(.false., "dag%from_json: vertices was not an array", char(vertices%to_compact_string()))
+    end select
   end procedure
 
    module procedure to_json
-     type(error_list_t) :: errors
-     type(fallible_json_string_t) :: maybe_key
-     type(json_string_t) :: vertices_key
-     type(json_array_t) vertices_value
-
-     vertices_value = json_array_t(json_element_t(me%vertices%to_json()))
-     maybe_key = fallible_json_string_t("vertices")
-     errors = maybe_key%errors()
-     call assert(.not. errors%has_any(), "dag%to_json: .not. errors%has_any()", char(errors%to_string()))
-     vertices_key = maybe_key%string()
-     me_json = json_object_t([vertices_key], [json_element_t(vertices_value)])
+     associate(vertices_value => json_array_t(json_element_t(me%vertices%to_json())))
+       associate(maybe_key => fallible_json_string_t("vertices"))
+         associate(errors => maybe_key%errors())
+           call assert(.not. errors%has_any(), "dag%to_json: .not. errors%has_any()", char(errors%to_string()))
+           associate(vertices_key => maybe_key%string())
+             json_object = json_object_t([vertices_key], [json_element_t(vertices_value)])
+           end associate
+         end associate
+       end associate
+     end associate
    end procedure
 
    module procedure construct
-     new_dag%vertices = vertices
+     dag%vertices = vertices
    end procedure
 
-
-
-  module procedure dag_toposort
+  module procedure toposort
 
     integer :: i,iorder
 
@@ -130,12 +127,11 @@ contains
 
     end subroutine dfs
 
-  end procedure dag_toposort
+  end procedure toposort
 
 
-  module procedure dag_generate_dependency_matrix
+  module procedure dependency_matrix
 
-    integer :: i
 
     associate(num_vertices => size(me%vertices))
       if (num_vertices > 0) then
@@ -143,18 +139,19 @@ contains
         allocate(mat(num_vertices,num_vertices))
         mat = .false.
 
-        do i=1,num_vertices
-            if (allocated(me%vertices(i)%edges)) then
-                mat(i,me%vertices(i)%edges) = .true.
-            end if
-        end do
+        block
+        integer i
+          do concurrent(i=1:num_vertices)
+            if (allocated(me%vertices(i)%edges)) mat(i,me%vertices(i)%edges) = .true.
+          end do
+        end block
 
       end if
     end associate
 
   end procedure
 
-  module procedure dag_save_digraph
+  module procedure save_digraph
 
     integer :: iunit, istat
     character(len=:),allocatable :: diagraph
@@ -173,7 +170,7 @@ contains
   contains
 
     function generate_digraph(me,rankdir,dpi) result(str)
-      !! - Result is the string to write out to a *.dot file. (Called by dag_save_digraph())
+      !! - Result is the string to write out to a *.dot file. (Called by save_digraph())
       implicit none
       class(dag_t),intent(in)                :: me
       character(len=:),allocatable         :: str 
