@@ -16,6 +16,49 @@ submodule(dag_interface) dag_implementation
 
 contains
 
+  module procedure from_json
+    !type(fallible_json_value_t) :: maybe_vertices
+    type(fallible_json_value_t) :: maybe_vertex
+
+    associate(maybe_vertices => json_object%get_element("vertices"))
+      associate(errors => maybe_vertices%errors())
+        call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+      end associate
+
+      select type (vertices => maybe_vertices%value_())
+      class default
+        call assert(.false., "dag%from_json: vertices was not an array", char(vertices%to_compact_string()))
+      type is (json_array_t)
+
+        associate(nvertices => vertices%length())
+          allocate(dag%vertices(nvertices))
+          block
+            integer :: i
+            call dag%vertices%set_vertex_id( [(i,i=1,nvertices)] )
+          end block
+        end associate
+
+        block
+          integer :: i
+          do i = 1, vertices%length()
+            maybe_vertex = vertices%get_element(i)
+            associate(errors => maybe_vertex%errors())
+              call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+            end associate
+            select type (vertex_json => maybe_vertex%value_())
+            class default
+              call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%to_compact_string()))
+            type is (json_object_t)
+              associate(dag_vertex => vertex_t(vertex_json))
+                call dag%vertices(i)%set_edges(dag_vertex%edges)
+              end associate
+            end select
+          end do
+        end block
+      end select
+    end associate
+  end procedure
+
    module procedure to_json
      type(error_list_t) :: errors
      type(fallible_json_string_t) :: maybe_key
@@ -34,46 +77,6 @@ contains
      new_dag%vertices = vertices
    end procedure
 
-   module procedure from_json
-     type(fallible_json_value_t) :: maybe_vertices
-     type(fallible_json_value_t) :: maybe_vertex
-
-     maybe_vertices = me_json%get_element("vertices")
-     associate(errors => maybe_vertices%errors())
-       call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
-     end associate
-     select type (vertices => maybe_vertices%value_())
-     type is (json_array_t)
-
-       associate(nvertices => vertices%length())
-         allocate(me%vertices(nvertices))
-         block
-           integer :: i
-           call me%vertices%set_vertex_id( [(i,i=1,nvertices)] )
-         end block
-       end associate
-
-       block
-         integer :: i
-         do i = 1, vertices%length()
-           maybe_vertex = vertices%get_element(i)
-           associate(errors => maybe_vertex%errors())
-             call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
-           end associate
-           select type (vertex_json => maybe_vertex%value_())
-           type is (json_object_t)
-             associate(dag_vertex => vertex_t(vertex_json))
-               call me%vertices(i)%set_edges(dag_vertex%edges)
-             end associate
-           class default
-             call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%to_compact_string()))
-           end select
-         end do
-       end block
-     class default
-       call assert(.false., "dag%from_json: vertices was not an array", char(vertices%to_compact_string()))
-     end select
-   end procedure
 
 
   module procedure dag_toposort

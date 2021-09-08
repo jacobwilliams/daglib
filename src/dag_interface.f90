@@ -31,10 +31,10 @@ module dag_interface
 
   interface dag_t
 
-    module function from_json(me_json) result(me)
+    module function from_json(json_object) result(dag)
       implicit none
-      type(json_object_t), intent(in) :: me_json
-      type(dag_t) :: me
+      type(json_object_t), intent(in) :: json_object
+      type(dag_t) :: dag
     end function
 
     module function construct(vertices) result(new_dag)
