@@ -37,7 +37,7 @@ module dag_interface
       type(dag_t) dag
     end function
 
-    module function construct(vertices) result(dag)
+    pure module function construct(vertices) result(dag)
       implicit none
       type(vertex_t), intent(in) :: vertices(:)
       type(dag_t) dag
