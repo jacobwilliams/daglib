@@ -97,15 +97,6 @@ contains
     me%marked = marked
   end procedure
 
-  module procedure set_label
-    me%label = label
-    me%has_label_ = .true.
-  end procedure
-
-  module procedure set_attributes
-    me%attributes = attributes
-  end procedure
-
   module procedure get_vertex_id
     my_vertex_id = me%identifier_
   end procedure

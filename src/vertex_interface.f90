@@ -30,9 +30,8 @@ module vertex_interface
         procedure, public  :: set_checking,   get_checking
         procedure, public  :: set_marked,     get_marked
         procedure, public  :: set_vertex_id,  get_vertex_id
-        procedure, public  :: set_label
         procedure, public  :: get_label,      has_label
-        procedure, public  :: set_attributes, get_attributes, has_attributes
+        procedure, public  :: get_attributes, has_attributes
 
         procedure, private :: read_formatted
         generic,   public  :: read(formatted) => read_formatted
@@ -100,19 +99,6 @@ module vertex_interface
          class(vertex_t),intent(inout) :: me
          integer, intent(in) :: id
        end subroutine set_vertex_id
-
-       elemental module subroutine set_label(me,label)
-         implicit none
-         class(vertex_t),intent(inout) :: me
-         type(varying_string), intent(in) :: label
-       end subroutine set_label
-
-       elemental module subroutine set_attributes(me,attributes)
-         !! Set the vertex attributes for digraph output.
-         implicit none
-         class(vertex_t),intent(inout) :: me
-         character(len=*), intent(in) :: attributes
-       end subroutine set_attributes
 
        pure module function get_vertex_id(me) result(my_vertex_id)
          !! Get the vertex number associated with the vertex index.
