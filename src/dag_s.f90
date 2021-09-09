@@ -69,7 +69,7 @@ contains
      block
        type(json_array_t) vertices_value
 
-       vertices_value = json_array_t(json_element_t(me%vertices%to_json())) 
+       vertices_value = json_array_t(json_element_t(self%vertices%to_json())) 
 
        associate(vertices_key => maybe_key%string())
          json_object = json_object_t([vertices_key], [json_element_t(vertices_value)])
@@ -85,7 +85,7 @@ contains
 
     integer :: i,iorder
 
-    associate( num_vertices => size(me%vertices))
+    associate( num_vertices => size(self%vertices))
       if (num_vertices==0) return
 
       allocate(order(num_vertices))
@@ -93,7 +93,7 @@ contains
       iorder = 0  ! index in order array
       istat = 0   ! no errors so far
       do i=1,num_vertices
-        if (.not. me%vertices(i)%get_marked()) call dfs(me%vertices(i))
+        if (.not. self%vertices(i)%get_marked()) call dfs(self%vertices(i))
         if (istat==-1) exit
       end do
     end associate
@@ -118,7 +118,7 @@ contains
             call v%set_checking(.true.)
             if (allocated(v%edges)) then
               do j=1,size(v%edges)
-                call dfs(me%vertices(v%edges(j)))
+                call dfs(self%vertices(v%edges(j)))
                 if (istat==-1) return
               end do
             end if
@@ -138,7 +138,7 @@ contains
   module procedure dependency_matrix
 
 
-    associate(num_vertices => size(me%vertices))
+    associate(num_vertices => size(self%vertices))
       if (num_vertices > 0) then
 
         allocate(mat(num_vertices,num_vertices))
@@ -147,7 +147,7 @@ contains
         block
         integer i
           do concurrent(i=1:num_vertices)
-            if (allocated(me%vertices(i)%edges)) mat(i,me%vertices(i)%edges) = .true.
+            if (allocated(self%vertices(i)%edges)) mat(i,self%vertices(i)%edges) = .true.
           end do
         end block
 
@@ -169,7 +169,7 @@ contains
     integer :: iunit, istat
     character(len=:),allocatable :: diagraph
 
-    diagraph = generate_digraph(me, rankdir, dpi)
+    diagraph = generate_digraph(self, rankdir, dpi)
 
     open(newunit=iunit,file=filename,status='REPLACE',iostat=istat)
 
@@ -182,10 +182,10 @@ contains
     close(iunit,iostat=istat)
   contains
 
-    function generate_digraph(me,rankdir,dpi) result(str)
+    function generate_digraph(self,rankdir,dpi) result(str)
       !! - Result is the string to write out to a *.dot file. (Called by save_digraph())
       implicit none
-      class(dag_t),intent(in)                :: me
+      class(dag_t),intent(in)                :: self
       character(len=:),allocatable         :: str 
       character(len=*),intent(in),optional :: rankdir
         !! - Rank Direction which are applicable inputs to the -rankdir option on the digraph command
@@ -206,35 +206,35 @@ contains
           str = str//tab//'graph [ dpi = '//integer_to_string(dpi)//' ]'//newline//newline
 
       ! define the vertices:
-      do i=1,size(me%vertices)
+      do i=1,size(self%vertices)
         associate( &
-          has_label      => me%vertices(i)%has_label(), &
-          has_attributes => me%vertices(i)%has_attributes() &
+          has_label      => self%vertices(i)%has_label(), &
+          has_attributes => self%vertices(i)%has_attributes() &
         )
 
-          if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%get_label()))//'"'
+          if (has_label) label = 'label="'//trim(adjustl(self%vertices(i)%get_label()))//'"'
           if (has_label .and. has_attributes) then
-              attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//','//label//']'
+              attributes = '['//trim(adjustl(self%vertices(i)%get_attributes()))//','//label//']'
           elseif (has_label .and. .not. has_attributes) then
               attributes = '['//label//']'
           elseif (.not. has_label .and. has_attributes) then
-              attributes = '['//trim(adjustl(me%vertices(i)%get_attributes()))//']'
+              attributes = '['//trim(adjustl(self%vertices(i)%get_attributes()))//']'
           else ! neither
               attributes = ''
           end if
         end associate
         str = str//tab//integer_to_string(i)//' '//attributes//newline
-        if (i==size(me%vertices)) str = str//newline
+        if (i==size(self%vertices)) str = str//newline
       end do
 
       ! define the dependencies:
-      do i=1,size(me%vertices)
-          if (allocated(me%vertices(i)%edges)) then
-              n_edges = size(me%vertices(i)%edges)
+      do i=1,size(self%vertices)
+          if (allocated(self%vertices(i)%edges)) then
+              n_edges = size(self%vertices(i)%edges)
               str = str//tab//integer_to_string(i)//merge(' -> ','    ',n_edges/=0)
               do j=1,n_edges
                   ! comma-separated list:
-                  str = str//integer_to_string(me%vertices(i)%edges(j))
+                  str = str//integer_to_string(self%vertices(i)%edges(j))
                   if (n_edges>1 .and. j<n_edges) str = str//','
               end do
               str = str//';'//newline
@@ -270,7 +270,7 @@ contains
     type(varying_string) :: contents
     type(error_list_t) :: errors
     type(fallible_json_value_t) :: maybe_json
-    type(dag_t) :: me_local
+    type(dag_t) :: self_local
     type(varying_string) :: tmp
 
     call get(unit, contents, iostat = iostat)
@@ -287,9 +287,8 @@ contains
 
     select type (object => maybe_json%value_())
     type is (json_object_t)
-      me_local = from_json(object)
-      me%vertices = me_local%vertices
-      ! call assert(me%defined(), me%error_message)
+      self_local = from_json(object)
+      self%vertices = self_local%vertices
     class default
       call assert(.false., "dag%read_formatted: didn't get a json object")
     end select
@@ -300,7 +299,7 @@ contains
 
     type(json_object_t) :: me_json
 
-    me_json = me%to_json()
+    me_json = self%to_json()
     write(unit,*) char(me_json%to_expanded_string())
 
   end procedure

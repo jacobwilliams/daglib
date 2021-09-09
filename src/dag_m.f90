@@ -49,24 +49,24 @@ module dag_m
 
   interface
 
-    module function to_json(me) result(json_object)
+    module function to_json(self) result(json_object)
       implicit none
-      class(dag_t), intent(in) :: me
+      class(dag_t), intent(in) :: self
       type(json_object_t) json_object
     end function
 
-    module subroutine toposort(me,order,istat)
+    module subroutine toposort(self,order,istat)
       !! Provide array of vertex numbers order in a way that respects dependencies
       implicit none
-      class(dag_t), intent(inout) :: me
+      class(dag_t), intent(inout) :: self
       integer, allocatable, intent(out) :: order(:) !! sorted vertex order
       integer, intent(out) :: istat !! 0 for no circular dependencies, 1 for circular dependencies
     end subroutine
 
-    module subroutine dependency_matrix(me,mat)
+    module subroutine dependency_matrix(self,mat)
       !! Output array in which .true. elements are located at locations corresponding to dependencies
       implicit none
-      class(dag_t),intent(in) :: me
+      class(dag_t),intent(in) :: self
       logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
     end subroutine
 
@@ -85,18 +85,18 @@ module dag_m
       integer, allocatable :: dependency_ids(:)
     end function
 
-    module subroutine save_digraph(me,filename,rankdir,dpi)
+    module subroutine save_digraph(self,filename,rankdir,dpi)
       implicit none
-      class(dag_t),intent(in) :: me
+      class(dag_t),intent(in) :: self
       character(len=*),intent(in),optional :: filename !! digraph output file name
       character(len=*),intent(in),optional :: rankdir !! rank direction with right-to-left orientation (e.g. 'RL')
       integer,intent(in),optional :: dpi !! resolution in dots per inch (e.g. 300)
     end subroutine
 
-    module subroutine read_formatted(me, unit, iotype, vlist, iostat, iomsg)
+    module subroutine read_formatted(self, unit, iotype, vlist, iostat, iomsg)
       !! Read a DAG from a JSON file using Everythingfunctional/jsonff
       implicit none
-      class(dag_t),intent(inout) :: me
+      class(dag_t),intent(inout) :: self
       integer, intent(in) :: unit
       character (len=*), intent(in) :: iotype
       integer, intent(in) :: vlist(:)
@@ -104,9 +104,9 @@ module dag_m
       character (len=*), intent(inout) :: iomsg
     end subroutine
 
-    module subroutine write_formatted(me, unit, iotype, vlist, iostat, iomsg)
+    module subroutine write_formatted(self, unit, iotype, vlist, iostat, iomsg)
       !! Write a DAG to a JSON file using Everythingfunctional/jsonff
-      class(dag_t), intent(in) :: me
+      class(dag_t), intent(in) :: self
       integer, intent(in) :: unit
       character (len=*), intent(in) :: iotype
       integer, intent(in) :: vlist(:)

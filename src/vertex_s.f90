@@ -28,9 +28,9 @@ contains
     call assert(.not. errors%has_any(), "vertex%to_json (edges key): .not. errors%has_any()", char(errors%to_string()))
     edges_key = maybe_key%string()
     
-    if (allocated(me%edges)) then
-      do i = lbound(me%edges, 1), ubound(me%edges, 1)
-        call edges_value%append(json_integer_t(me%edges(i)))
+    if (allocated(self%edges)) then
+      do i = lbound(self%edges, 1), ubound(self%edges, 1)
+        call edges_value%append(json_integer_t(self%edges(i)))
       end do
     end if
     
@@ -39,7 +39,7 @@ contains
     call assert(.not. errors%has_any(), "vertex%to_json (label key): .not. errors%has_any()", char(errors%to_string()))
     label_key = maybe_key%string()
         
-    maybe_value = fallible_json_string_t(me%get_label())
+    maybe_value = fallible_json_string_t(self%get_label())
     errors = maybe_value%errors()
     call assert(.not. errors%has_any(), "vertex%to_json (label value): .not. errors%has_any()", char(errors%to_string()))
     label_value = maybe_value%string()
@@ -49,7 +49,7 @@ contains
 
   end procedure
 
-  module procedure construct
+  module procedure construct_from_components
 
     character(len=*), parameter :: &
        branch    = 'shape=square, fillcolor="SlateGray1", style=filled' &
@@ -75,19 +75,19 @@ contains
     type(fallible_json_value_t) :: maybe_edges
     integer :: i
 
-    maybe_edges = me_json%get_element("edges")
+    maybe_edges = json_object%get_element("edges")
     errors = maybe_edges%errors()
     call assert(.not. errors%has_any(), "vertex%from_json: .not. errors%has_any()", char(errors%to_string()))
     select type (edges => maybe_edges%value_())
     type is (json_array_t)
-      allocate(me%edges(edges%length()))
+      allocate(vertex%edges(edges%length()))
       do i = 1, edges%length()
         maybe_edge = edges%get_element(i)
         errors = maybe_edge%errors()
         call assert(.not. errors%has_any(), "vertex%from_json: .not. errors%has_any()", char(errors%to_string()))
         select type (edge => maybe_edge%value_())
         type is (json_number_t)
-          me%edges(i) = int(edge%get_value())
+          vertex%edges(i) = int(edge%get_value())
         class default
           call assert(.false., "vertex%from_json: edge was not a number", char(edge%to_compact_string()))
         end select
@@ -101,72 +101,72 @@ contains
 
     integer i
 
-    if (allocated(me%edges)) then
+    if (allocated(self%edges)) then
       do i=1,size(edges)
-          call me%add_edge(edges(i))
+          call self%add_edge(edges(i))
       end do
     else
-      allocate(me%edges(size(edges)))  ! note: not checking for uniqueness here.
-      me%edges = edges
+      allocate(self%edges(size(edges)))  ! note: not checking for uniqueness here.
+      self%edges = edges
     end if
 
   end procedure
 
   module procedure set_vertex_id
-    me%identifier_ = id
+    self%identifier_ = id
   end procedure
 
   module procedure set_checking
-    me%checking = checking
+    self%checking = checking
   end procedure
 
   module procedure set_marked
-    me%marked = marked
+    self%marked = marked
   end procedure
 
   module procedure get_vertex_id
-    my_vertex_id = me%identifier_
+    my_vertex_id = self%identifier_
   end procedure
 
   module procedure get_edges
-    my_edges = me%edges
+    my_edges = self%edges
   end procedure
 
   module procedure get_checking
-    my_checking = me%checking
+    my_checking = self%checking
   end procedure
 
   module procedure get_marked
-    my_marked = me%marked
+    my_marked = self%marked
   end procedure
 
   module procedure get_label
-    my_label = me%label
+    my_label = self%label
   end procedure
 
   module procedure get_attributes
-    my_attributes = me%attributes
+    my_attributes = self%attributes
   end procedure
 
   module procedure add_edge
 
-    if (allocated(me%edges)) then
-      if (.not. any (edge==me%edges)) then
-          me%edges = [me%edges, edge]
+    if (allocated(self%edges)) then
+      if (.not. any (edge==self%edges)) then
+          self%edges = [self%edges, edge]
       end if
     else
-      allocate(me%edges(1))
-      me%edges = [edge]
+      allocate(self%edges(1))
+      self%edges = [edge]
     end if
 
   end procedure
 
   module procedure has_label
-    allocated_label = me%has_label_
+    allocated_label = self%has_label_
   end procedure
 
   module procedure has_attributes
-    allocated_attributes = allocated(me%attributes)
+    allocated_attributes = allocated(self%attributes)
   end procedure
 
   module procedure read_formatted
@@ -175,7 +175,7 @@ contains
 
   module procedure write_formatted
     write(unit, '(a)') '{ "edges" : ['
-    write(unit, '(*(I0,:,","))') me%edges
+    write(unit, '(*(I0,:,","))') self%edges
     write(unit, '(a)') '] }'
   end procedure
 
