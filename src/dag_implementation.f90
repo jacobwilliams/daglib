@@ -1,6 +1,5 @@
 submodule(dag_interface) dag_implementation
   use assert_m, only : assert
-  use intrinsic_array_m, only : intrinsic_array_t
   use jsonff, only: &
       fallible_json_string_t, &
       fallible_json_value_t, &
