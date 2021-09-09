@@ -60,16 +60,22 @@ contains
   end procedure
 
    module procedure to_json
-     associate(vertices_value => json_array_t(json_element_t(me%vertices%to_json())))
-       associate(maybe_key => fallible_json_string_t("vertices"))
-         associate(errors => maybe_key%errors())
-           call assert(.not. errors%has_any(), "dag%to_json: .not. errors%has_any()", char(errors%to_string()))
-           associate(vertices_key => maybe_key%string())
-             json_object = json_object_t([vertices_key], [json_element_t(vertices_value)])
-           end associate
-         end associate
+     type(fallible_json_string_t) maybe_key
+     type(error_list_t) errors
+
+     maybe_key = fallible_json_string_t("vertices")
+     errors = maybe_key%errors()
+     call assert(.not. errors%has_any(), "dag%to_json: .not. errors%has_any()", char(errors%to_string()))
+
+     block
+       type(json_array_t) vertices_value
+
+       vertices_value = json_array_t(json_element_t(me%vertices%to_json())) 
+
+       associate(vertices_key => maybe_key%string())
+         json_object = json_object_t([vertices_key], [json_element_t(vertices_value)])
        end associate
-     end associate
+     end block
    end procedure
 
    module procedure construct
