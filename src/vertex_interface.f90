@@ -66,10 +66,10 @@ module vertex_interface
          integer,dimension(:),intent(in) :: edges
        end subroutine set_edge_vector
 
-       impure elemental module function to_json(me) result(me_json)
+       impure elemental module function to_json(me) result(json_object)
          implicit none
          class(vertex_t), intent(in) :: me
-         type(json_object_t) :: me_json
+         type(json_object_t) :: json_object
        end function
 
        module subroutine add_edge(me,edge)

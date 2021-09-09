@@ -74,11 +74,16 @@ contains
     type(result_t) result_
     type(json_object_t) json_object
     character(len=*), parameter :: expected_json = &
-       '{"vertices":[{"edges":[]},{"edges":[]},{"edges":[2.0,1.0]},{"edges":[2.0]},{"edges":[4.0,1.0]}]}'
+       '{"vertices":[' // &
+         '{"label":"assert_m","edges":[]},' // &
+         '{"label":"vertex_m","edges":[]},' // &
+         '{"label":"vertex_s","edges":[2,1]},' // &
+         '{"label":"dag_m","edges":[2]},' // &
+         '{"label":"dag_s","edges":[4,1]}]}'
 
     associate(dag => dag_module_tree())
       json_object = dag%to_json()
-      result_ = assert_equals(json_object%to_compact_string(), var_str(expected_json))
+      result_ = assert_equals(var_str(expected_json), json_object%to_compact_string())
     end associate
 
   end function

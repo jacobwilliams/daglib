@@ -5,7 +5,8 @@ submodule(vertex_interface) vertex_implementation
       json_array_t, &
       json_element_t, &
       json_number_t, &
-      json_string_t
+      json_string_t, &
+      json_integer_t
   use erloff, only : error_list_t
   use iso_varying_string, only : char, assignment(=)
   use iso_fortran_env, only : real64
@@ -16,21 +17,36 @@ contains
 
   module procedure to_json
     integer i
-    type(json_string_t) :: edges_key
+    type(json_string_t) :: edges_key, label_key, label_value
     type(json_array_t) :: edges_value
     type(error_list_t) :: errors
-    type(fallible_json_string_t) :: maybe_key
+    type(fallible_json_string_t) :: maybe_key, maybe_value
 
-    if (allocated(me%edges)) then
-      do i = lbound(me%edges, 1), ubound(me%edges, 1)
-        call edges_value%append(json_number_t(real(me%edges(i), real64)))
-      end do
-    end if
+
     maybe_key = fallible_json_string_t("edges")
     errors = maybe_key%errors()
-    call assert(.not. errors%has_any(), "vertex%to_json: .not. errors%has_any()", char(errors%to_string()))
+    call assert(.not. errors%has_any(), "vertex%to_json (edges key): .not. errors%has_any()", char(errors%to_string()))
     edges_key = maybe_key%string()
-    me_json = json_object_t([edges_key], [json_element_t(edges_value)])
+    
+    if (allocated(me%edges)) then
+      do i = lbound(me%edges, 1), ubound(me%edges, 1)
+        call edges_value%append(json_integer_t(me%edges(i)))
+      end do
+    end if
+    
+    maybe_key = fallible_json_string_t("label")
+    errors = maybe_key%errors()
+    call assert(.not. errors%has_any(), "vertex%to_json (label key): .not. errors%has_any()", char(errors%to_string()))
+    label_key = maybe_key%string()
+        
+    maybe_value = fallible_json_string_t(me%get_label())
+    errors = maybe_value%errors()
+    call assert(.not. errors%has_any(), "vertex%to_json (label value): .not. errors%has_any()", char(errors%to_string()))
+    label_value = maybe_value%string()
+
+    
+    json_object = json_object_t([label_key, edges_key], [json_element_t(label_value), json_element_t(edges_value)])    
+
   end procedure
 
   module procedure construct
