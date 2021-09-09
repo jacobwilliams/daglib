@@ -1,1 +1,0 @@
-{ "dag" : { "vertices" : [ {"edges" : [2,3]}, {"edges" : [3]}, {"edges" : []} ] } }
