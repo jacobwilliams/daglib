@@ -47,12 +47,13 @@ module vertex_interface
         type(vertex_t) :: me
       end function
   
-      pure module function construct(identifier, edges, label, attributes) result(new_vertex)
+      pure module function construct(identifier, edges, label, attributes) result(vertex)
         implicit none
         integer, intent(in) :: identifier
         integer, intent(in) :: edges(:)
-        type(varying_string), intent(in) :: label, attributes
-        type(vertex_t) new_vertex
+        type(varying_string), intent(in) :: label
+        type(varying_string), intent(in), optional :: attributes
+        type(vertex_t) vertex
       end function
       
     end interface

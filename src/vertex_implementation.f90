@@ -50,12 +50,23 @@ contains
   end procedure
 
   module procedure construct
-    new_vertex%identifier_ = identifier
-    new_vertex%edges = edges
-    new_vertex%label = label
-    new_vertex%attributes = char(attributes)
-    new_vertex%has_label_ = .true.
-    new_vertex%defined_ = .true.
+
+    character(len=*), parameter :: &
+       branch    = 'shape=square, fillcolor="SlateGray1", style=filled' &
+      ,external_ = 'shape=square, fillcolor="green",      style=filled' &
+      ,root      = 'shape=circle, fillcolor="white",      style=filled' &
+      ,leaf      = 'shape=circle, fillcolor="cornsilk",   style=filled'
+
+    vertex%identifier_ = identifier
+    vertex%edges = edges
+    vertex%label = label
+    if (present(attributes)) then
+      vertex%attributes = char(attributes)
+    else
+      vertex%attributes = branch
+    end if
+    vertex%has_label_ = .true.
+    vertex%defined_ = .true.
   end procedure
 
   module procedure from_json
