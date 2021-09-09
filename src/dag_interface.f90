@@ -20,6 +20,7 @@ module dag_interface
     procedure :: to_json
     procedure :: save_digraph
     procedure :: dependency_matrix
+    procedure :: num_vertices
     generic :: write(formatted) => write_formatted
     generic :: read(formatted) => read_formatted
 
@@ -67,6 +68,13 @@ module dag_interface
       class(dag_t),intent(in) :: me
       logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
     end subroutine
+
+    pure module function num_vertices(self)
+      !! Result is the size of the vertex array
+      implicit none
+      class(dag_t), intent(in) :: self
+      integer num_vertices
+    end function
 
     module subroutine save_digraph(me,filename,rankdir,dpi)
       implicit none

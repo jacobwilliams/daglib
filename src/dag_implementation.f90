@@ -156,6 +156,10 @@ contains
 
   end procedure
 
+  module procedure num_vertices
+    num_vertices = size(self%vertices)
+  end procedure
+
   module procedure save_digraph
 
     integer :: iunit, istat
