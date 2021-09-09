@@ -17,7 +17,7 @@ contains
 
     tests = describe("dag's module dependency graph", &
       [it("can be constructed, output to .dot file, and converted to a PDF", construct_dag_and_write_pdf) &
-      ,it("can be constructed and converted to object JSON object", construct_dag_and_json_object)])
+      ,it("can be constructed and converted to a JSON object", construct_dag_and_json_object)])
   end function
 
   function dag_module_tree() result(dag_modules)
