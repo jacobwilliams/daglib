@@ -21,6 +21,7 @@ module dag_interface
     procedure :: save_digraph
     procedure :: dependency_matrix
     procedure :: num_vertices
+    procedure :: dependencies_for
     generic :: write(formatted) => write_formatted
     generic :: read(formatted) => read_formatted
 
@@ -74,6 +75,14 @@ module dag_interface
       implicit none
       class(dag_t), intent(in) :: self
       integer num_vertices
+    end function
+
+    pure module function dependencies_for(self, vertex_id) result(dependency_ids)
+      !! Result is an array of the ids on which vertex_id depends
+      implicit none
+      class(dag_t), intent(in) :: self
+      integer, intent(in) :: vertex_id
+      integer, allocatable :: dependency_ids(:)
     end function
 
     module subroutine save_digraph(me,filename,rankdir,dpi)

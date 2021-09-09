@@ -160,6 +160,10 @@ contains
     num_vertices = size(self%vertices)
   end procedure
 
+  module procedure dependencies_for
+    dependency_ids = self%vertices(vertex_id)%get_edges()
+  end procedure
+
   module procedure save_digraph
 
     integer :: iunit, istat
