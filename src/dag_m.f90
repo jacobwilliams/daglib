@@ -1,10 +1,10 @@
-module dag_interface
+module dag_m
   !! summary: A directed acyclic graph (DAG) abstraction.
   !! author: Jacob Williams, Damian Rouson, Robert Singleterry, Brad Richardson
   !! version: v1.0
   !! date: 2020-Nov-30
   !! license: Copyright (c) 2020, Sourcery Institute, BSD 3-clause license Copyright (c) 2018 Jacob Williams
-  use vertex_interface, only : vertex_t
+  use vertex_m, only : vertex_t
   use jsonff, only : json_object_t
   use iso_varying_string, only : varying_string
 
@@ -116,4 +116,4 @@ module dag_interface
 
   end interface
 
-end module dag_interface
+end module dag_m

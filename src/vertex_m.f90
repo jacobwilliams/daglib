@@ -1,4 +1,4 @@
-module vertex_interface
+module vertex_m
   !! author: Jacob Williams, Damian Rouson, Robert Singleterry, Brad Richardson
   !! version: v1.0
   !! date: 2020-Nov-30
@@ -177,4 +177,4 @@ module vertex_interface
 
     end interface
 
-end module vertex_interface
+end module vertex_m

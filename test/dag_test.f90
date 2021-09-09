@@ -1,6 +1,6 @@
 module dag_test
-  use dag_interface, only: dag_t
-  use vertex_interface, only: vertex_t
+  use dag_m, only: dag_t
+  use vertex_m, only: vertex_t
   use vegetables, only: &
       result_t, test_item_t, assert_equals, describe, it, succeed
   use iso_varying_string, only : varying_string, var_str, assignment(=), char

@@ -1,4 +1,4 @@
-submodule(dag_interface) dag_implementation
+submodule(dag_m) dag_s
   use assert_m, only : assert
   use jsonff, only: &
       fallible_json_string_t, &
@@ -305,4 +305,4 @@ contains
 
   end procedure
 
-end submodule dag_implementation
+end submodule dag_s

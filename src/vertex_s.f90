@@ -1,4 +1,4 @@
-submodule(vertex_interface) vertex_implementation
+submodule(vertex_m) vertex_s
   use jsonff, only : &
       fallible_json_string_t, &
       fallible_json_value_t, &
@@ -179,4 +179,4 @@ contains
     write(unit, '(a)') '] }'
   end procedure
 
-end submodule
+end submodule vertex_s
