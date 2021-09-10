@@ -18,7 +18,9 @@ contains
     tests = describe("dag's module dependency graph", &
       [it("can be constructed, output to .dot file, and converted to a PDF", construct_dag_and_write_pdf) &
       ,it("can be constructed and converted to a JSON object", construct_dag_and_json_object) &
-      ,it("is topologically sorted when constructed from components", component_constructor_sorts)])
+      ,it("is topologically sorted when constructed from components", component_constructor_sorts)])! &
+      !,it("is topologically sorted when constructed from a JSON object", json_constructor_sorts)])
+
   end function
 
   function module_tree_from_components() result(dag_modules)
@@ -96,5 +98,23 @@ contains
       result_ = assert_that(dag%is_sorted())
     end associate
   end function 
+
+  function json_constructor_sorts() result(result_)
+    type(result_t) result_
+    type(dag_t) dag 
+    character(len=*), parameter :: dag_library_module_dependencies= &
+       '{"vertices":[' // &
+         '{"label":"assert_m","edges":[]},' // &
+         '{"label":"vertex_m","edges":[]},' // &
+         '{"label":"vertex_s","edges":[2,1]},' // &
+         '{"label":"dag_m","edges":[2]},' // &
+         '{"label":"dag_s","edges":[4,1]}]}'
+    character(len=len(dag_library_module_dependencies)) json
+    
+    json = dag_library_module_dependencies
+    
+    read(json,*) dag 
+    result_ = assert_that(dag%is_sorted())
+  end function
 
 end module dag_test
