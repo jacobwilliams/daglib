@@ -2,7 +2,7 @@ module dag_test
   use dag_m, only: dag_t
   use vertex_m, only: vertex_t
   use vegetables, only: &
-      result_t, test_item_t, assert_equals, describe, it, succeed
+      result_t, test_item_t, assert_equals, describe, it, assert_that
   use iso_varying_string, only : varying_string, var_str, assignment(=), char
   use jsonff, only: json_object_t
   !!  Test DAG construction, input, and output.
@@ -17,10 +17,11 @@ contains
 
     tests = describe("dag's module dependency graph", &
       [it("can be constructed, output to .dot file, and converted to a PDF", construct_dag_and_write_pdf) &
-      ,it("can be constructed and converted to a JSON object", construct_dag_and_json_object)])
+      ,it("can be constructed and converted to a JSON object", construct_dag_and_json_object) &
+      ,it("is topologically sorted when constructed from components", component_constructor_sorts)])
   end function
 
-  function dag_module_tree() result(dag_modules)
+  function module_tree_from_components() result(dag_modules)
     type(dag_t) dag_modules
     
     enum, bind(C)
@@ -62,10 +63,10 @@ contains
     integer, parameter :: success=0
     integer exit_status, command_status
 
-    associate(modules => dag_module_tree())
+    associate(modules => module_tree_from_components())
       call modules%save_digraph(dot_file_name, 'RL', 300)
       call execute_command_line(command, wait=.true., exitstat=exit_status, cmdstat=command_status)
-      result_ =  assert_equals(success, exit_status) .and. assert_equals(success, command_status) 
+      result_ = assert_equals(success, exit_status) .and. assert_equals(success, command_status) 
     end associate
 
   end function
@@ -81,11 +82,19 @@ contains
          '{"label":"dag_m","edges":[2]},' // &
          '{"label":"dag_s","edges":[4,1]}]}'
 
-    associate(dag => dag_module_tree())
+    associate(dag => module_tree_from_components())
       json_object = dag%to_json()
       result_ = assert_equals(var_str(expected_json), json_object%to_compact_string())
     end associate
 
   end function
+
+  function component_constructor_sorts() result(result_)
+    type(result_t) result_
+    
+    associate(dag => module_tree_from_components())
+      result_ = assert_that(dag%is_sorted())
+    end associate
+  end function 
 
 end module dag_test

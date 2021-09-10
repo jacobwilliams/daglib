@@ -16,7 +16,9 @@ module dag_m
     !! Encapsulate a graph as an array of vertices, each storing dependency information
     private
     type(vertex_t),dimension(:),allocatable :: vertices
+    integer, allocatable :: order(:)
   contains
+    procedure :: is_sorted
     procedure :: to_json
     procedure :: save_digraph
     procedure :: dependency_matrix
@@ -28,18 +30,17 @@ module dag_m
     procedure, private :: write_formatted
     procedure, private :: read_formatted
 
-    procedure, private  :: toposort
   end type
 
   interface dag_t
 
-    module function from_json(json_object) result(dag)
+    module function construct_from_json(json_object) result(dag)
       implicit none
       type(json_object_t), intent(in) :: json_object
       type(dag_t) dag
     end function
 
-    pure module function construct(vertices) result(dag)
+    module function construct_from_components(vertices) result(dag)
       implicit none
       type(vertex_t), intent(in) :: vertices(:)
       type(dag_t) dag
@@ -49,19 +50,18 @@ module dag_m
 
   interface
 
+    module function is_sorted(self)
+      !! Result is true if dag%order contains a topological sorting of vertex identifiers
+      implicit none
+      class(dag_t), intent(in) :: self
+      logical is_sorted
+    end function
+
     module function to_json(self) result(json_object)
       implicit none
       class(dag_t), intent(in) :: self
       type(json_object_t) json_object
     end function
-
-    module subroutine toposort(self,order,istat)
-      !! Provide array of vertex numbers order in a way that respects dependencies
-      implicit none
-      class(dag_t), intent(inout) :: self
-      integer, allocatable, intent(out) :: order(:) !! sorted vertex order
-      integer, intent(out) :: istat !! 0 for no circular dependencies, 1 for circular dependencies
-    end subroutine
 
     module subroutine dependency_matrix(self,mat)
       !! Output array in which .true. elements are located at locations corresponding to dependencies

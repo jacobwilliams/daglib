@@ -10,16 +10,95 @@ submodule(dag_m) dag_s
   use erloff, only : error_list_t
   use iso_fortran_env, only: iostat_end
   use iso_varying_string, only : varying_string, operator(//), char, get, put, var_str
+  use intrinsic_array_m, only : intrinsic_array_t
 
   implicit none
 
 contains
 
-  module procedure from_json
+  module function toposort(self) result(order)
+    !! Provide array of vertex numbers ordered in a way that respects dependencies
+    type(dag_t), intent(inout) :: self
+    integer, allocatable :: order(:) !! sorted vertex order
+    logical circular
+
+    integer :: i, iorder
+
+    circular = .false.
+
+    associate( num_vertices => size(self%vertices))
+
+      allocate(order(num_vertices))
+
+      iorder = 0  ! index in order array
+      do i=1, num_vertices
+        if (.not. self%vertices(i)%get_marked()) call dfs(self%vertices(i))
+        call assert(.not. circular, "dag toposort: .not. circular")
+      end do
+    end associate
+
+
+  contains
+
+    recursive subroutine dfs(v)
+
+      type(vertex_t),intent(inout) :: v
+      integer :: j
+
+      if (circular) return
+
+      associate( v_checking => v%get_checking(), v_marked => v%get_marked())
+        if (v_checking) then
+          circular = .true.
+        else
+          if (.not. v_marked) then
+            call v%set_checking(.true.)
+            if (allocated(v%edges)) then
+              do j=1,size(v%edges)
+                call dfs(self%vertices(v%edges(j)))
+                if (circular) return
+              end do
+            end if
+            call v%set_checking(.false.)
+            call v%set_marked(.true.)
+            iorder = iorder + 1
+            order(iorder) = v%get_vertex_id()
+          end if
+        end if
+      end associate
+
+    end subroutine dfs
+
+  end function toposort
+                                   
+  module procedure is_sorted
+    
+    if (.not. allocated(self%order)) then
+      is_sorted = .false.
+      return
+    end if
+    
+    associate(num_vertices => size(self%vertices), order_size => size(self%order))
+      call assert(order_size == num_vertices, "dag_t%is_sorted: size(self%vertices) == size(self%order)", &
+        intrinsic_array_t([order_size, num_vertices]))
+    
+      block
+        integer i
+    
+        associate(vertices_sorted => [( self%vertices(self%order(i))%get_edges() < i , i=1, num_vertices)])
+          is_sorted = all(vertices_sorted)
+        end associate
+      end block
+    
+    end associate
+    
+  end procedure
+
+  module procedure construct_from_json
     type(fallible_json_value_t) :: maybe_vertices
 
     associate(errors => maybe_vertices%errors())
-      call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+      call assert(.not. errors%has_any(), "dag_s construct_from_json: .not. errors%has_any()", char(errors%to_string()))
     end associate
 
     select type (vertices => maybe_vertices%value_())
@@ -38,12 +117,12 @@ contains
         do i = 1, vertices%length()
           associate(maybe_vertex => vertices%get_element(i))
             associate(errors => maybe_vertex%errors())
-              call assert(.not. errors%has_any(), "dag%from_json: .not. errors%has_any()", char(errors%to_string()))
+              call assert(.not. errors%has_any(), "dag_s construct_from_json: .not. errors%has_any()", char(errors%to_string()))
             end associate
 
             select type (vertex_json => maybe_vertex%value_())
             class default
-              call assert(.false., "dag%from_json: vertex was not an object", char(vertex_json%to_compact_string()))
+              call assert(.false., "dag_s construct_from_json: vertex was not an object", char(vertex_json%to_compact_string()))
             type is (json_object_t)
               associate(dag_vertex => vertex_t(vertex_json))
                 call dag%vertices(i)%set_edges(dag_vertex%edges)
@@ -77,62 +156,10 @@ contains
      end block
    end procedure
 
-   module procedure construct
+   module procedure construct_from_components
      dag%vertices = vertices
+     dag%order = toposort(dag)
    end procedure
-
-  module procedure toposort
-
-    integer :: i,iorder
-
-    associate( num_vertices => size(self%vertices))
-      if (num_vertices==0) return
-
-      allocate(order(num_vertices))
-
-      iorder = 0  ! index in order array
-      istat = 0   ! no errors so far
-      do i=1,num_vertices
-        if (.not. self%vertices(i)%get_marked()) call dfs(self%vertices(i))
-        if (istat==-1) exit
-      end do
-    end associate
-
-    if (istat==-1) deallocate(order)
-
-  contains
-
-    recursive subroutine dfs(v)
-
-      type(vertex_t),intent(inout) :: v
-      integer :: j
-
-      if (istat==-1) return
-
-      associate( v_checking => v%get_checking(), v_marked => v%get_marked())
-        if (v_checking) then
-          ! error: circular dependency
-          istat = -1
-        else
-          if (.not. v_marked) then
-            call v%set_checking(.true.)
-            if (allocated(v%edges)) then
-              do j=1,size(v%edges)
-                call dfs(self%vertices(v%edges(j)))
-                if (istat==-1) return
-              end do
-            end if
-            call v%set_checking(.false.)
-            call v%set_marked(.true.)
-            iorder = iorder + 1
-            order(iorder) = v%get_vertex_id()
-          end if
-        end if
-      end associate
-
-    end subroutine dfs
-
-  end procedure toposort
 
 
   module procedure dependency_matrix
@@ -287,7 +314,7 @@ contains
 
     select type (object => maybe_json%value_())
     type is (json_object_t)
-      self_local = from_json(object)
+      self_local = construct_from_json(object)
       self%vertices = self_local%vertices
     class default
       call assert(.false., "dag%read_formatted: didn't get a json object")
