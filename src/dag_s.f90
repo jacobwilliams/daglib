@@ -19,24 +19,18 @@ contains
   module function toposort(self) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
     type(dag_t), intent(inout) :: self
-    integer, allocatable :: order(:) !! sorted vertex order
+    integer order(size(self%vertices)) !! sorted vertex order
     logical circular
 
     integer :: i, iorder
 
     circular = .false.
 
-    associate( num_vertices => size(self%vertices))
-
-      allocate(order(num_vertices))
-
-      iorder = 0  ! index in order array
-      do i=1, num_vertices
-        if (.not. self%vertices(i)%get_marked()) call dfs(self%vertices(i))
-        call assert(.not. circular, "dag toposort: .not. circular")
-      end do
-    end associate
-
+    iorder = 0  ! index in order array
+    do i=1, size(self%vertices)
+      if (.not. self%vertices(i)%get_marked()) call dfs(self%vertices(i))
+      call assert(.not. circular, "dag toposort: .not. circular")
+    end do
 
   contains
 
