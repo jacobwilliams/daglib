@@ -18,42 +18,45 @@ contains
 
   module function toposort(self) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
-    type(dag_t), intent(inout) :: self
+    type(dag_t), intent(in) :: self
     integer order(size(self%vertices)) !! sorted vertex order
-    logical circular
+    logical circular, marked(size(self%vertices)), checking(size(self%vertices))
 
     integer :: i, iorder
 
     circular = .false.
+    marked = .false.
+    checking = .false.
 
     iorder = 0  ! index in order array
     do i=1, size(self%vertices)
-      if (.not. self%vertices(i)%get_marked()) call dfs(self%vertices(i))
+      if (.not. marked(i)) call dfs(self%vertices(i), marked(i), checking(i), circular)
       call assert(.not. circular, "dag toposort: .not. circular")
     end do
 
   contains
 
-    recursive subroutine dfs(v)
+    recursive subroutine dfs(v, m, c, ci)
 
-    type(vertex_t),intent(inout) :: v
-    integer :: j
+    type(vertex_t),intent(in) :: v
+    logical, intent(inout) :: m, c, ci
+    integer j
 
-    if (circular) return
+    if (ci) return
 
-    if (v%get_checking()) then
-      circular = .true.
+    if (c) then
+      ci = .true.
     else
-      if (.not. v%get_marked()) then
-        call v%set_checking(.true.)
+      if (.not. m) then
+        c = .true.
         if (allocated(v%edges)) then
           do j=1,size(v%edges)
-            call dfs(self%vertices(v%edges(j)))
-            if (circular) return
+            call dfs(self%vertices(v%edges(j)), marked(j), checking(j), ci)
+            if (ci) return
           end do
         end if
-        call v%set_checking(.false.)
-        call v%set_marked(.true.)
+        c = .false.
+        m = .true.
         iorder = iorder + 1
         order(iorder) = v%get_vertex_id()
       end if
