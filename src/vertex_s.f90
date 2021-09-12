@@ -116,28 +116,12 @@ contains
     self%identifier_ = id
   end procedure
 
-  module procedure set_checking
-    self%checking = checking
-  end procedure
-
-  module procedure set_marked
-    self%marked = marked
-  end procedure
-
   module procedure get_vertex_id
     my_vertex_id = self%identifier_
   end procedure
 
   module procedure get_edges
     my_edges = self%edges
-  end procedure
-
-  module procedure get_checking
-    my_checking = self%checking
-  end procedure
-
-  module procedure get_marked
-    my_marked = self%marked
   end procedure
 
   module procedure get_label

@@ -27,8 +27,6 @@ module vertex_m
         generic,   public  :: set_edges => set_edge_vector, add_edge
         procedure, public  :: get_edges
 
-        procedure, public  :: set_checking,   get_checking
-        procedure, public  :: set_marked,     get_marked
         procedure, public  :: set_vertex_id,  get_vertex_id
         procedure, public  :: get_label,      has_label
         procedure, public  :: get_attributes, has_attributes
@@ -80,21 +78,6 @@ module vertex_m
          integer, intent(in) :: edge
        end subroutine add_edge
 
-       module subroutine set_checking(self,checking)
-         !! Set the status of the vertex in the toposort algorithm.  {True, False} => {being checked, not being checked},
-         !! where being checked implies there is a circular graph.
-         implicit none
-         class(vertex_t), intent(inout) :: self
-         logical, intent(in) :: checking
-       end subroutine
-
-       module subroutine set_marked(self,marked)
-         !! Set the status of the vertex in the toposort algorithm.  {True, False} => {sort finished, not finished}.
-         implicit none
-         class(vertex_t), intent(inout) :: self
-         logical, intent(in) :: marked
-       end subroutine
-
        elemental module subroutine set_vertex_id(self,id)
          !! Set the vertex number -- not currently checked for uniqueness or order.
          implicit none
@@ -114,20 +97,6 @@ module vertex_m
          implicit none
          class(vertex_t), intent(in) :: self
          integer :: my_edges(size(self%edges))
-       end function
-
-       pure module function get_checking(self) result(my_checking)
-         !! Get the status of the checking variable.
-         implicit none
-         class(vertex_t), intent(in) :: self
-         logical my_checking
-       end function
-
-       pure module function get_marked(self) result(my_marked)
-        !! Get the status of the marked variable.
-         implicit none
-         class(vertex_t), intent(in) :: self
-         logical my_marked
        end function
 
        pure module function get_label(self) result(my_label)
