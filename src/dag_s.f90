@@ -31,36 +31,27 @@ contains
     iorder = 0  ! index in order array
     do i=1, size(self%vertices)
       if (.not. marked(i)) call dfs(self%vertices(i), marked(i), checking(i), circular)
-      call assert(.not. circular, "dag toposort: .not. circular")
     end do
 
   contains
 
-    recursive subroutine dfs(v, m, c, ci)
+    recursive subroutine dfs(v, m, c, circle)
 
       type(vertex_t),intent(in) :: v
-      logical, intent(inout) :: m, c, ci
+      logical, intent(inout) :: m, c, circle
       integer j
 
       call assert(allocated(v%edges), "dag_s toposort dfs: allocated(v%edges)") 
-      if (ci) return
 
-      if (c) then
-        ci = .true.
-      else
-        if (.not. m) then
-          do j=1,size(v%edges)
-            call dfs(self%vertices(v%edges(j)), marked(j), checking(j), ci)
-            if (ci) then
-              c = .true.
-              return
-            end if
-          end do
-          c = .false.
-          m = .true.
-          iorder = iorder + 1
-          order(iorder) = v%get_vertex_id()
-        end if
+      if (.not. m) then
+        do j=1,size(v%edges)
+          call dfs(self%vertices(v%edges(j)), marked(j), checking(j), circle)
+          call assert(.not. circle, "dag toposort: .not. circle")
+        end do
+        c = .false.
+        m = .true.
+        iorder = iorder + 1
+        order(iorder) = v%get_vertex_id()
       end if
 
     end subroutine dfs
