@@ -42,19 +42,20 @@ contains
       logical, intent(inout) :: m, c, ci
       integer j
 
+      call assert(allocated(v%edges), "dag_s toposort dfs: allocated(v%edges)") 
       if (ci) return
 
       if (c) then
         ci = .true.
       else
         if (.not. m) then
-          c = .true.
-          if (allocated(v%edges)) then
-            do j=1,size(v%edges)
-              call dfs(self%vertices(v%edges(j)), marked(j), checking(j), ci)
-              if (ci) return
-            end do
-          end if
+          do j=1,size(v%edges)
+            call dfs(self%vertices(v%edges(j)), marked(j), checking(j), ci)
+            if (ci) then
+              c = .true.
+              return
+            end if
+          end do
           c = .false.
           m = .true.
           iorder = iorder + 1
