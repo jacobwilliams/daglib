@@ -38,31 +38,31 @@ contains
 
     recursive subroutine dfs(v, m, c, ci)
 
-    type(vertex_t),intent(in) :: v
-    logical, intent(inout) :: m, c, ci
-    integer j
+      type(vertex_t),intent(in) :: v
+      logical, intent(inout) :: m, c, ci
+      integer j
 
-    if (ci) return
+      if (ci) return
 
-    if (c) then
-      ci = .true.
-    else
-      if (.not. m) then
-        c = .true.
-        if (allocated(v%edges)) then
-          do j=1,size(v%edges)
-            call dfs(self%vertices(v%edges(j)), marked(j), checking(j), ci)
-            if (ci) return
-          end do
+      if (c) then
+        ci = .true.
+      else
+        if (.not. m) then
+          c = .true.
+          if (allocated(v%edges)) then
+            do j=1,size(v%edges)
+              call dfs(self%vertices(v%edges(j)), marked(j), checking(j), ci)
+              if (ci) return
+            end do
+          end if
+          c = .false.
+          m = .true.
+          iorder = iorder + 1
+          order(iorder) = v%get_vertex_id()
         end if
-        c = .false.
-        m = .true.
-        iorder = iorder + 1
-        order(iorder) = v%get_vertex_id()
       end if
-    end if
 
-  end subroutine dfs
+    end subroutine dfs
 
   end function toposort
                                    
