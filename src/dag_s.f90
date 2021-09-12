@@ -36,32 +36,30 @@ contains
 
     recursive subroutine dfs(v)
 
-      type(vertex_t),intent(inout) :: v
-      integer :: j
+    type(vertex_t),intent(inout) :: v
+    integer :: j
 
-      if (circular) return
+    if (circular) return
 
-      associate( v_checking => v%get_checking(), v_marked => v%get_marked())
-        if (v_checking) then
-          circular = .true.
-        else
-          if (.not. v_marked) then
-            call v%set_checking(.true.)
-            if (allocated(v%edges)) then
-              do j=1,size(v%edges)
-                call dfs(self%vertices(v%edges(j)))
-                if (circular) return
-              end do
-            end if
-            call v%set_checking(.false.)
-            call v%set_marked(.true.)
-            iorder = iorder + 1
-            order(iorder) = v%get_vertex_id()
-          end if
+    if (v%get_checking()) then
+      circular = .true.
+    else
+      if (.not. v%get_marked()) then
+        call v%set_checking(.true.)
+        if (allocated(v%edges)) then
+          do j=1,size(v%edges)
+            call dfs(self%vertices(v%edges(j)))
+            if (circular) return
+          end do
         end if
-      end associate
+        call v%set_checking(.false.)
+        call v%set_marked(.true.)
+        iorder = iorder + 1
+        order(iorder) = v%get_vertex_id()
+      end if
+    end if
 
-    end subroutine dfs
+  end subroutine dfs
 
   end function toposort
                                    
