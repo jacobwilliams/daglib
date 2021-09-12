@@ -41,6 +41,7 @@ module dag_m
     end function
 
     module function construct_from_components(vertices) result(dag)
+      !! Construct an object containing the topologically sorted vertex ordering for a DAG
       implicit none
       type(vertex_t), intent(in) :: vertices(:)
       type(dag_t) dag
