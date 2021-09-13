@@ -20,38 +20,47 @@ contains
     !! Provide array of vertex numbers ordered in a way that respects dependencies
     type(dag_t), intent(in) :: self
     integer order(size(self%vertices)) !! sorted vertex order
-    logical circular, marked(size(self%vertices)), checking(size(self%vertices))
 
-    integer :: i, iorder
+    logical marked(size(self%vertices)), checking(size(self%vertices))
+    integer sorted
 
-    circular = .false.
     marked = .false.
     checking = .false.
+    sorted = 0 
 
-    iorder = 0  ! index in order array
-    do i=1, size(self%vertices)
-      if (.not. marked(i)) call depth_first_search(self%vertices(i), marked(i), checking(i), circular)
-    end do
+    block 
+      integer sorting
+
+      do sorting = 1, size(self%vertices)
+        if (.not. marked(sorting)) call depth_first_search(self%vertices(sorting), marked(sorting), checking(sorting))
+      end do
+    end block
 
   contains
 
-    recursive subroutine depth_first_search(vertex, m, c, circle)
+    recursive subroutine depth_first_search(vertex, marked_edge, checking_edge)
 
       type(vertex_t),intent(in) :: vertex
-      logical, intent(inout) :: m, c, circle
-      integer edge
+      logical, intent(inout) :: marked_edge, checking_edge
 
-      call assert(allocated(vertex%edges), "dag_s toposort depth_first_search: allocated(vertex%edges)") 
+      call assert(.not. checking_edge, "dag_s toposort depth_first_search: circular dependence check")
+      call assert(allocated(vertex%edges), "dag_s toposort depth_first_search: allocated(vertex%edges)")
 
-      if (.not. m) then
-        do edge=1,size(vertex%edges)
-          call depth_first_search(self%vertices(vertex%edges(edge)), marked(edge), checking(edge), circle)
-          call assert(.not. circle, "dag toposort: .not. circle")
-        end do
-        c = .false.
-        m = .true.
-        iorder = iorder + 1
-        order(iorder) = vertex%get_vertex_id()
+      if (.not. marked_edge) then
+        associate(vertex_id => vertex%get_vertex_id())
+          checking(vertex_id) = .true.
+          block 
+            integer edge
+
+            do edge=1, size(vertex%edges)
+              call depth_first_search(self%vertices(vertex%edges(edge)), marked(edge), checking(edge))
+            end do
+          end block
+          checking(vertex_id) = .false.
+          marked(vertex_id) = .true.
+          sorted = sorted + 1
+          order(sorted) = vertex_id
+        end associate
       end if
 
     end subroutine
