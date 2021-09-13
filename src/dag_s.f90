@@ -84,52 +84,52 @@ contains
     type(dag_t), intent(inout) :: self
     integer order(size(self%vertices)) !! sorted vertex order
 
-    logical marked(size(self%vertices)), checking(size(self%vertices))
+    logical visited(size(self%vertices)), visiting(size(self%vertices))
     integer sorted
 
-    block 
-      integer, allocatable :: o(:) !! sorted vertex order
-      integer istat
+    !block 
+    !  integer, allocatable :: o(:) !! sorted vertex order
+    !  integer istat
 
-      call toposort_reference(self, o, istat )
-      order = o
-      return
-    end block
+    !  call toposort_reference(self, o, istat )
+    !  order = o
+    !  return
+    !end block
 
-    marked = .false.
-    checking = .false.
+    visited = .false.
+    visiting = .false.
     sorted = 0 
 
     block 
       integer sorting
 
       do sorting = 1, size(self%vertices)
-        if (.not. marked(sorting)) call depth_first_search(self%vertices(sorting), marked(sorting), checking(sorting))
+        if (.not. visited(sorting)) call depth_first_search(self%vertices(sorting), visited(sorting), visiting(sorting))
       end do
     end block
 
   contains
 
-    recursive subroutine depth_first_search(vertex, marked_edge, checking_edge)
+    recursive subroutine depth_first_search(vertex, visited_edge, visiting_edge)
 
       type(vertex_t),intent(in) :: vertex
-      logical, intent(inout) :: marked_edge, checking_edge
+      logical, intent(inout) :: visited_edge, visiting_edge
 
-      call assert(.not. checking_edge, "dag_s toposort depth_first_search: circular dependence check")
+      call assert(.not. visiting_edge, "dag_s toposort depth_first_search: circular dependence check")
       call assert(allocated(vertex%edges), "dag_s toposort depth_first_search: allocated(vertex%edges)")
 
-      if (.not. marked_edge) then
+      if (.not. visited_edge) then
         associate(vertex_id => vertex%get_vertex_id())
-          checking(vertex_id) = .true.
+          visiting(vertex_id) = .true.
           block 
             integer edge
 
             do edge=1, size(vertex%edges)
-              call depth_first_search(self%vertices(vertex%edges(edge)), marked(edge), checking(edge))
+              call depth_first_search(self%vertices(vertex%edges(edge)), visited(edge), visiting(edge))
             end do
           end block
-          checking(vertex_id) = .false.
-          marked(vertex_id) = .true.
+          visiting(vertex_id) = .false.
+          visited(vertex_id) = .true.
           sorted = sorted + 1
           order(sorted) = vertex_id
         end associate
