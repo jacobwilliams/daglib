@@ -30,31 +30,31 @@ contains
 
     iorder = 0  ! index in order array
     do i=1, size(self%vertices)
-      if (.not. marked(i)) call dfs(self%vertices(i), marked(i), checking(i), circular)
+      if (.not. marked(i)) call depth_first_search(self%vertices(i), marked(i), checking(i), circular)
     end do
 
   contains
 
-    recursive subroutine dfs(v, m, c, circle)
+    recursive subroutine depth_first_search(vertex, m, c, circle)
 
-      type(vertex_t),intent(in) :: v
+      type(vertex_t),intent(in) :: vertex
       logical, intent(inout) :: m, c, circle
-      integer j
+      integer edge
 
-      call assert(allocated(v%edges), "dag_s toposort dfs: allocated(v%edges)") 
+      call assert(allocated(vertex%edges), "dag_s toposort depth_first_search: allocated(vertex%edges)") 
 
       if (.not. m) then
-        do j=1,size(v%edges)
-          call dfs(self%vertices(v%edges(j)), marked(j), checking(j), circle)
+        do edge=1,size(vertex%edges)
+          call depth_first_search(self%vertices(vertex%edges(edge)), marked(edge), checking(edge), circle)
           call assert(.not. circle, "dag toposort: .not. circle")
         end do
         c = .false.
         m = .true.
         iorder = iorder + 1
-        order(iorder) = v%get_vertex_id()
+        order(iorder) = vertex%get_vertex_id()
       end if
 
-    end subroutine dfs
+    end subroutine
 
   end function toposort
                                    
