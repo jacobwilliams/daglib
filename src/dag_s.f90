@@ -14,15 +14,87 @@ submodule(dag_m) dag_s
 
   implicit none
 
+  type vertex_status_t
+    logical :: marked=.false., checking=.false.
+  end type
+
 contains
+
+  module subroutine toposort_reference(me,order,istat)
+    !! Reference topological sort implementation
+    class(dag_t), intent(inout) :: me
+    integer, allocatable, intent(out) :: order(:) !! sorted vertex order
+    integer, intent(out) :: istat !! 0 for no circular dependencies, 1 for circular dependencies
+
+    integer :: i,iorder
+    type(vertex_status_t), allocatable :: vertex_status(:)
+
+    associate( num_vertices => size(me%vertices))
+      if (num_vertices==0) return
+
+      allocate(vertex_status(num_vertices))
+
+      allocate(order(num_vertices))
+
+      iorder = 0  ! index in order array
+      istat = 0   ! no errors so far
+      do i=1,num_vertices
+        if (.not. vertex_status(i)%marked) call dfs(me%vertices(i), i)
+        if (istat==-1) exit
+      end do
+    end associate
+
+    if (istat==-1) deallocate(order)
+
+  contains
+
+    recursive subroutine dfs(v, m)
+
+      type(vertex_t),intent(inout) :: v
+      integer :: j, m
+
+      if (istat==-1) return
+
+      if (vertex_status(m)%checking) then
+        ! error: circular dependency
+        istat = -1
+      else
+        if (.not. vertex_status(m)%marked) then
+          vertex_status(m)%checking = .true.
+          if (allocated(v%edges)) then
+            do j=1,size(v%edges)
+              call dfs(me%vertices(v%edges(j)), j)
+              if (istat==-1) return
+            end do
+          end if
+          vertex_status(m)%checking=.false.
+          vertex_status(m)%marked=.true.
+          iorder = iorder + 1 
+          order(iorder) = v%get_vertex_id()
+        end if
+      end if
+
+    end subroutine dfs 
+
+  end subroutine toposort_reference
 
   module function toposort(self) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
-    type(dag_t), intent(in) :: self
+    !type(dag_t), intent(in) :: self
+    type(dag_t), intent(inout) :: self
     integer order(size(self%vertices)) !! sorted vertex order
 
     logical marked(size(self%vertices)), checking(size(self%vertices))
     integer sorted
+
+    block 
+      integer, allocatable :: o(:) !! sorted vertex order
+      integer istat
+
+      call toposort_reference(self, o, istat )
+      order = o
+      return
+    end block
 
     marked = .false.
     checking = .false.
