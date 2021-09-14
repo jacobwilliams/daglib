@@ -20,133 +20,75 @@ submodule(dag_m) dag_s
 
 contains
 
-  module subroutine toposort_reference(me,order,istat)
-    !! Reference topological sort implementation
-    class(dag_t), intent(inout) :: me
-    integer, allocatable, intent(out) :: order(:) !! sorted vertex order
-    integer, intent(out) :: istat !! 0 for no circular dependencies, 1 for circular dependencies
-
-    integer :: i,iorder
-    type(vertex_status_t), allocatable :: vertex_status(:)
-
-    associate( num_vertices => size(me%vertices))
-      if (num_vertices==0) return
-
-      allocate(vertex_status(num_vertices))
-
-      allocate(order(num_vertices))
-
-      iorder = 0  ! index in order array
-      istat = 0   ! no errors so far
-      do i=1,num_vertices
-        if (.not. vertex_status(i)%marked) call dfs(me%vertices(i), i)
-        if (istat==-1) exit
-      end do
-    end associate
-
-    if (istat==-1) deallocate(order)
-
-  contains
-
-    recursive subroutine dfs(v, m)
-
-      type(vertex_t),intent(inout) :: v
-      integer :: j, m
-
-      if (istat==-1) return
-
-      if (vertex_status(m)%checking) then
-        ! error: circular dependency
-        istat = -1
-      else
-        if (.not. vertex_status(m)%marked) then
-          vertex_status(m)%checking = .true.
-          if (allocated(v%edges)) then
-            do j=1,size(v%edges)
-              call dfs(me%vertices(v%edges(j)), j)
-              if (istat==-1) return
-            end do
-          end if
-          vertex_status(m)%checking=.false.
-          vertex_status(m)%marked=.true.
-          iorder = iorder + 1 
-          order(iorder) = v%get_vertex_id()
-        end if
-      end if
-
-    end subroutine dfs 
-
-  end subroutine toposort_reference
-
   module function toposort(vertices) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
     type(vertex_t), intent(in) :: vertices(:)
-    integer, allocatable :: order(:) !! sorted vertex order
-    logical discovered(size(vertices))
+    integer, allocatable :: order(:), discovered(:), searched(:)
     integer v
 
     call assert(all([(allocated(vertices(v)%edges), v=1, size(vertices))]), &
         "dag_s toposort: (all([(allocated(vertices(v)%edges), v=1, size(vertices))])")
 
-    allocate(order(0))
-    discovered = .false.
-    do v = 1, size(vertices)
-      print *,new_line(' '),"depth_first_search(",v,")"
-      call depth_first_search(v)
-    end do
-    print *,"--------toposort done with order", order 
-    stop
+    allocate(order(0), discovered(0), searched(0))
+   
+    block
+      integer, allocatable :: previously_found(:)
 
-    !block 
-    !  integer, allocatable :: o(:) !! sorted vertex order
-    !  integer istat
+      allocate(previously_found(0))
 
-    !  call toposort_reference(self, o, istat )
-    !  order = o
-    !  return
-    !end block
+      do v = 1, size(vertices)
+        if (.not. any(v == searched)) then
+          call depth_first_search(v, previously_found, searched, order)
+          previously_found = [previously_found, searched]
+        end if
+      end do
+    end block
 
   contains
 
-    recursive subroutine depth_first_search(v)
-      integer, intent(in) :: v
-      integer num_edges, e
+    recursive subroutine depth_first_search(v, d, s, o)
+      integer, intent(in) :: v, d(:)
+      integer, intent(out), allocatable :: s(:)
+      integer, intent(inout), allocatable :: o(:)
+      integer, allocatable :: dependencies(:), s_local(:), p_local(:)
+      integer w
 
-      call assert(.not. discovered(vertices(v)%get_vertex_id()), ".not. discovered(vertices(v)%get_vertex_id())")
+      call assert(any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
         
-      discovered(vertices(v)%get_vertex_id()) = .true.
-      print *,"discovered(",vertices(v)%get_vertex_id(),") = .true."
+      dependencies = vertices(v)%get_dependencies()
 
-      num_edges = size(vertices(v)%edges)
+      o = [o, v]
+      allocate(s_local(0), p_local(0))
 
-      if (num_edges==0 .or. all([(discovered(vertices(v)%edges(e)), e=1, num_edges)])) then
-        order = [order, v]
-      else
-        do e = 1, num_edges
-          if (.not. discovered(vertices(v)%edges(e))) call depth_first_search(vertices(v)%edges(e))
-        end do
-      end if
+      do w = 1, size(dependencies)
+        if (.not. any(dependencies(w) == s_local)) then
+          call depth_first_search(dependencies(w), [d, dependencies(w)], s_local, o)
+          p_local = [p_local, s_local]
+          s_local = p_local
+        end if
+      end do
 
+      s = [v, searched]
     end subroutine
 
   end function toposort
                                    
-  module procedure is_sorted
+  module procedure is_sorted_and_acyclic
     
     if (.not. allocated(self%order)) then
-      is_sorted = .false.
+      is_sorted_and_acyclic = .false.
       return
     end if
     
     associate(num_vertices => size(self%vertices), order_size => size(self%order))
-      call assert(order_size == num_vertices, "dag_t%is_sorted: size(self%vertices) == size(self%order)", &
+      call assert(order_size == num_vertices, "dag_t%is_sorted_and_acyclic: size(self%vertices) == size(self%order)", &
         intrinsic_array_t([order_size, num_vertices]))
     
       block
         integer i
     
         associate(vertices_sorted => [( self%vertices(self%order(i))%get_edges() < i , i=1, num_vertices)])
-          is_sorted = all(vertices_sorted)
+          is_sorted_and_acyclic = all(vertices_sorted)
         end associate
       end block
     

@@ -18,7 +18,7 @@ module dag_m
     type(vertex_t),dimension(:),allocatable :: vertices
     integer, allocatable :: order(:)
   contains
-    procedure :: is_sorted
+    procedure :: is_sorted_and_acyclic
     procedure :: to_json
     procedure :: save_digraph
     procedure :: dependency_matrix
@@ -51,11 +51,11 @@ module dag_m
 
   interface
 
-    module function is_sorted(self)
+    module function is_sorted_and_acyclic(self)
       !! Result is true if dag%order contains a topological sorting of vertex identifiers
       implicit none
       class(dag_t), intent(in) :: self
-      logical is_sorted
+      logical is_sorted_and_acyclic
     end function
 
     module function to_json(self) result(json_object)
