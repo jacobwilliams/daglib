@@ -95,7 +95,7 @@ contains
     type(result_t) result_
     
     associate(dag => module_tree_from_components())
-      result_ = assert_that(dag%is_sorted())
+      result_ = assert_that(dag%is_sorted_and_acyclic())
     end associate
   end function 
 
@@ -114,7 +114,7 @@ contains
     json = dag_library_module_dependencies
     
     read(json,*) dag 
-    result_ = assert_that(dag%is_sorted())
+    result_ = assert_that(dag%is_sorted_and_acyclic())
   end function
 
 end module dag_test
