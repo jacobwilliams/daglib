@@ -78,14 +78,24 @@ contains
 
   end subroutine toposort_reference
 
-  module function toposort(self) result(order)
+  module function toposort(vertices) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
-    !type(dag_t), intent(in) :: self
-    type(dag_t), intent(inout) :: self
-    integer order(size(self%vertices)) !! sorted vertex order
+    type(vertex_t), intent(in) :: vertices(:)
+    integer, allocatable :: order(:) !! sorted vertex order
+    logical discovered(size(vertices))
+    integer v
 
-    logical visited(size(self%vertices)), visiting(size(self%vertices))
-    integer sorted
+    call assert(all([(allocated(vertices(v)%edges), v=1, size(vertices))]), &
+        "dag_s toposort: (all([(allocated(vertices(v)%edges), v=1, size(vertices))])")
+
+    allocate(order(0))
+    discovered = .false.
+    do v = 1, size(vertices)
+      print *,new_line(' '),"depth_first_search(",v,")"
+      call depth_first_search(v)
+    end do
+    print *,"--------toposort done with order", order 
+    stop
 
     !block 
     !  integer, allocatable :: o(:) !! sorted vertex order
@@ -96,43 +106,25 @@ contains
     !  return
     !end block
 
-    visited = .false.
-    visiting = .false.
-    sorted = 0 
-
-    block 
-      integer sorting
-
-      do sorting = 1, size(self%vertices)
-        if (.not. visited(sorting)) call depth_first_search(self%vertices(sorting), visited(sorting), visiting(sorting))
-      end do
-    end block
-
   contains
 
-    recursive subroutine depth_first_search(vertex, visited_edge, visiting_edge)
+    recursive subroutine depth_first_search(v)
+      integer, intent(in) :: v
+      integer num_edges, e
 
-      type(vertex_t),intent(in) :: vertex
-      logical, intent(inout) :: visited_edge, visiting_edge
+      call assert(.not. discovered(vertices(v)%get_vertex_id()), ".not. discovered(vertices(v)%get_vertex_id())")
+        
+      discovered(vertices(v)%get_vertex_id()) = .true.
+      print *,"discovered(",vertices(v)%get_vertex_id(),") = .true."
 
-      call assert(.not. visiting_edge, "dag_s toposort depth_first_search: circular dependence check")
-      call assert(allocated(vertex%edges), "dag_s toposort depth_first_search: allocated(vertex%edges)")
+      num_edges = size(vertices(v)%edges)
 
-      if (.not. visited_edge) then
-        associate(vertex_id => vertex%get_vertex_id())
-          visiting(vertex_id) = .true.
-          block 
-            integer edge
-
-            do edge=1, size(vertex%edges)
-              call depth_first_search(self%vertices(vertex%edges(edge)), visited(edge), visiting(edge))
-            end do
-          end block
-          visiting(vertex_id) = .false.
-          visited(vertex_id) = .true.
-          sorted = sorted + 1
-          order(sorted) = vertex_id
-        end associate
+      if (num_edges==0 .or. all([(discovered(vertices(v)%edges(e)), e=1, num_edges)])) then
+        order = [order, v]
+      else
+        do e = 1, num_edges
+          if (.not. discovered(vertices(v)%edges(e))) call depth_first_search(vertices(v)%edges(e))
+        end do
       end if
 
     end subroutine
@@ -226,7 +218,7 @@ contains
 
    module procedure construct_from_components
      dag%vertices = vertices
-     dag%order = toposort(dag)
+     dag%order = toposort(dag%vertices)
    end procedure
 
 
@@ -302,22 +294,8 @@ contains
 
       ! define the vertices:
       do i=1,size(self%vertices)
-        associate( &
-          has_label      => self%vertices(i)%has_label(), &
-          has_attributes => self%vertices(i)%has_attributes() &
-        )
-
-          if (has_label) label = 'label="'//trim(adjustl(self%vertices(i)%get_label()))//'"'
-          if (has_label .and. has_attributes) then
-              attributes = '['//trim(adjustl(self%vertices(i)%get_attributes()))//','//label//']'
-          elseif (has_label .and. .not. has_attributes) then
-              attributes = '['//label//']'
-          elseif (.not. has_label .and. has_attributes) then
-              attributes = '['//trim(adjustl(self%vertices(i)%get_attributes()))//']'
-          else ! neither
-              attributes = ''
-          end if
-        end associate
+        label = 'label="'//trim(adjustl(self%vertices(i)%get_label()))//'"'
+        attributes = '['//trim(adjustl(self%vertices(i)%get_attributes()))//','//label//']'
         str = str//tab//integer_to_string(i)//' '//attributes//newline
         if (i==size(self%vertices)) str = str//newline
       end do
