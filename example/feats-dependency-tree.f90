@@ -1,6 +1,6 @@
 program labeled_dag_output
-  use dag_interface, only : dag_t
-  use vertex_interface, only : vertex_t
+  use dag_m, only : dag_t
+  use vertex_m, only : vertex_t
   use iso_varying_string, only : var_str, varying_string
   implicit none
 
