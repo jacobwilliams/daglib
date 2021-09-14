@@ -80,9 +80,9 @@ contains
     character(len=*), parameter :: expected_json = &
        '{"vertices":[' // &
          '{"label":"assert_m","edges":[]},' // &
+         '{"label":"vertex_s","edges":[3,1]},' // &
          '{"label":"vertex_m","edges":[]},' // &
-         '{"label":"vertex_s","edges":[2,1]},' // &
-         '{"label":"dag_m","edges":[2]},' // &
+         '{"label":"dag_m","edges":[3]},' // &
          '{"label":"dag_s","edges":[4,1]}]}'
 
     associate(dag => module_tree_from_components())
@@ -106,9 +106,9 @@ contains
     character(len=*), parameter :: dag_library_module_dependencies= &
        '{"vertices":[' // &
          '{"label":"assert_m","edges":[]},' // &
+         '{"label":"vertex_s","edges":[3,1]},' // &
          '{"label":"vertex_m","edges":[]},' // &
-         '{"label":"vertex_s","edges":[2,1]},' // &
-         '{"label":"dag_m","edges":[2]},' // &
+         '{"label":"dag_m","edges":[3]},' // &
          '{"label":"dag_s","edges":[4,1]}]}'
     character(len=len(dag_library_module_dependencies)) json
     
