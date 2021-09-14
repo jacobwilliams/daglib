@@ -23,13 +23,13 @@ contains
   module function toposort(dag) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
     type(dag_t), intent(in) :: dag
-    integer, allocatable :: order(:), discovered(:), searched(:)
+    integer, allocatable :: order(:), searched(:)
     integer v
 
     call assert(all([(allocated(dag%vertices(v)%edges), v=1, size(dag%vertices))]), &
         "dag_s toposort: (all([(allocated(dag%vertices(v)%edges), v=1, size(dag%vertices))])")
 
-    allocate(order(0), discovered(0), searched(0))
+    allocate(order(0), searched(0))
    
     block
       integer, allocatable :: previously_found(:)
@@ -38,8 +38,9 @@ contains
 
       do v = 1, size(dag%vertices)
         if (.not. any(v == searched)) then
-          call depth_first_search(v, previously_found, searched, order)
+          call depth_first_search(v, [integer::], searched, order)
           previously_found = [previously_found, searched]
+          searched = previously_found
         end if
       end do
     end block
@@ -52,23 +53,29 @@ contains
       integer, intent(inout), allocatable :: o(:)
       integer, allocatable :: dependencies(:), s_local(:), p_local(:)
       integer w
+      
+      print *,"v, d, o", v,",[",d,"], ","[",o,"]"
 
-      call assert(any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
+      if (size(d)>0) call assert(.not. any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
         
       dependencies = dag%depends_on(v)
+      print *,"depends_on(",v,"): ", dependencies
 
-      o = [o, v]
+
       allocate(s_local(0), p_local(0))
 
       do w = 1, size(dependencies)
         if (.not. any(dependencies(w) == s_local)) then
-          call depth_first_search(dependencies(w), [d, dependencies(w)], s_local, o)
+          call depth_first_search(dependencies(w), [d, v], s_local, o)
           p_local = [p_local, s_local]
           s_local = p_local
         end if
       end do
+      
+      if (.not. any(v == o)) o = [v, o]
+      s = [v, s_local]
+      print *,"s, o ","[",s,"],","[",o,"]"
 
-      s = [v, searched]
     end subroutine
 
   end function toposort
