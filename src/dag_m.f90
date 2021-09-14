@@ -21,7 +21,6 @@ module dag_m
     procedure :: is_sorted_and_acyclic
     procedure :: to_json
     procedure :: save_digraph
-    procedure :: dependency_matrix
     procedure :: num_vertices
     procedure :: dependencies_for
     procedure :: depends_on
@@ -64,13 +63,6 @@ module dag_m
       class(dag_t), intent(in) :: self
       type(json_object_t) json_object
     end function
-
-    module subroutine dependency_matrix(self,mat)
-      !! Output array in which .true. elements are located at locations corresponding to dependencies
-      implicit none
-      class(dag_t),intent(in) :: self
-      logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
-    end subroutine
 
     pure module function num_vertices(self)
       !! Result is the size of the vertex array

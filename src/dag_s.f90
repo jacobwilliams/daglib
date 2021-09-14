@@ -20,6 +20,12 @@ submodule(dag_m) dag_s
 
 contains
 
+  module procedure construct_from_components
+    dag%vertices = vertices
+    dag%order = toposort(dag)
+    call assert(dag%is_sorted_and_acyclic(), "construct_from_components: dag%is_sorted_and_acyclic()")
+  end procedure
+
   module function toposort(dag) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
     type(dag_t), intent(in) :: dag
@@ -29,18 +35,16 @@ contains
     call assert(all([(allocated(dag%vertices(v)%edges), v=1, size(dag%vertices))]), &
         "dag_s toposort: (all([(allocated(dag%vertices(v)%edges), v=1, size(dag%vertices))])")
 
-    allocate(order(0), searched(0))
-   
     block
-      integer, allocatable :: previously_found(:)
+      integer, allocatable :: discovered(:)
 
-      allocate(previously_found(0))
+      allocate(discovered(0), order(0), searched(0))
 
       do v = 1, size(dag%vertices)
         if (.not. any(v == searched)) then
           call depth_first_search(v, [integer::], searched, order)
-          previously_found = [previously_found, searched]
-          searched = previously_found
+          discovered = [discovered, searched]
+          searched = discovered
         end if
       end do
     end block
@@ -51,25 +55,28 @@ contains
       integer, intent(in) :: v, d(:)
       integer, intent(out), allocatable :: s(:)
       integer, intent(inout), allocatable :: o(:)
-      integer, allocatable :: dependencies(:), s_local(:), p_local(:)
-      integer w
       
       call assert(.not. any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
         
-      dependencies = dag%depends_on(v)
+      block
+        integer, allocatable :: dependencies(:), s_local(:), d_local(:)
+        integer w
 
-      allocate(s_local(0), p_local(0))
+        dependencies = dag%depends_on(v)
 
-      do w = 1, size(dependencies)
-        if (.not. any(dependencies(w) == s_local)) then
-          call depth_first_search(dependencies(w), [d, v], s_local, o)
-          p_local = [p_local, s_local]
-          s_local = p_local
-        end if
-      end do
-      
-      if (.not. any(v == o)) o = [v, o]
-      s = [v, s_local]
+        allocate(s_local(0), d_local(0))
+
+        do w = 1, size(dependencies)
+          if (.not. any(dependencies(w) == s_local)) then
+            call depth_first_search(dependencies(w), [d, v], s_local, o)
+            d_local = [d_local, s_local]
+            s_local = d_local
+          end if
+        end do
+        
+        if (.not. any(v == o)) o = [v, o]
+        s = [v, s_local]
+      end block
 
     end subroutine
 
@@ -168,33 +175,6 @@ contains
        end associate
      end block
    end procedure
-
-   module procedure construct_from_components
-     dag%vertices = vertices
-     dag%order = toposort(dag)
-   end procedure
-
-
-  module procedure dependency_matrix
-
-
-    associate(num_vertices => size(self%vertices))
-      if (num_vertices > 0) then
-
-        allocate(mat(num_vertices,num_vertices))
-        mat = .false.
-
-        block
-        integer i
-          do concurrent(i=1:num_vertices)
-            if (allocated(self%vertices(i)%edges)) mat(i,self%vertices(i)%edges) = .true.
-          end do
-        end block
-
-      end if
-    end associate
-
-  end procedure
 
   module procedure num_vertices
     num_vertices = size(self%vertices)
