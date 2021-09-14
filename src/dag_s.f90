@@ -55,7 +55,7 @@ contains
 
       call assert(any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
         
-      !dependencies = vertices(v)%get_dependencies()
+      dependencies = dag%depends_on(v)
 
       o = [o, v]
       allocate(s_local(0), p_local(0))
@@ -191,6 +191,22 @@ contains
 
   module procedure dependencies_for
     dependency_ids = self%vertices(vertex_id)%get_edges()
+  end procedure
+
+  module procedure depends_on
+
+    call assert(vertex_num>=1 .and. vertex_num<=size(self%vertices), "depends_on: index in bounds")
+
+    allocate(dependencies(0))
+
+    block 
+      integer v
+
+      do v = 1, size(self%vertices)
+        if (any(self%vertices(v)%edges == vertex_num)) dependencies = [dependencies, v]
+      end do
+    end block
+
   end procedure
 
   module procedure save_digraph

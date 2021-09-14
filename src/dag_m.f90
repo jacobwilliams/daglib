@@ -24,6 +24,7 @@ module dag_m
     procedure :: dependency_matrix
     procedure :: num_vertices
     procedure :: dependencies_for
+    procedure :: depends_on
     generic :: write(formatted) => write_formatted
     generic :: read(formatted) => read_formatted
 
@@ -76,6 +77,14 @@ module dag_m
       implicit none
       class(dag_t), intent(in) :: self
       integer num_vertices
+    end function
+
+    pure module function depends_on(self, vertex_num) result(dependencies)
+      !! Result is an array of the vertex numbers that depend on on vertex vertex_num 
+      implicit none
+      class(dag_t), intent(in) :: self
+      integer, intent(in) :: vertex_num
+      integer, allocatable :: dependencies(:)
     end function
 
     pure module function dependencies_for(self, vertex_id) result(dependency_ids)
