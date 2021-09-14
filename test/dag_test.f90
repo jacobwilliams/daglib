@@ -18,7 +18,8 @@ contains
     tests = describe("dag's module dependency graph", &
       [it("can be constructed, output to .dot file, and converted to a PDF", construct_dag_and_write_pdf) &
       ,it("can be constructed and converted to a JSON object", construct_dag_and_json_object) &
-      ,it("is topologically sorted when constructed from components", component_constructor_sorts)])! &
+      ,it("is topologically sorted when constructed from components", component_constructor_sorts) &
+      ])
       !,it("is topologically sorted when constructed from a JSON object", json_constructor_sorts)])
 
   end function
@@ -27,10 +28,10 @@ contains
     type(dag_t) dag_modules
     
     enum, bind(C)
-      enumerator :: assert_m=1, vertex_m, vertex_s, dag_m, dag_s 
+      enumerator :: assert_m=1, vertex_s, vertex_m, dag_m, dag_s 
     end enum
     
-    integer, parameter :: module_id(*) = [assert_m, vertex_m, vertex_s, dag_m, dag_s]
+    integer, parameter :: module_id(*) = [assert_m,  vertex_s, vertex_m, dag_m, dag_s]
     type(varying_string) :: names(size(module_id))
  
     names(assert_m) = "assert_m"
@@ -48,8 +49,8 @@ contains
 
       dag_modules = dag_t([ &
          vertex_t(assert_m, [integer::],          names(assert_m), var_str(external_)) &
-        ,vertex_t(vertex_m, [integer::],          names(vertex_m), var_str(leaf)) &
         ,vertex_t(vertex_s, [vertex_m, assert_m], names(vertex_s), var_str(root)) &
+        ,vertex_t(vertex_m, [integer::],          names(vertex_m), var_str(leaf)) &
         ,vertex_t(dag_m,    [vertex_m],           names(dag_m),    var_str(branch)) &
         ,vertex_t(dag_s,    [dag_m, assert_m],    names(dag_s),    var_str(root))])
     end block

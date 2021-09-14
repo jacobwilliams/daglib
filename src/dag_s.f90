@@ -87,11 +87,20 @@ contains
         intrinsic_array_t([order_size, num_vertices]))
     
       block
-        integer i
+        integer i, j
     
-        associate(vertices_sorted => [( self%vertices(self%order(i))%get_edges() < i , i=1, num_vertices)])
-          is_sorted_and_acyclic = all(vertices_sorted)
-        end associate
+        do i = 1, num_vertices
+          associate(edges => self%vertices(self%order(i))%get_edges())
+            do j = 1, size(edges)
+              if (.not. any(edges(j) == self%order(1:i))) then
+                is_sorted_and_acyclic = .false.
+                return
+              end if
+            end do
+          end associate
+        end do
+            
+        is_sorted_and_acyclic = .true.
       end block
     
     end associate
