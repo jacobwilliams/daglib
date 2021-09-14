@@ -54,13 +54,9 @@ contains
       integer, allocatable :: dependencies(:), s_local(:), p_local(:)
       integer w
       
-      print *,"v, d, o", v,",[",d,"], ","[",o,"]"
-
-      if (size(d)>0) call assert(.not. any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
+      call assert(.not. any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
         
       dependencies = dag%depends_on(v)
-      print *,"depends_on(",v,"): ", dependencies
-
 
       allocate(s_local(0), p_local(0))
 
@@ -74,7 +70,6 @@ contains
       
       if (.not. any(v == o)) o = [v, o]
       s = [v, s_local]
-      print *,"s, o ","[",s,"],","[",o,"]"
 
     end subroutine
 
