@@ -20,14 +20,14 @@ submodule(dag_m) dag_s
 
 contains
 
-  module function toposort(vertices) result(order)
+  module function toposort(dag) result(order)
     !! Provide array of vertex numbers ordered in a way that respects dependencies
-    type(vertex_t), intent(in) :: vertices(:)
+    type(dag_t), intent(in) :: dag
     integer, allocatable :: order(:), discovered(:), searched(:)
     integer v
 
-    call assert(all([(allocated(vertices(v)%edges), v=1, size(vertices))]), &
-        "dag_s toposort: (all([(allocated(vertices(v)%edges), v=1, size(vertices))])")
+    call assert(all([(allocated(dag%vertices(v)%edges), v=1, size(dag%vertices))]), &
+        "dag_s toposort: (all([(allocated(dag%vertices(v)%edges), v=1, size(dag%vertices))])")
 
     allocate(order(0), discovered(0), searched(0))
    
@@ -36,7 +36,7 @@ contains
 
       allocate(previously_found(0))
 
-      do v = 1, size(vertices)
+      do v = 1, size(dag%vertices)
         if (.not. any(v == searched)) then
           call depth_first_search(v, previously_found, searched, order)
           previously_found = [previously_found, searched]
@@ -55,7 +55,7 @@ contains
 
       call assert(any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
         
-      dependencies = vertices(v)%get_dependencies()
+      !dependencies = vertices(v)%get_dependencies()
 
       o = [o, v]
       allocate(s_local(0), p_local(0))
@@ -160,7 +160,7 @@ contains
 
    module procedure construct_from_components
      dag%vertices = vertices
-     dag%order = toposort(dag%vertices)
+     dag%order = toposort(dag)
    end procedure
 
 
