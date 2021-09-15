@@ -55,9 +55,9 @@ contains
       integer, intent(in) :: v, d(:)
       integer, intent(out), allocatable :: s(:)
       integer, intent(inout), allocatable :: o(:)
-      
+
       call assert(.not. any(v == d), "depth_first_search: cycle detected", intrinsic_array_t([v,d]))
-        
+
       block
         integer, allocatable :: dependencies(:), s_local(:), d_local(:)
         integer w
@@ -73,7 +73,7 @@ contains
             s_local = d_local
           end if
         end do
-        
+
         if (.not. any(v == o)) o = [v, o]
         s = [v, s_local]
       end block
@@ -81,21 +81,21 @@ contains
     end subroutine
 
   end function toposort
-                                   
+
   module procedure is_sorted_and_acyclic
-    
+
     if (.not. allocated(self%order)) then
       is_sorted_and_acyclic = .false.
       return
     end if
-    
+
     associate(num_vertices => size(self%vertices), order_size => size(self%order))
       call assert(order_size == num_vertices, "dag_t%is_sorted_and_acyclic: size(self%vertices) == size(self%order)", &
         intrinsic_array_t([order_size, num_vertices]))
-    
+
       block
         integer i, j
-    
+
         do i = 1, num_vertices
           associate(edges => self%vertices(self%order(i))%get_edges())
             do j = 1, size(edges)
@@ -106,17 +106,18 @@ contains
             end do
           end associate
         end do
-            
+
         is_sorted_and_acyclic = .true.
       end block
-    
+
     end associate
-    
+
   end procedure
 
   module procedure construct_from_json
     type(fallible_json_value_t) :: maybe_vertices
 
+    maybe_vertices = json_object%get_element("vertices")
     associate(errors => maybe_vertices%errors())
       call assert(.not. errors%has_any(), "dag_s construct_from_json: .not. errors%has_any()", char(errors%to_string()))
     end associate
@@ -168,7 +169,7 @@ contains
      block
        type(json_array_t) vertices_value
 
-       vertices_value = json_array_t(json_element_t(self%vertices%to_json())) 
+       vertices_value = json_array_t(json_element_t(self%vertices%to_json()))
 
        associate(vertices_key => maybe_key%string())
          json_object = json_object_t([vertices_key], [json_element_t(vertices_value)])
@@ -190,7 +191,7 @@ contains
 
     allocate(dependencies(0))
 
-    block 
+    block
       integer v
 
       do v = 1, size(self%vertices)
@@ -222,11 +223,11 @@ contains
       !! - Result is the string to write out to a *.dot file. (Called by save_digraph())
       implicit none
       class(dag_t),intent(in)                :: self
-      character(len=:),allocatable         :: str 
+      character(len=:),allocatable         :: str
       character(len=*),intent(in),optional :: rankdir
         !! - Rank Direction which are applicable inputs to the -rankdir option on the digraph command
-      integer,intent(in),optional          :: dpi 
-        !! - dots per inch 
+      integer,intent(in),optional          :: dpi
+        !! - dots per inch
 
       integer :: i,j
       integer :: n_edges

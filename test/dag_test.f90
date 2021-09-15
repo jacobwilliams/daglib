@@ -1,10 +1,11 @@
 module dag_test
   use dag_m, only: dag_t
+  use erloff, only: error_list_t
   use vertex_m, only: vertex_t
   use vegetables, only: &
-      result_t, test_item_t, assert_equals, describe, it, assert_that
+      result_t, test_item_t, assert_equals, describe, it, assert_that, fail
   use iso_varying_string, only : varying_string, var_str, assignment(=), char
-  use jsonff, only: json_object_t
+  use jsonff, only: fallible_json_value_t, json_object_t, parse_json
   !!  Test DAG construction, input, and output.
   implicit none
   private
@@ -16,31 +17,31 @@ contains
     type(test_item_t) :: tests
 
     tests = describe("dag's module dependency graph", &
-      [it("can be constructed, output to .dot file, and converted to a PDF", construct_dag_and_write_pdf) &
-      ,it("can be constructed and converted to a JSON object", construct_dag_and_json_object) &
-      ,it("is topologically sorted when constructed from components", component_constructor_sorts) &
+      [ it("can be constructed, output to .dot file, and converted to a PDF", construct_dag_and_write_pdf) &
+      , it("can be constructed and converted to a JSON object", construct_dag_and_json_object) &
+      , it("is topologically sorted when constructed from components", component_constructor_sorts) &
+      , it("is topologically sorted when constructed from a JSON object", json_constructor_sorts) &
       ])
-      !,it("is topologically sorted when constructed from a JSON object", json_constructor_sorts)])
 
   end function
 
   function module_tree_from_components() result(dag_modules)
     type(dag_t) dag_modules
-    
+
     enum, bind(C)
-      enumerator :: assert_m=1, vertex_s, vertex_m, dag_m, dag_s 
+      enumerator :: assert_m=1, vertex_s, vertex_m, dag_m, dag_s
     end enum
-    
+
     integer, parameter :: module_id(*) = [assert_m,  vertex_s, vertex_m, dag_m, dag_s]
     type(varying_string) :: names(size(module_id))
- 
+
     names(assert_m) = "assert_m"
     names(vertex_m) = "vertex_m"
-    names(vertex_s) = "vertex_s" 
+    names(vertex_s) = "vertex_s"
     names(dag_m)    = "dag_m"
     names(dag_s)    = "dag_s"
 
-    block 
+    block
       character(len=*), parameter :: &
          branch    = 'shape=square, fillcolor="SlateGray1", style=filled' &
         ,external_ = 'shape=square, fillcolor="green",      style=filled' &
@@ -69,7 +70,7 @@ contains
     associate(modules => module_tree_from_components())
       call modules%save_digraph(dot_file_name, 'RL', 300)
       call execute_command_line(command, wait=.true., exitstat=exit_status, cmdstat=command_status)
-      result_ = assert_equals(success, exit_status) .and. assert_equals(success, command_status) 
+      result_ = assert_equals(success, exit_status) .and. assert_equals(success, command_status)
     end associate
 
   end function
@@ -94,28 +95,38 @@ contains
 
   function component_constructor_sorts() result(result_)
     type(result_t) result_
-    
+
     associate(dag => module_tree_from_components())
       result_ = assert_that(dag%is_sorted_and_acyclic())
     end associate
-  end function 
+  end function
 
   function json_constructor_sorts() result(result_)
     type(result_t) result_
-    type(dag_t) dag 
-    character(len=*), parameter :: dag_library_module_dependencies= &
+    type(dag_t) dag
+    type(error_list_t) :: errors
+    type(fallible_json_value_t) :: maybe_json
+    character(len=*), parameter :: json_string = &
        '{"vertices":[' // &
          '{"label":"assert_m","edges":[]},' // &
          '{"label":"vertex_s","edges":[3,1]},' // &
          '{"label":"vertex_m","edges":[]},' // &
          '{"label":"dag_m","edges":[3]},' // &
          '{"label":"dag_s","edges":[4,1]}]}'
-    character(len=len(dag_library_module_dependencies)) json
-    
-    json = dag_library_module_dependencies
-    
-    read(json,*) dag 
-    result_ = assert_that(dag%is_sorted_and_acyclic())
+
+    maybe_json = parse_json(json_string)
+    if (.not.maybe_json%failed()) then
+      select type (json => maybe_json%value_())
+      type is (json_object_t)
+        dag = dag_t(json)
+        result_ = assert_that(dag%is_sorted_and_acyclic())
+      class default
+        result_ = fail("json wasn't an object")
+      end select
+    else
+      errors = maybe_json%errors()
+      result_ = fail(errors%to_string())
+    end if
   end function
 
 end module dag_test

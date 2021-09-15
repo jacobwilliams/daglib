@@ -27,25 +27,25 @@ contains
     errors = maybe_key%errors()
     call assert(.not. errors%has_any(), "vertex%to_json (edges key): .not. errors%has_any()", char(errors%to_string()))
     edges_key = maybe_key%string()
-    
+
     if (allocated(self%edges)) then
       do i = lbound(self%edges, 1), ubound(self%edges, 1)
         call edges_value%append(json_integer_t(self%edges(i)))
       end do
     end if
-    
+
     maybe_key = fallible_json_string_t("label")
     errors = maybe_key%errors()
     call assert(.not. errors%has_any(), "vertex%to_json (label key): .not. errors%has_any()", char(errors%to_string()))
     label_key = maybe_key%string()
-        
+
     maybe_value = fallible_json_string_t(self%get_label())
     errors = maybe_value%errors()
     call assert(.not. errors%has_any(), "vertex%to_json (label value): .not. errors%has_any()", char(errors%to_string()))
     label_value = maybe_value%string()
 
-    
-    json_object = json_object_t([label_key, edges_key], [json_element_t(label_value), json_element_t(edges_value)])    
+
+    json_object = json_object_t([label_key, edges_key], [json_element_t(label_value), json_element_t(edges_value)])
 
   end procedure
 
@@ -88,6 +88,8 @@ contains
         select type (edge => maybe_edge%value_())
         type is (json_number_t)
           vertex%edges(i) = int(edge%get_value())
+        type is (json_integer_t)
+          vertex%edges(i) = edge%get_value()
         class default
           call assert(.false., "vertex%from_json: edge was not a number", char(edge%to_compact_string()))
         end select
