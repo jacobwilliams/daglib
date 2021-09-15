@@ -156,6 +156,7 @@ contains
     class default
       call assert(.false., "dag%from_json: vertices was not an array", char(vertices%to_compact_string()))
     end select
+    dag%order = toposort(dag)
   end procedure
 
    module procedure to_json
