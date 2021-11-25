@@ -4,27 +4,12 @@ DAGLIB is a modern Fortran module for creating and manipulating directed acyclic
 
 ### Building
 
-A [FoBiS](https://github.com/szaghi/FoBiS) configuration file (`daglib.fobis`) is provided that can build the library and examples. Use the `mode` flag to indicate what to build. For example:
+A [Fortran Package Manager](https://github.com/fortran-lang/fpm) manifest file is included, so that the library and tests cases can be compiled with FPM. For example:
 
-* To build all the examples using gfortran: `FoBiS.py build -f daglib.fobis -mode tests-gnu`
-* To build all the examples using ifort: `FoBiS.py build -f daglib.fobis -mode tests-intel`
-* To build a static library using gfortran: `FoBiS.py build -f daglib.fobis -mode static-gnu`
-* To build a static library using ifort: `FoBiS.py build -f daglib.fobis -mode static-intel`
-
-The full set of modes are:
-
-* `static-gnu`
-* `static-gnu-debug`
-* `static-intel`
-* `static-intel-debug`
-* `shared-gnu`
-* `shared-gnu-debug`
-* `shared-intel`
-* `shared-intel-debug`
-* `tests-gnu`
-* `tests-gnu-debug`
-* `tests-intel`
-* `tests-intel-debug`
+```
+fpm build --profile release
+fpm test --profile release
+```
 
 ### Example
 
@@ -48,11 +33,11 @@ program dag_example
     ! create a dag:
 
     call d%set_vertices(n_nodes)
-    call d%set_edges(2,[1])     !2 depends on 1
-    call d%set_edges(3,[5,1])   !3 depends on 5 and 1
-    call d%set_edges(4,[5])     !4 depends on 5
-    call d%set_edges(5,[2])     !5 depends on 2
-    call d%set_edges(6,[2,4])   !6 depends on 2 and 4
+    call d%set_edges(2,[1])     ! 2 depends on 1
+    call d%set_edges(3,[5,1])   ! 3 depends on 5 and 1
+    call d%set_edges(4,[5])     ! 4 depends on 5
+    call d%set_edges(5,[2])     ! 5 depends on 2
+    call d%set_edges(6,[2,4])   ! 6 depends on 2 and 4
 
     ! toposort:
 
@@ -85,10 +70,12 @@ This program produces the toposort order:
 
 and the image file:
 
-<img src="https://raw.githubusercontent.com/jacobwilliams/daglib/master/src/tests/dag_example.png" width="500">
-
+![dag_example](/media/dag_example.png)
 
 ### License
 
 This library is released under a [BSD-3 license](https://github.com/jacobwilliams/daglib/blob/master/LICENSE).
 
+### See also
+
+  * [dag](https://github.com/sourceryinstitute/dag) (a fork of this project)

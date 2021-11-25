@@ -1,0 +1,23 @@
+name = "daglib"
+author = "Jacob Williams"
+copyright  = "Copyright (c) 2018-2021, Jacob Williams"
+license = "BSD-3"
+description = "Directed Acyclic Graphs With Modern Fortran"
+homepage = "https://github.com/jacobwilliams/daglib"
+keywords = ["graph theory", "graphviz", "DAG"]
+
+[build]
+auto-executables = false
+auto-examples = false
+auto-tests = false
+
+[library]
+source-dir = "src"
+
+[install]
+library = true
+
+[[test]]
+name = "dag_example"
+source-dir = "tests"
+main = "dag_example.f90"

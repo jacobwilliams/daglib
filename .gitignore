@@ -28,7 +28,10 @@
 *.app
 
 # Directories
-build
-doc
-lib
-bin
+/build
+/doc
+/lib
+/bin
+
+# misc
+.DS_Store
