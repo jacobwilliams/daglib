@@ -1,6 +1,7 @@
 project: daglib
 project_dir: ./src
 output_dir: ./doc
+media_dir: ./media
 project_github: https://github.com/jacobwilliams/daglib
 summary: Directed Acyclic Graphs With Modern Fortran
 author: Jacob Williams
