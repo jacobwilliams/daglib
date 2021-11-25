@@ -70,7 +70,7 @@ This program produces the toposort order:
 
 and the image file:
 
-![dag_example](/media/dag_example.png)
+![dag_example](media/dag_example.png)
 
 ### Documentation
 
