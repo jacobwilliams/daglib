@@ -16,6 +16,9 @@
         character(len=:),allocatable :: label !! used for diagraph
         character(len=:),allocatable :: attributes !! used for diagraph
     end type edge
+    interface edge
+        procedure :: edge_constructor
+    end interface edge
 
     type :: vertex
         !! a vertex of a directed acyclic graph (DAG)
@@ -61,6 +64,23 @@
     end type dag
 
     contains
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Constructor for [[edge]] type.
+
+    pure elemental function edge_constructor(ivertex,label,attributes) result(e)
+
+    integer,intent(in),optional :: ivertex
+    character(len=*),intent(in),optional :: label
+    character(len=*),intent(in),optional :: attributes
+    type(edge) :: e
+    e%ivertex = ivertex
+    if (present(label)) e%label = label
+    if (present(attributes)) e%attributes = attributes
+
+    end function edge_constructor
 !*******************************************************************************
 
 !*******************************************************************************
@@ -120,31 +140,11 @@
 
     if (allocated(me%edges)) then
         if (.not. any(e==me%edges%ivertex)) then ! don't add if already there
-
-            ! me%edges = [me%edges, edge(e,label=label,attributes=attributes)]
-            if (present(label) .and. present(attributes)) then
-                me%edges = [me%edges, edge(e,label=label,attributes=attributes)]
-            else if (.not. present(label) .and. present(attributes)) then
-                me%edges = [me%edges, edge(e,attributes=attributes)]
-            else if (present(label) .and. .not. present(attributes)) then
-                me%edges = [me%edges, edge(e,label=label)]
-            else
-                me%edges = [me%edges, edge(e)]
-            end if
+            me%edges = [me%edges, edge(e,label=label,attributes=attributes)]
             call sort_ascending(me%edges)
         end if
     else
-        allocate(me%edges(1))
-        ! me%edges = [edge(e,label=label,attributes=attributes)]
-        if (present(label) .and. present(attributes)) then
-            me%edges = [edge(e,label=label,attributes=attributes)]
-        else if (.not. present(label) .and. present(attributes)) then
-            me%edges = [edge(e,attributes=attributes)]
-        else if (present(label) .and. .not. present(attributes)) then
-            me%edges = [edge(e,label=label)]
-        else
-            me%edges = [edge(e)]
-        end if
+        me%edges = [edge(e,label=label,attributes=attributes)]
     end if
 
     end subroutine add_edge
@@ -215,6 +215,8 @@
     integer,intent(in)       :: nvertices !! number of vertices
     character(len=*),dimension(nvertices),intent(in),optional :: labels !! vertex name strings
     integer :: i !! counter
+
+    if (nvertices<=0) error stop 'error: nvertices must be >= 1'
 
     if (allocated(me%vertices)) deallocate(me%vertices)
 
@@ -444,8 +446,10 @@
 
     ! define the vertices:
     do i=1,me%n
-        has_label      = allocated(me%vertices(i)%label)
+        has_label = allocated(me%vertices(i)%label)
+        if (has_label) has_label = me%vertices(i)%label /= ''
         has_attributes = allocated(me%vertices(i)%attributes)
+        if (has_attributes) has_attributes = me%vertices(i)%attributes /= ''
         if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%label))//'"'
         if (has_label .and. has_attributes) then
             attributes = '['//trim(adjustl(me%vertices(i)%attributes))//','//label//']'
@@ -479,8 +483,10 @@
             if (.not. compress) then
                 ! Example:   1 -> 2 [penwidth=2, arrowhead=none]
                 do j=1,n_edges
-                    has_label      = allocated(me%vertices(i)%edges(j)%label)
+                    has_label = allocated(me%vertices(i)%edges(j)%label)
+                    if (has_label) has_label = me%vertices(i)%edges(j)%label /= ''
                     has_attributes = allocated(me%vertices(i)%edges(j)%attributes)
+                    if (has_attributes) has_attributes = me%vertices(i)%edges(j)%attributes /= ''
                     if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%edges(j)%label))//'"'
                     if (has_label .and. has_attributes) then
                         attributes = '['//trim(adjustl(me%vertices(i)%edges(j)%attributes))//','//label//']'
