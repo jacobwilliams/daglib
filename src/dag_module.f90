@@ -11,13 +11,15 @@
     type :: vertex
         !! a vertex of a directed acyclic graph (DAG)
         private
-        integer,dimension(:),allocatable :: edges  !! these are the vertices that this vertex depends on
-        integer :: ivertex = 0 !! vertex number
+        integer,dimension(:),allocatable :: edges  !! these are the vertices that this vertex
+                                                   !! depends on. (edges of the graph).
+        integer :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
         logical :: checking = .false.  !! used for toposort
         logical :: marked = .false.    !! used for toposort
         character(len=:),allocatable :: label      !! used for diagraph
         character(len=:),allocatable :: attributes !! used for diagraph
     contains
+        private
         generic :: set_edges => set_edge_vector, add_edge
         procedure :: set_edge_vector
         procedure :: add_edge
@@ -26,19 +28,24 @@
     type,public :: dag
         !! a directed acyclic graph (DAG)
         private
-        integer :: n = 0 !! number of `vertices`
-        type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG.
+        integer :: n = 0 !! number of vertices (size of `vertices` array)
+        type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG. The index in
+                                                           !! this array if the vertex number.
     contains
-        procedure,public :: set_vertices     => dag_set_vertices
-        procedure,public :: set_edges        => dag_set_edges
-        procedure,public :: set_vertex_info  => dag_set_vertex_info
-        procedure,public :: toposort         => dag_toposort
-        procedure,public :: generate_digraph => dag_generate_digraph
+        private
+        procedure,public :: vertex             => dag_get_vertex ! not very useful for now, since all vertex attributes are private
+        procedure,public :: number_of_vertices => dag_get_number_of_vertices
+        procedure,public :: set_vertices       => dag_set_vertices
+        procedure,public :: set_edges          => dag_set_edges
+        procedure,public :: set_vertex_info    => dag_set_vertex_info
+        procedure,public :: toposort           => dag_toposort
+        procedure,public :: generate_digraph   => dag_generate_digraph
         procedure,public :: generate_dependency_matrix => dag_generate_dependency_matrix
-        procedure,public :: save_digraph     => dag_save_digraph
-        procedure,public :: get_edges        => dag_get_edges
-        procedure,public :: get_dependencies => dag_get_dependencies
-        procedure,public :: destroy          => dag_destroy
+        procedure,public :: save_digraph       => dag_save_digraph
+        procedure,public :: get_edges          => dag_get_edges
+        procedure,public :: get_dependencies   => dag_get_dependencies
+        procedure,public :: destroy            => dag_destroy
+        procedure :: init_internal_vars !! private routine to initialize some internal variables
     end type dag
 
     contains
@@ -74,8 +81,7 @@
             call me%add_edge(edges(i))
         end do
     else
-        allocate(me%edges(size(edges)))  ! note: not checking for uniqueness here.
-        me%edges = edges
+        me%edges = unique(edges)
     end if
 
     end subroutine set_edge_vector
@@ -93,6 +99,7 @@
     if (allocated(me%edges)) then
         if (.not. any (edge==me%edges)) then
             me%edges = [me%edges, edge]  ! auto lhs reallocation
+            call sort_ascending(me%edges)
         end if
     else
         allocate(me%edges(1))
@@ -104,7 +111,7 @@
 
 !*******************************************************************************
 !>
-!  get the edges for the vertex (all the the vertices
+!  get the edges for the vertex (all of the vertices
 !  that this vertex depends on).
 
     pure function dag_get_edges(me,ivertex) result(edges)
@@ -161,18 +168,45 @@
 !>
 !  set the number of vertices in the dag
 
-    subroutine dag_set_vertices(me,nvertices)
+    subroutine dag_set_vertices(me,nvertices,labels)
 
     class(dag),intent(inout) :: me
     integer,intent(in)       :: nvertices !! number of vertices
+    character(len=*),dimension(nvertices),intent(in),optional :: labels !! vertex name strings
+    integer :: i !! counter
 
-    integer :: i
+    if (allocated(me%vertices)) deallocate(me%vertices)
 
     me%n = nvertices
     allocate(me%vertices(nvertices))
     me%vertices%ivertex = [(i,i=1,nvertices)]
 
+    if (present(labels)) then
+        do i = 1, nvertices
+            me%vertices(i)%label = trim(adjustl(labels(i)))
+        end do
+    else
+        ! just use the vertex number
+        do i = 1, nvertices
+            me%vertices(i)%label = integer_to_string(i)
+        end do
+    end if
+
     end subroutine dag_set_vertices
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Returns the number of vertices in the dag.
+
+    pure function dag_get_number_of_vertices(me) result(nvertices)
+
+    class(dag),intent(in) :: me
+    integer :: nvertices !! number of vertices
+
+    nvertices = me%n
+
+    end function dag_get_number_of_vertices
 !*******************************************************************************
 
 !*******************************************************************************
@@ -189,18 +223,31 @@
     character(len=*),intent(in),optional :: attributes !! other attributes when
                                                        !! saving as a diagraph.
 
-    if (present(label)) then
-        me%vertices(ivertex)%label = label
-    else
-        ! just use the vertex number
-        me%vertices(ivertex)%label = integer_to_string(ivertex)
-    end if
-
-    if (present(attributes)) then
-        me%vertices(ivertex)%attributes = attributes
-    end if
+    if (present(label)) me%vertices(ivertex)%label = label
+    if (present(attributes)) me%vertices(ivertex)%attributes = attributes
 
     end subroutine dag_set_vertex_info
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Get the `i`th vertex.
+!
+!  The program will stop if vertex `i` does not exist.
+
+    function dag_get_vertex(me,i) result(v)
+
+    class(dag),intent(inout) :: me
+    integer,intent(in) :: i !! vertex number
+    type(vertex) :: v
+
+    if (i<0 .or. i>me%n) then
+        error stop 'Error in dag_get_vertex: invalid vertex number'
+    else
+        v = me%vertices(i)
+    end if
+
+    end function dag_get_vertex
 !*******************************************************************************
 
 !*******************************************************************************
@@ -216,6 +263,24 @@
     call me%vertices(ivertex)%set_edges(edges)
 
     end subroutine dag_set_edges
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Initialize the internal private variables used for graph traversal.
+
+    subroutine init_internal_vars(me)
+
+    class(dag),intent(inout) :: me
+
+    integer :: i !! counter
+
+    do i = 1, me%n
+        me%vertices(i)%marked = .false.
+        me%vertices(i)%checking = .false.
+    end do
+
+    end subroutine init_internal_vars
 !*******************************************************************************
 
 !*******************************************************************************
@@ -236,8 +301,11 @@
 
     if (me%n==0) return
 
-    allocate(order(me%n))
+    ! initialize internal variables, in case
+    ! we have called this routine before.
+    call me%init_internal_vars()
 
+    allocate(order(me%n))
     iorder = 0  ! index in order array
     istat = 0   ! no errors so far
     do i=1,me%n
@@ -303,6 +371,12 @@
     integer :: n_edges !! number of edges
     character(len=:),allocatable :: attributes,label
     logical :: has_label, has_attributes
+
+    !
+    ! need optional edge attributes also
+    !
+    ! Example:   1 -> 2,5,10 [penwidth=1, arrowhead=none]
+    !
 
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
@@ -437,6 +511,134 @@
     end if
 
     end function integer_to_string
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Return only the unique values from `vec`.
+!  The result is also sorted by ascending value.
+
+    function unique(vec) result(vec_unique)
+
+    integer,dimension(:),intent(in) :: vec
+    integer,dimension(:),allocatable :: vec_unique !! only the unique elements of `vec`
+
+    integer :: i !! counter
+    integer :: n !! size of `vec`
+    logical,dimension(:),allocatable :: mask !! for flagging the unique values
+
+    n = size(vec)
+    vec_unique = vec  ! make a copy
+    if (n<=1) return
+
+    ! get the unique elements by sorting the array
+    ! and then excluding any that are the same as the previous element.
+    call sort_ascending(vec_unique)
+    allocate(mask(n)); mask(1) = .true.
+    do i = 2, n
+        mask(i) = (vec_unique(i)/=vec_unique(i-1))
+    end do
+    vec_unique = pack(vec_unique, mask)
+
+    end function unique
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Sorts an integer array `ivec` in increasing order.
+!  Uses a basic recursive quicksort
+!  (with insertion sort for partitions with \(\le\) 20 elements).
+
+    subroutine sort_ascending(ivec)
+
+    integer,dimension(:),intent(inout) :: ivec
+
+    integer,parameter :: max_size_for_insertion_sort = 20 !! max size for using insertion sort.
+
+    call quicksort(1,size(ivec))
+
+    contains
+
+        recursive subroutine quicksort(ilow,ihigh)
+
+        !! Sort the array
+
+        integer,intent(in) :: ilow
+        integer,intent(in) :: ihigh
+
+        integer :: ipivot !! pivot element
+        integer :: i      !! counter
+        integer :: j      !! counter
+
+        if ( ihigh-ilow<=max_size_for_insertion_sort .and. ihigh>ilow ) then
+
+            ! do insertion sort:
+            do i = ilow + 1,ihigh
+                do j = i,ilow + 1,-1
+                    if ( ivec(j) < ivec(j-1) ) then
+                        call swap(ivec(j),ivec(j-1))
+                    else
+                        exit
+                    end if
+                end do
+            end do
+
+        elseif ( ihigh-ilow>max_size_for_insertion_sort ) then
+
+            ! do the normal quicksort:
+            call partition(ilow,ihigh,ipivot)
+            call quicksort(ilow,ipivot - 1)
+            call quicksort(ipivot + 1,ihigh)
+
+        end if
+
+        end subroutine quicksort
+
+        subroutine partition(ilow,ihigh,ipivot)
+
+        !! Partition the array, based on the
+        !! lexical ivecing comparison.
+
+        implicit none
+
+        integer,intent(in)  :: ilow
+        integer,intent(in)  :: ihigh
+        integer,intent(out) :: ipivot
+
+        integer :: i,ip
+
+        call swap(ivec(ilow),ivec((ilow+ihigh)/2))
+        ip = ilow
+        do i = ilow + 1, ihigh
+            if ( ivec(i) < ivec(ilow) ) then
+                ip = ip + 1
+                call swap(ivec(ip),ivec(i))
+            end if
+        end do
+        call swap(ivec(ilow),ivec(ip))
+        ipivot = ip
+
+        end subroutine partition
+
+    end subroutine sort_ascending
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Swap two integer values.
+
+    pure elemental subroutine swap(i1,i2)
+
+    integer,intent(inout) :: i1
+    integer,intent(inout) :: i2
+
+    integer :: tmp
+
+    tmp = i1
+    i1  = i2
+    i2  = tmp
+
+    end subroutine swap
 !*******************************************************************************
 
 !*******************************************************************************
