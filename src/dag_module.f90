@@ -8,11 +8,20 @@
 
     private
 
+    type :: edge
+        !! the "to" vertex that defines an edge. This is part of
+        !! the array of vertices contained without the "from" [[vertex]] type.
+        !! an edge can also have optional attrubutes for graphviz.
+        integer :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
+        character(len=:),allocatable :: label !! used for diagraph
+        character(len=:),allocatable :: attributes !! used for diagraph
+    end type edge
+
     type :: vertex
         !! a vertex of a directed acyclic graph (DAG)
         private
-        integer,dimension(:),allocatable :: edges  !! these are the vertices that this vertex
-                                                   !! depends on. (edges of the graph).
+        type(edge),dimension(:),allocatable :: edges  !! these are the vertices that this vertex
+                                                      !! depends on. (edges of the graph).
         integer :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
         logical :: checking = .false.  !! used for toposort
         logical :: marked = .false.    !! used for toposort
@@ -20,9 +29,8 @@
         character(len=:),allocatable :: attributes !! used for diagraph
     contains
         private
-        generic :: set_edges => set_edge_vector, add_edge
-        procedure :: set_edge_vector
-        procedure :: add_edge
+        generic :: set_edges => set_edge_vector_vector, add_edge
+        procedure :: set_edge_vector_vector, add_edge
     end type vertex
 
     type,public :: dag
@@ -36,7 +44,11 @@
         procedure,public :: vertex             => dag_get_vertex ! not very useful for now, since all vertex attributes are private
         procedure,public :: number_of_vertices => dag_get_number_of_vertices
         procedure,public :: set_vertices       => dag_set_vertices
-        procedure,public :: set_edges          => dag_set_edges
+
+        !procedure,public :: set_edges          => dag_set_edges
+        generic,public :: set_edges => dag_set_edges_no_atts, dag_set_edges_vector_atts
+        procedure :: dag_set_edges_no_atts, dag_set_edges_vector_atts
+
         procedure,public :: set_vertex_info    => dag_set_vertex_info
         procedure,public :: toposort           => dag_toposort
         procedure,public :: generate_digraph   => dag_generate_digraph
@@ -69,41 +81,70 @@
 !>
 !  specify the edge indices for this vertex
 
-    subroutine set_edge_vector(me,edges)
+    subroutine set_edge_vector_vector(me,edges,label,attributes)
 
-    class(vertex),intent(inout)     :: me
+    class(vertex),intent(inout) :: me
     integer,dimension(:),intent(in) :: edges
+    character(len=*),dimension(:),intent(in),optional :: label
+    character(len=*),dimension(:),intent(in),optional :: attributes !! other attributes when
+                                                                    !! saving as a diagraph.
 
     integer :: i !! counter
 
-    if (allocated(me%edges)) then
-        do i=1,size(edges)
+    do i=1,size(edges)
+        if (present(label) .and. present(attributes)) then
+            call me%add_edge(edges(i),label=label(i),attributes=attributes(i))
+        else if (.not. present(label) .and. present(attributes)) then
+            call me%add_edge(edges(i),attributes=attributes(i))
+        else if (present(label) .and. .not. present(attributes)) then
+            call me%add_edge(edges(i),label=label(i))
+        else
             call me%add_edge(edges(i))
-        end do
-    else
-        me%edges = unique(edges)
-    end if
+        end if
+    end do
 
-    end subroutine set_edge_vector
+    end subroutine set_edge_vector_vector
 !*******************************************************************************
 
 !*******************************************************************************
 !>
 !  add an edge index for this vertex
 
-    subroutine add_edge(me,edge)
+    subroutine add_edge(me,e,label,attributes)
 
     class(vertex),intent(inout) :: me
-    integer,intent(in) :: edge
+    integer,intent(in) :: e
+    character(len=*),intent(in),optional :: label
+    character(len=*),intent(in),optional :: attributes !! other attributes when
+                                                       !! saving as a diagraph.
 
     if (allocated(me%edges)) then
-        if (.not. any (edge==me%edges)) then
-            me%edges = [me%edges, edge]  ! auto lhs reallocation
+        if (.not. any(e==me%edges%ivertex)) then ! don't add if already there
+
+            ! me%edges = [me%edges, edge(e,label=label,attributes=attributes)]
+            if (present(label) .and. present(attributes)) then
+                me%edges = [me%edges, edge(e,label=label,attributes=attributes)]
+            else if (.not. present(label) .and. present(attributes)) then
+                me%edges = [me%edges, edge(e,attributes=attributes)]
+            else if (present(label) .and. .not. present(attributes)) then
+                me%edges = [me%edges, edge(e,label=label)]
+            else
+                me%edges = [me%edges, edge(e)]
+            end if
             call sort_ascending(me%edges)
         end if
     else
         allocate(me%edges(1))
-        me%edges = [edge]
+        ! me%edges = [edge(e,label=label,attributes=attributes)]
+        if (present(label) .and. present(attributes)) then
+            me%edges = [edge(e,label=label,attributes=attributes)]
+        else if (.not. present(label) .and. present(attributes)) then
+            me%edges = [edge(e,attributes=attributes)]
+        else if (present(label) .and. .not. present(attributes)) then
+            me%edges = [edge(e,label=label)]
+        else
+            me%edges = [edge(e)]
+        end if
     end if
 
     end subroutine add_edge
@@ -123,7 +164,7 @@
     integer,dimension(:),allocatable :: edges
 
     if (ivertex>0 .and. ivertex <= me%n) then
-        edges = me%vertices(ivertex)%edges  ! auto LHS allocation
+        edges = me%vertices(ivertex)%edges%ivertex  ! auto LHS allocation
     end if
 
     end function dag_get_edges
@@ -149,7 +190,7 @@
         ! have to check all the vertices:
         do i=1, me%n
             if (allocated(me%vertices(i)%edges)) then
-                if (any(me%vertices(i)%edges == ivertex)) then
+                if (any(me%vertices(i)%edges%ivertex == ivertex)) then
                     if (allocated(dep)) then
                         dep = [dep, i]  ! auto LHS allocation
                     else
@@ -254,7 +295,7 @@
 !>
 !  set the edges for a vertex in a dag
 
-    subroutine dag_set_edges(me,ivertex,edges)
+    subroutine dag_set_edges_no_atts(me,ivertex,edges)
 
     class(dag),intent(inout)        :: me
     integer,intent(in)              :: ivertex !! vertex number
@@ -262,7 +303,25 @@
 
     call me%vertices(ivertex)%set_edges(edges)
 
-    end subroutine dag_set_edges
+    end subroutine dag_set_edges_no_atts
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  set the edges for a vertex in a dag
+
+    subroutine dag_set_edges_vector_atts(me,ivertex,edges,attributes,label)
+
+    class(dag),intent(inout)        :: me
+    integer,intent(in)              :: ivertex !! vertex number
+    integer,dimension(:),intent(in) :: edges
+    character(len=*),dimension(:),intent(in) :: attributes !! other attributes when
+                                                           !! saving as a diagraph.
+    character(len=*),dimension(:),intent(in),optional :: label
+
+    call me%vertices(ivertex)%set_edges(edges,label=label,attributes=attributes)
+
+    end subroutine dag_set_edges_vector_atts
 !*******************************************************************************
 
 !*******************************************************************************
@@ -334,7 +393,7 @@
         v%checking = .true.
         if (allocated(v%edges)) then
           do j=1,size(v%edges)
-            call dfs(me%vertices(v%edges(j)))
+            call dfs(me%vertices(v%edges(j)%ivertex))
             if (istat==-1) return
           end do
         end if
@@ -370,13 +429,7 @@
     integer :: i,j     !! counter
     integer :: n_edges !! number of edges
     character(len=:),allocatable :: attributes,label
-    logical :: has_label, has_attributes
-
-    !
-    ! need optional edge attributes also
-    !
-    ! Example:   1 -> 2,5,10 [penwidth=1, arrowhead=none]
-    !
+    logical :: has_label, has_attributes, compress
 
     character(len=*),parameter :: tab = '  '               !! for indenting
     character(len=*),parameter :: newline = new_line(' ')  !! line break character
@@ -411,13 +464,47 @@
     do i=1,me%n
         if (allocated(me%vertices(i)%edges)) then
             n_edges = size(me%vertices(i)%edges)
-            str = str//tab//integer_to_string(i)// merge(' -> ','    ',n_edges/=0)
-            do j=1,n_edges
-                ! comma-separated list:
-                str = str//integer_to_string(me%vertices(i)%edges(j))
-                if (n_edges>1 .and. j<n_edges) str = str//','
+
+            ! if none of the edges have attributes,
+            ! then we can write them all on one line
+            ! otherwise, write them line by line
+            compress = .true.
+            do j = 1, n_edges
+                if (allocated(me%vertices(i)%edges(j)%attributes)) then  ! label not used yet TODO
+                    write(*,*) 'attribute: ', me%vertices(i)%edges(j)%attributes
+                    compress = .false.
+                    exit
+                end if
             end do
-            str = str//';'//newline
+            if (.not. compress) then
+                ! Example:   1 -> 2 [penwidth=2, arrowhead=none]
+                do j=1,n_edges
+                    has_label      = allocated(me%vertices(i)%edges(j)%label)
+                    has_attributes = allocated(me%vertices(i)%edges(j)%attributes)
+                    if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%edges(j)%label))//'"'
+                    if (has_label .and. has_attributes) then
+                        attributes = '['//trim(adjustl(me%vertices(i)%edges(j)%attributes))//','//label//']'
+                    elseif (has_label .and. .not. has_attributes) then
+                        attributes = '['//label//']'
+                    elseif (.not. has_label .and. has_attributes) then
+                        attributes = '['//trim(adjustl(me%vertices(i)%edges(j)%attributes))//']'
+                    else ! neither
+                        attributes = ''
+                    end if
+                    str = str//tab//integer_to_string(i)//' -> '//&
+                            integer_to_string(me%vertices(i)%edges(j)%ivertex)//' '//attributes//newline
+                end do
+            else
+                ! Example:   1 -> 2,5,10
+                str = str//tab//integer_to_string(i)// merge(' -> ','    ',n_edges/=0)
+                do j=1,n_edges
+                    ! comma-separated list:
+                    str = str//integer_to_string(me%vertices(i)%edges(j)%ivertex)
+                    if (n_edges>1 .and. j<n_edges) str = str//','
+                end do
+                str = str//';'//newline
+            end if
+
         end if
     end do
 
@@ -441,6 +528,7 @@
     logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
 
     integer :: i !! vertex counter
+    integer :: j !! edge counter
 
     if (me%n > 0) then
 
@@ -449,7 +537,9 @@
 
         do i=1,me%n
             if (allocated(me%vertices(i)%edges)) then
-                mat(i,me%vertices(i)%edges) = .true.
+                do j = 1, size(me%vertices(i)%edges)
+                    mat(i,me%vertices(i)%edges(j)%ivertex) = .true.
+                end do
             end if
         end do
 
@@ -520,8 +610,8 @@
 
     function unique(vec) result(vec_unique)
 
-    integer,dimension(:),intent(in) :: vec
-    integer,dimension(:),allocatable :: vec_unique !! only the unique elements of `vec`
+    type(edge),dimension(:),intent(in) :: vec
+    type(edge),dimension(:),allocatable :: vec_unique !! only the unique elements of `vec`
 
     integer :: i !! counter
     integer :: n !! size of `vec`
@@ -536,7 +626,7 @@
     call sort_ascending(vec_unique)
     allocate(mask(n)); mask(1) = .true.
     do i = 2, n
-        mask(i) = (vec_unique(i)/=vec_unique(i-1))
+        mask(i) = (vec_unique(i)%ivertex/=vec_unique(i-1)%ivertex)
     end do
     vec_unique = pack(vec_unique, mask)
 
@@ -551,7 +641,7 @@
 
     subroutine sort_ascending(ivec)
 
-    integer,dimension(:),intent(inout) :: ivec
+    type(edge),dimension(:),intent(inout) :: ivec
 
     integer,parameter :: max_size_for_insertion_sort = 20 !! max size for using insertion sort.
 
@@ -575,7 +665,7 @@
             ! do insertion sort:
             do i = ilow + 1,ihigh
                 do j = i,ilow + 1,-1
-                    if ( ivec(j) < ivec(j-1) ) then
+                    if ( ivec(j)%ivertex < ivec(j-1)%ivertex ) then
                         call swap(ivec(j),ivec(j-1))
                     else
                         exit
@@ -610,7 +700,7 @@
         call swap(ivec(ilow),ivec((ilow+ihigh)/2))
         ip = ilow
         do i = ilow + 1, ihigh
-            if ( ivec(i) < ivec(ilow) ) then
+            if ( ivec(i)%ivertex < ivec(ilow)%ivertex ) then
                 ip = ip + 1
                 call swap(ivec(ip),ivec(i))
             end if
@@ -629,10 +719,10 @@
 
     pure elemental subroutine swap(i1,i2)
 
-    integer,intent(inout) :: i1
-    integer,intent(inout) :: i2
+    type(edge),intent(inout) :: i1
+    type(edge),intent(inout) :: i2
 
-    integer :: tmp
+    type(edge) :: tmp
 
     tmp = i1
     i1  = i2

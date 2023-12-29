@@ -40,7 +40,7 @@
     call d%set_edges( 9  , [1,3    ] )    !  [penwidth=1, arrowhead=none]
     call d%set_edges( 10 , [8,6,9  ] )    !  [penwidth=1, arrowhead=none]
     call d%set_edges( 11 , [1,6,9,3] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 12 , [10     ] )    !  [penwidth=1, arrowhead=none]
+    call d%set_edges( 12 , [10     ], label=['hello'], attributes=['penwidth=2,arrowhead=none,color=red,fontcolor=red'] )
 
     ! [penwidth=1, arrowhead=none]
 

@@ -14,7 +14,7 @@
     integer :: i,r,c
     logical,dimension(:,:),allocatable :: mat !! dependency matrix
 
-    integer,parameter :: n_nodes = 6
+    integer,parameter :: n_nodes = 7
     character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
 
     ! TODO combine set_edges and set_vertex_info into one routine maybe.
@@ -25,6 +25,7 @@
     call d%set_edges(4,[5])     !4 depends on 5
     call d%set_edges(5,[2])     !5 depends on 2
     call d%set_edges(6,[2,4])   !6 depends on 2 and 4
+    ! note that node 7 isn't connected to any other node
 
     call d%toposort(order,istat)
 
