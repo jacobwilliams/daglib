@@ -7,17 +7,12 @@ homepage = "https://github.com/jacobwilliams/daglib"
 keywords = ["graph theory", "graphviz", "DAG"]
 
 [build]
-auto-executables = false
-auto-examples = false
-auto-tests = false
+auto-executables = true
+auto-examples = true
+auto-tests = true
 
 [library]
 source-dir = "src"
 
 [install]
 library = true
-
-[[test]]
-name = "dag_example"
-source-dir = "tests"
-main = "dag_example.f90"
