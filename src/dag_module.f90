@@ -34,6 +34,7 @@
         private
         generic :: set_edges => set_edge_vector_vector, add_edge
         procedure :: set_edge_vector_vector, add_edge
+        procedure :: remove_edge
     end type vertex
 
     type,public :: dag
@@ -44,14 +45,15 @@
                                                            !! this array if the vertex number.
     contains
         private
-        procedure,public :: vertex             => dag_get_vertex ! not very useful for now, since all vertex attributes are private
+
+        procedure,public :: vertex => dag_get_vertex !! not very useful for now, since
+                                                     !! all vertex attributes are private
         procedure,public :: number_of_vertices => dag_get_number_of_vertices
         procedure,public :: set_vertices       => dag_set_vertices
-
-        !procedure,public :: set_edges          => dag_set_edges
-        generic,public :: set_edges => dag_set_edges_no_atts, dag_set_edges_vector_atts
-        procedure :: dag_set_edges_no_atts, dag_set_edges_vector_atts
-
+        generic,public   :: set_edges          => dag_set_edges_no_atts, &
+                                                  dag_set_edges_vector_atts
+        procedure,public :: remove_edge        => dag_remove_edge
+        procedure,public :: remove_vertex      => dag_remove_node
         procedure,public :: set_vertex_info    => dag_set_vertex_info
         procedure,public :: toposort           => dag_toposort
         procedure,public :: generate_digraph   => dag_generate_digraph
@@ -60,7 +62,10 @@
         procedure,public :: get_edges          => dag_get_edges
         procedure,public :: get_dependencies   => dag_get_dependencies
         procedure,public :: destroy            => dag_destroy
+
         procedure :: init_internal_vars !! private routine to initialize some internal variables
+        procedure :: dag_set_edges_no_atts, dag_set_edges_vector_atts
+
     end type dag
 
     contains
@@ -148,6 +153,81 @@
     end if
 
     end subroutine add_edge
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  remove an edge index from this vertex
+
+    subroutine remove_edge(me,e)
+
+    class(vertex),intent(inout) :: me
+    integer,intent(in) :: e
+
+    integer,dimension(1) :: idx
+    type(edge),dimension(:),allocatable :: tmp
+
+    if (allocated(me%edges)) then
+        idx = findloc(me%edges%ivertex, e)
+        if (idx(1)>0) then
+            ! the edge is in the list
+            associate (i => idx(1), n => size(me%edges))
+                if (n==1) then
+                    deallocate(me%edges) ! it's the only one there
+                else
+                    allocate(tmp(n-1))
+                    if (i>1) tmp(1:i-1) = me%edges(1:i-1)
+                    if (i<n) tmp(i:n-1) = me%edges(i+1:n)
+                    call move_alloc(tmp,me%edges)
+                end if
+            end associate
+        end if
+    end if
+
+    end subroutine remove_edge
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Remove a node from a dag. Will also remove any edges connected to it.
+!
+!  This will renumber the nodes and edges internally.
+!  Note that any default integer labels generated in
+!  [[dag_set_vertices]] would then be questionable.
+
+    subroutine dag_remove_node(me,ivertex)
+
+    class(dag),intent(inout) :: me
+    integer,intent(in) :: ivertex !! the node to remove
+
+    integer :: i !! counter
+    type(vertex),dimension(:),allocatable :: tmp !! for resizing `me%vertices`
+
+    if (allocated(me%vertices)) then
+        associate (n => size(me%vertices))
+            do i = 1, n
+                ! first remove any edges:
+                call me%vertices(i)%remove_edge(ivertex)
+                ! next, renumber the existing edges so they will be
+                ! correct after ivertex is deleted
+                ! Example (removing 2): 1 [2] 3 4 ==> 1 2 3
+                if (allocated(me%vertices(i)%edges)) then
+                    where (me%vertices(i)%edges%ivertex>ivertex)
+                        me%vertices(i)%edges%ivertex = me%vertices(i)%edges%ivertex - 1
+                    end where
+                end if
+            end do
+            ! now, remove the node:
+            allocate(tmp(n-1))
+            if (ivertex>1) tmp(1:ivertex-1) = me%vertices(1:ivertex-1)
+            if (ivertex<n) tmp(ivertex:n-1) = me%vertices(ivertex+1:n)
+            call move_alloc(tmp,me%vertices)
+        end associate
+    end if
+    me%n = size(me%vertices)
+    if (me%n==0) deallocate(me%vertices)
+
+    end subroutine dag_remove_node
 !*******************************************************************************
 
 !*******************************************************************************
@@ -306,6 +386,21 @@
     call me%vertices(ivertex)%set_edges(edges)
 
     end subroutine dag_set_edges_no_atts
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Remove an edge from a dag.
+
+    subroutine dag_remove_edge(me,ivertex,iedge)
+
+    class(dag),intent(inout) :: me
+    integer,intent(in)       :: ivertex !! vertex number
+    integer,intent(in)       :: iedge   !! the edge to remove
+
+    call me%vertices(ivertex)%remove_edge(iedge)
+
+    end subroutine dag_remove_edge
 !*******************************************************************************
 
 !*******************************************************************************

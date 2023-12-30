@@ -44,10 +44,7 @@
     write(*,*) ''
     write(*,*) 'diagraph:'
     write(*,*) ''
-
-    call d%save_digraph('test.dot','RL',300)
-    call execute_command_line('cat test.dot')
-    call execute_command_line('dot -T'//filetype//' -o test.'//filetype//' test.dot')
+    call save_plot('test1')
 
     write(*,*) ''
     write(*,*) 'dependency matrix:'
@@ -64,8 +61,27 @@
             write(*,'(A)') ''
     end do
 
+    ! test removing a node:
+    call d%remove_vertex(5)
+    call save_plot('test1_5-removed')
+
+    ! test removing an edge:
+    call d%remove_edge(5,4) ! the orignal node 6 is now 5
+    call save_plot('test1_node-5-removed_6-4-edge-removed')
+
     ! cleanup:
     call d%destroy()
+
+    contains
+
+        subroutine save_plot(filename)
+            character(len=*),intent(in) :: filename
+            call d%save_digraph(filename//'.dot','RL',300)
+            call execute_command_line('cat '//filename//'.dot')
+            call execute_command_line('dot -T'//filetype//' -o '//&
+                                        filename//'.'//filetype//' '//&
+                                        filename//'.dot')
+        end subroutine save_plot
 
     end program dag_example
 !*******************************************************************************

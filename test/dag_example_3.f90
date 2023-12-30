@@ -52,7 +52,7 @@
             integer :: i !! counter
             integer,dimension(1) :: idx
             character(len=*),parameter :: DEFAULT_EDGE = 'arrowhead=none'
-            character(len=*),parameter :: EDGES_TO_CUT = 'arrowhead=none,color=red'
+            character(len=*),parameter :: EDGES_TO_CUT = 'penwidth=2,arrowhead=none,color=red'
 
             if (icase==1) then
                 n_nodes = n_nodes + 1
@@ -78,7 +78,7 @@
                         edge_attributes(i) = EDGES_TO_CUT
                         call d%set_edges(node_index(node), node_index(dependson), attributes = edge_attributes)
                     else
-                        call d%set_edges(node_index(node), node_index(dependson))
+                        call d%set_edges(node_index(node), node_index(dependson), attributes = edge_attributes)
                     end if
                 end if
             end if
