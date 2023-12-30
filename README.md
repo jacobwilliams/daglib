@@ -3,7 +3,9 @@
 
 ### Overview
 
+[![Language](https://img.shields.io/badge/-Fortran-734f96?logo=fortran&logoColor=white)](https://github.com/topics/fortran)
 ![Build Status](https://github.com/jacobwilliams/daglib/actions/workflows/CI.yml/badge.svg)
+[![GitHub release](https://img.shields.io/github/release/jacobwilliams/daglib.svg)](https://github.com/jacobwilliams/daglib/releases/latest)
 
 DAGLIB is a modern Fortran module for creating and manipulating directed acyclic graphs (DAGs). It includes a toposort feature, and also the ability to generate files in the [GraphViz](https://www.graphviz.org) "dot" notation.
 
@@ -14,6 +16,21 @@ A [Fortran Package Manager](https://github.com/fortran-lang/fpm) manifest file i
 ```
 fpm build --profile release
 fpm test --profile release
+```
+
+By default, the library is built with single precision (`int32`) integer values. Explicitly specifying the integer kind can be done using the following processor flag:
+
+Preprocessor flag | Kind  | Number of bytes
+----------------- | ----- | ---------------
+`INT8`  | `integer(kind=int8)`  | 1
+`INT16` | `integer(kind=int16)` | 2
+`INT32` | `integer(kind=int32)` | 4
+`INT64` | `integer(kind=int64)` | 8
+
+For example, to build a long integer version of the library:
+
+```
+fpm build --profile release --flag "-DINT64"
 ```
 
 ### Example
