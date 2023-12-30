@@ -8,6 +8,8 @@
 
     private
 
+    integer,parameter :: MAX_INT_STR_LEN = 64 !! maximum length of an integer string
+
     type :: edge
         !! the "to" vertex that defines an edge. This is part of
         !! the array of vertices contained without the "from" [[vertex]] type.
@@ -17,11 +19,12 @@
         character(len=:),allocatable :: attributes !! used for diagraph
     end type edge
     interface edge
+        !! constructor for an [[edge]] type.
         procedure :: edge_constructor
     end interface edge
 
     type :: vertex
-        !! a vertex of a directed acyclic graph (DAG)
+        !! a vertex (or node) of a directed acyclic graph (DAG)
         private
         type(edge),dimension(:),allocatable :: edges  !! these are the vertices that this vertex
                                                       !! depends on. (edges of the graph).
@@ -38,7 +41,8 @@
     end type vertex
 
     type,public :: dag
-        !! a directed acyclic graph (DAG)
+        !! a directed acyclic graph (DAG).
+        !! a collection of vertices (nodes) that are connected to other vertices.
         private
         integer :: n = 0 !! number of vertices (size of `vertices` array)
         type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG. The index in
@@ -237,8 +241,6 @@
 
     pure function dag_get_edges(me,ivertex) result(edges)
 
-    implicit none
-
     class(dag),intent(in) :: me
     integer,intent(in) :: ivertex
     integer,dimension(:),allocatable :: edges
@@ -255,8 +257,6 @@
 !  get all the vertices that depend on this vertex.
 
     pure function dag_get_dependencies(me,ivertex) result(dep)
-
-    implicit none
 
     class(dag),intent(in) :: me
     integer,intent(in) :: ivertex
@@ -287,7 +287,12 @@
 
 !*******************************************************************************
 !>
-!  set the number of vertices in the dag
+!  set the number of vertices (nodes) in the dag.
+!
+!### See also
+!  * [[dag_remove_node]] which can be used to remove a vertex.
+!  * [[dag_set_vertex_info]] which can be used to set/change
+!    the labels and other attributes.
 
     subroutine dag_set_vertices(me,nvertices,labels)
 
@@ -320,7 +325,7 @@
 
 !*******************************************************************************
 !>
-!  Returns the number of vertices in the dag.
+!  Returns the number of vertices (nodes) in the dag.
 
     pure function dag_get_number_of_vertices(me) result(nvertices)
 
@@ -516,8 +521,6 @@
 
     function dag_generate_digraph(me,rankdir,dpi) result(str)
 
-    implicit none
-
     class(dag),intent(in) :: me
     character(len=:),allocatable :: str
     character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
@@ -525,11 +528,11 @@
 
     integer :: i,j     !! counter
     integer :: n_edges !! number of edges
-    character(len=:),allocatable :: attributes,label
-    logical :: has_label, has_attributes, compress
+    character(len=:),allocatable :: attributes !! full attributes string for node or edge
+    logical :: compress !! if we can write all the edges on one line
 
-    character(len=*),parameter :: tab = '  '               !! for indenting
-    character(len=*),parameter :: newline = new_line(' ')  !! line break character
+    character(len=*),parameter :: tab = '  '              !! for indenting
+    character(len=*),parameter :: newline = new_line(' ') !! line break character
 
     if (me%n == 0) return
 
@@ -541,20 +544,8 @@
 
     ! define the vertices:
     do i=1,me%n
-        has_label = allocated(me%vertices(i)%label)
-        if (has_label) has_label = me%vertices(i)%label /= ''
-        has_attributes = allocated(me%vertices(i)%attributes)
-        if (has_attributes) has_attributes = me%vertices(i)%attributes /= ''
-        if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%label))//'"'
-        if (has_label .and. has_attributes) then
-            attributes = '['//trim(adjustl(me%vertices(i)%attributes))//','//label//']'
-        elseif (has_label .and. .not. has_attributes) then
-            attributes = '['//label//']'
-        elseif (.not. has_label .and. has_attributes) then
-            attributes = '['//trim(adjustl(me%vertices(i)%attributes))//']'
-        else ! neither
-            attributes = ''
-        end if
+        attributes = get_attributes_string(me%vertices(i)%label, &
+                                           me%vertices(i)%attributes)
         str = str//tab//integer_to_string(i)//' '//attributes//newline
         if (i==me%n) str = str//newline
     end do
@@ -569,8 +560,8 @@
             ! otherwise, write them line by line
             compress = .true.
             do j = 1, n_edges
-                if (allocated(me%vertices(i)%edges(j)%attributes)) then  ! label not used yet TODO
-                    write(*,*) 'attribute: ', me%vertices(i)%edges(j)%attributes
+                if (allocated(me%vertices(i)%edges(j)%label) .or. &
+                    allocated(me%vertices(i)%edges(j)%attributes)) then
                     compress = .false.
                     exit
                 end if
@@ -578,20 +569,8 @@
             if (.not. compress) then
                 ! Example:   1 -> 2 [penwidth=2, arrowhead=none]
                 do j=1,n_edges
-                    has_label = allocated(me%vertices(i)%edges(j)%label)
-                    if (has_label) has_label = me%vertices(i)%edges(j)%label /= ''
-                    has_attributes = allocated(me%vertices(i)%edges(j)%attributes)
-                    if (has_attributes) has_attributes = me%vertices(i)%edges(j)%attributes /= ''
-                    if (has_label) label = 'label="'//trim(adjustl(me%vertices(i)%edges(j)%label))//'"'
-                    if (has_label .and. has_attributes) then
-                        attributes = '['//trim(adjustl(me%vertices(i)%edges(j)%attributes))//','//label//']'
-                    elseif (has_label .and. .not. has_attributes) then
-                        attributes = '['//label//']'
-                    elseif (.not. has_label .and. has_attributes) then
-                        attributes = '['//trim(adjustl(me%vertices(i)%edges(j)%attributes))//']'
-                    else ! neither
-                        attributes = ''
-                    end if
+                    attributes = get_attributes_string(me%vertices(i)%edges(j)%label, &
+                                                       me%vertices(i)%edges(j)%attributes)
                     str = str//tab//integer_to_string(i)//' -> '//&
                             integer_to_string(me%vertices(i)%edges(j)%ivertex)//' '//attributes//newline
                 end do
@@ -611,6 +590,35 @@
 
     str = str//newline//'}'
 
+    contains
+
+        function get_attributes_string(label, attributes) result(str)
+            !! create the full attributes string for an edge or node.
+            character(len=:),allocatable,intent(in) :: label !! if not allocated or blank, then not used
+            character(len=:),allocatable,intent(in) :: attributes !! if not allocated or blank, then not used
+            character(len=:),allocatable :: str !! the attributes string, enclosed in brackets
+
+            character(len=:),allocatable :: tmp_label
+            logical :: has_label, has_attributes
+
+            has_label = allocated(label)
+            if (has_label) has_label = label /= ''
+            if (has_label) tmp_label = 'label="'//trim(adjustl(label))//'"'
+
+            has_attributes = allocated(attributes)
+            if (has_attributes) has_attributes = attributes /= ''
+
+            if (has_label .and. has_attributes) then
+                str = '['//trim(adjustl(attributes))//','//tmp_label//']'
+            elseif (has_label .and. .not. has_attributes) then
+                str = '['//tmp_label//']'
+            elseif (.not. has_label .and. has_attributes) then
+                str = '['//trim(adjustl(attributes))//']'
+            else ! neither
+                str = ''
+            end if
+        end function get_attributes_string
+
     end function dag_generate_digraph
 !*******************************************************************************
 
@@ -622,8 +630,6 @@
 !  such that \(A_{ij}\) is true if vertex \(i\) depends on vertex \(j\).
 
     subroutine dag_generate_dependency_matrix(me,mat)
-
-    implicit none
 
     class(dag),intent(in) :: me
     logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
@@ -655,8 +661,6 @@
 
     subroutine dag_save_digraph(me,filename,rankdir,dpi)
 
-    implicit none
-
     class(dag),intent(in) :: me
     character(len=*),intent(in),optional :: filename !! file name for diagraph
     character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
@@ -686,14 +690,12 @@
 
     pure function integer_to_string(i) result(s)
 
-    implicit none
-
     integer,intent(in) :: i
     character(len=:),allocatable :: s
 
     integer :: istat
 
-    allocate( character(len=64) :: s )  ! should be big enough
+    allocate( character(len=MAX_INT_STR_LEN) :: s ) ! should be big enough
     write(s,fmt='(ss,I0)',iostat=istat) i
     if (istat==0) then
         s = trim(adjustl(s))
@@ -736,7 +738,7 @@
 
 !*******************************************************************************
 !>
-!  Sorts an integer array `ivec` in increasing order.
+!  Sorts an [[edge]] array `ivec` in increasing order by vertex number.
 !  Uses a basic recursive quicksort
 !  (with insertion sort for partitions with \(\le\) 20 elements).
 
@@ -790,8 +792,6 @@
         !! Partition the array, based on the
         !! lexical ivecing comparison.
 
-        implicit none
-
         integer,intent(in)  :: ilow
         integer,intent(in)  :: ihigh
         integer,intent(out) :: ipivot
@@ -816,7 +816,7 @@
 
 !*******************************************************************************
 !>
-!  Swap two integer values.
+!  Swap two [[edge]] values.
 
     pure elemental subroutine swap(i1,i2)
 
