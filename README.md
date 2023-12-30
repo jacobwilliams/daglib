@@ -3,7 +3,9 @@
 
 ### Overview
 
+[![Language](https://img.shields.io/badge/-Fortran-734f96?logo=fortran&logoColor=white)](https://github.com/topics/fortran)
 ![Build Status](https://github.com/jacobwilliams/daglib/actions/workflows/CI.yml/badge.svg)
+[![GitHub release](https://img.shields.io/github/release/jacobwilliams/daglib.svg)](https://github.com/jacobwilliams/daglib/releases/latest)
 
 DAGLIB is a modern Fortran module for creating and manipulating directed acyclic graphs (DAGs). It includes a toposort feature, and also the ability to generate files in the [GraphViz](https://www.graphviz.org) "dot" notation.
 
