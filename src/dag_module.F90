@@ -71,6 +71,7 @@
         procedure,public :: set_vertices       => dag_set_vertices
         generic,public   :: set_edges          => dag_set_edges_no_atts, &
                                                   dag_set_edges_vector_atts
+        procedure,public :: add_edge           => dag_add_edge
         procedure,public :: remove_edge        => dag_remove_edge
         procedure,public :: remove_vertex      => dag_remove_node
         procedure,public :: set_vertex_info    => dag_set_vertex_info
@@ -391,6 +392,26 @@
     end if
 
     end function dag_get_vertex
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Add an edge to a dag.
+
+    subroutine dag_add_edge(me,ivertex,iedge,label,attributes)
+
+    class(dag),intent(inout) :: me
+    integer(ip),intent(in)   :: ivertex !! vertex number
+    integer(ip),intent(in)   :: iedge   !! the vertex to connect to `ivertex`
+    character(len=*),intent(in),optional :: label !! edge label
+    character(len=*),intent(in),optional :: attributes !! other attributes when
+                                                       !! saving as a diagraph.
+
+    call me%vertices(ivertex)%set_edges(iedge,&
+                        label=label,&
+                        attributes=attributes)
+
+    end subroutine dag_add_edge
 !*******************************************************************************
 
 !*******************************************************************************

@@ -69,6 +69,12 @@
     call d%remove_edge(5_ip,4_ip) ! the orignal node 6 is now 5
     call save_plot('test1_node-5-removed_6-4-edge-removed')
 
+    ! test adding an edge:
+    call d%add_edge(ivertex=5_ip,iedge=1_ip, &
+                    label='added',&
+                    attributes='penwidth=2,arrowhead=none,color=red')
+    call save_plot('test1_node-5-removed_6-4-edge-removed-edge-added')
+
     ! cleanup:
     call d%destroy()
 
