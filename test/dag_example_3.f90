@@ -4,12 +4,12 @@
 
     program dag_example_3
 
-    use dag_module
+    use dag_module, ip => daglib_ip
 
     implicit none
 
     type(dag) :: d
-    integer :: i, n_nodes
+    integer(ip) :: i, n_nodes
     character(len=3),dimension(:),allocatable :: labels
 
     character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
@@ -39,18 +39,18 @@
         end if
     end do
 
-    call d%save_digraph('test3.dot','RL',300)
+    call d%save_digraph('test3.dot','RL',300_ip)
     call execute_command_line('cat test3.dot')
     call execute_command_line('dot -T'//filetype//' -o test3.'//filetype//' test3.dot')
 
     contains
         subroutine process(icase, node, dependson)
-            integer,intent(in) :: icase
+            integer(ip),intent(in) :: icase
             character(len=3),intent(in) :: node
             character(len=3),dimension(:),intent(in),optional :: dependson
             character(len=100),dimension(:),allocatable :: edge_attributes
-            integer :: i !! counter
-            integer,dimension(1) :: idx
+            integer(ip) :: i !! counter
+            integer(ip),dimension(1) :: idx
             character(len=*),parameter :: DEFAULT_EDGE = 'arrowhead=none'
             character(len=*),parameter :: EDGES_TO_CUT = 'penwidth=2,arrowhead=none,color=red'
 
@@ -84,10 +84,10 @@
             end if
         end subroutine process
 
-        pure elemental integer function node_index(node)
+        pure elemental integer(ip) function node_index(node)
             !! find the node number for this name
             character(len=3),intent(in) :: node
-            integer,dimension(1) :: idx
+            integer(ip),dimension(1) :: idx
             idx = findloc(labels,node)
             node_index = idx(1)
         end function node_index

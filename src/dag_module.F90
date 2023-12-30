@@ -4,17 +4,32 @@
 
     module dag_module
 
+    use iso_fortran_env
+
     implicit none
 
     private
 
-    integer,parameter :: MAX_INT_STR_LEN = 64 !! maximum length of an integer string
+#ifdef INT8
+    integer,parameter,public :: daglib_ip = int8     !! Integer working precision [1 byte]
+#elif INT16
+    integer,parameter,public :: daglib_ip = int16    !! Integer working precision [2 bytes]
+#elif INT32
+    integer,parameter,public :: daglib_ip = int32    !! Integer working precision [4 bytes]
+#elif INT64
+    integer,parameter,public :: daglib_ip = int64    !! Integer working precision [8 bytes]
+#else
+    integer,parameter,public :: daglib_ip = int32    !! Integer working precision if not specified [4 bytes]
+#endif
+    integer,parameter :: ip = daglib_ip  !! local copy of `daglib_ip` with a shorter name
+
+    integer(ip),parameter :: MAX_INT_STR_LEN = 64 !! maximum length of an integer string
 
     type :: edge
         !! the "to" vertex that defines an edge. This is part of
         !! the array of vertices contained without the "from" [[vertex]] type.
         !! an edge can also have optional attrubutes for graphviz.
-        integer :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
+        integer(ip) :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
         character(len=:),allocatable :: label !! used for diagraph
         character(len=:),allocatable :: attributes !! used for diagraph
     end type edge
@@ -28,7 +43,7 @@
         private
         type(edge),dimension(:),allocatable :: edges  !! these are the vertices that this vertex
                                                       !! depends on. (edges of the graph).
-        integer :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
+        integer(ip) :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
         logical :: checking = .false.  !! used for toposort
         logical :: marked = .false.    !! used for toposort
         character(len=:),allocatable :: label      !! used for diagraph
@@ -44,7 +59,7 @@
         !! a directed acyclic graph (DAG).
         !! a collection of vertices (nodes) that are connected to other vertices.
         private
-        integer :: n = 0 !! number of vertices (size of `vertices` array)
+        integer(ip) :: n = 0 !! number of vertices (size of `vertices` array)
         type(vertex),dimension(:),allocatable :: vertices  !! the vertices in the DAG. The index in
                                                            !! this array if the vertex number.
     contains
@@ -81,7 +96,7 @@
 
     pure elemental function edge_constructor(ivertex,label,attributes) result(e)
 
-    integer,intent(in),optional :: ivertex
+    integer(ip),intent(in),optional :: ivertex
     character(len=*),intent(in),optional :: label
     character(len=*),intent(in),optional :: attributes
     type(edge) :: e
@@ -113,12 +128,12 @@
     subroutine set_edge_vector_vector(me,edges,label,attributes)
 
     class(vertex),intent(inout) :: me
-    integer,dimension(:),intent(in) :: edges
+    integer(ip),dimension(:),intent(in) :: edges
     character(len=*),dimension(:),intent(in),optional :: label
     character(len=*),dimension(:),intent(in),optional :: attributes !! other attributes when
                                                                     !! saving as a diagraph.
 
-    integer :: i !! counter
+    integer(ip) :: i !! counter
 
     do i=1,size(edges)
         if (present(label) .and. present(attributes)) then
@@ -142,7 +157,7 @@
     subroutine add_edge(me,e,label,attributes)
 
     class(vertex),intent(inout) :: me
-    integer,intent(in) :: e
+    integer(ip),intent(in) :: e
     character(len=*),intent(in),optional :: label
     character(len=*),intent(in),optional :: attributes !! other attributes when
                                                        !! saving as a diagraph.
@@ -166,9 +181,9 @@
     subroutine remove_edge(me,e)
 
     class(vertex),intent(inout) :: me
-    integer,intent(in) :: e
+    integer(ip),intent(in) :: e
 
-    integer,dimension(1) :: idx
+    integer(ip),dimension(1) :: idx
     type(edge),dimension(:),allocatable :: tmp
 
     if (allocated(me%edges)) then
@@ -202,9 +217,9 @@
     subroutine dag_remove_node(me,ivertex)
 
     class(dag),intent(inout) :: me
-    integer,intent(in) :: ivertex !! the node to remove
+    integer(ip),intent(in) :: ivertex !! the node to remove
 
-    integer :: i !! counter
+    integer(ip) :: i !! counter
     type(vertex),dimension(:),allocatable :: tmp !! for resizing `me%vertices`
 
     if (allocated(me%vertices)) then
@@ -242,8 +257,8 @@
     pure function dag_get_edges(me,ivertex) result(edges)
 
     class(dag),intent(in) :: me
-    integer,intent(in) :: ivertex
-    integer,dimension(:),allocatable :: edges
+    integer(ip),intent(in) :: ivertex
+    integer(ip),dimension(:),allocatable :: edges
 
     if (ivertex>0 .and. ivertex <= me%n) then
         edges = me%vertices(ivertex)%edges%ivertex  ! auto LHS allocation
@@ -259,11 +274,11 @@
     pure function dag_get_dependencies(me,ivertex) result(dep)
 
     class(dag),intent(in) :: me
-    integer,intent(in) :: ivertex
-    integer,dimension(:),allocatable :: dep  !! the set of all vertices
+    integer(ip),intent(in) :: ivertex
+    integer(ip),dimension(:),allocatable :: dep  !! the set of all vertices
                                              !! than depend on `ivertex`
 
-    integer :: i !! vertex counter
+    integer(ip) :: i !! vertex counter
 
     if (ivertex>0 .and. ivertex <= me%n) then
 
@@ -297,9 +312,9 @@
     subroutine dag_set_vertices(me,nvertices,labels)
 
     class(dag),intent(inout) :: me
-    integer,intent(in)       :: nvertices !! number of vertices
+    integer(ip),intent(in)   :: nvertices !! number of vertices
     character(len=*),dimension(nvertices),intent(in),optional :: labels !! vertex name strings
-    integer :: i !! counter
+    integer(ip) :: i !! counter
 
     if (nvertices<=0) error stop 'error: nvertices must be >= 1'
 
@@ -330,7 +345,7 @@
     pure function dag_get_number_of_vertices(me) result(nvertices)
 
     class(dag),intent(in) :: me
-    integer :: nvertices !! number of vertices
+    integer(ip) :: nvertices !! number of vertices
 
     nvertices = me%n
 
@@ -344,7 +359,7 @@
     subroutine dag_set_vertex_info(me,ivertex,label,attributes)
 
     class(dag),intent(inout) :: me
-    integer,intent(in)                   :: ivertex !! vertex number
+    integer(ip),intent(in)               :: ivertex !! vertex number
     character(len=*),intent(in),optional :: label !! if a label is not set,
                                                   !! then the integer vertex
                                                   !! number is used.
@@ -366,7 +381,7 @@
     function dag_get_vertex(me,i) result(v)
 
     class(dag),intent(inout) :: me
-    integer,intent(in) :: i !! vertex number
+    integer(ip),intent(in) :: i !! vertex number
     type(vertex) :: v
 
     if (i<0 .or. i>me%n) then
@@ -384,9 +399,9 @@
 
     subroutine dag_set_edges_no_atts(me,ivertex,edges)
 
-    class(dag),intent(inout)        :: me
-    integer,intent(in)              :: ivertex !! vertex number
-    integer,dimension(:),intent(in) :: edges
+    class(dag),intent(inout)            :: me
+    integer(ip),intent(in)              :: ivertex !! vertex number
+    integer(ip),dimension(:),intent(in) :: edges
 
     call me%vertices(ivertex)%set_edges(edges)
 
@@ -400,8 +415,8 @@
     subroutine dag_remove_edge(me,ivertex,iedge)
 
     class(dag),intent(inout) :: me
-    integer,intent(in)       :: ivertex !! vertex number
-    integer,intent(in)       :: iedge   !! the edge to remove
+    integer(ip),intent(in)   :: ivertex !! vertex number
+    integer(ip),intent(in)   :: iedge   !! the edge to remove
 
     call me%vertices(ivertex)%remove_edge(iedge)
 
@@ -414,9 +429,9 @@
 
     subroutine dag_set_edges_vector_atts(me,ivertex,edges,attributes,label)
 
-    class(dag),intent(inout)        :: me
-    integer,intent(in)              :: ivertex !! vertex number
-    integer,dimension(:),intent(in) :: edges
+    class(dag),intent(inout)            :: me
+    integer(ip),intent(in)              :: ivertex !! vertex number
+    integer(ip),dimension(:),intent(in) :: edges
     character(len=*),dimension(:),intent(in) :: attributes !! other attributes when
                                                            !! saving as a diagraph.
     character(len=*),dimension(:),intent(in),optional :: label
@@ -434,7 +449,7 @@
 
     class(dag),intent(inout) :: me
 
-    integer :: i !! counter
+    integer(ip) :: i !! counter
 
     do i = 1, me%n
         me%vertices(i)%marked = .false.
@@ -451,14 +466,14 @@
     subroutine dag_toposort(me,order,istat)
 
     class(dag),intent(inout) :: me
-    integer,dimension(:),allocatable,intent(out) :: order  !! the toposort order
-    integer,intent(out) :: istat !! Status flag:
-                                 !!
-                                 !! * 0 if no errors
-                                 !! * -1 if circular dependency
-                                 !!  (in this case, `order` will not be allocated)
+    integer(ip),dimension(:),allocatable,intent(out) :: order  !! the toposort order
+    integer(ip),intent(out) :: istat !! Status flag:
+                                     !!
+                                     !! * 0 if no errors
+                                     !! * -1 if circular dependency
+                                     !!  (in this case, `order` will not be allocated)
 
-    integer :: i,iorder
+    integer(ip) :: i,iorder
 
     if (me%n==0) return
 
@@ -483,7 +498,7 @@
     !! depth-first graph traversal
 
     type(vertex),intent(inout) :: v
-    integer :: j
+    integer(ip) :: j
 
     if (istat==-1) return
 
@@ -524,10 +539,10 @@
     class(dag),intent(in) :: me
     character(len=:),allocatable :: str
     character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
-    integer,intent(in),optional :: dpi !! resolution (e.g. 300)
+    integer(ip),intent(in),optional :: dpi !! resolution (e.g. 300)
 
-    integer :: i,j     !! counter
-    integer :: n_edges !! number of edges
+    integer(ip) :: i,j     !! counter
+    integer(ip) :: n_edges !! number of edges
     character(len=:),allocatable :: attributes !! full attributes string for node or edge
     logical :: compress !! if we can write all the edges on one line
 
@@ -634,8 +649,8 @@
     class(dag),intent(in) :: me
     logical,dimension(:,:),intent(out),allocatable :: mat !! dependency matrix
 
-    integer :: i !! vertex counter
-    integer :: j !! edge counter
+    integer(ip) :: i !! vertex counter
+    integer(ip) :: j !! edge counter
 
     if (me%n > 0) then
 
@@ -664,9 +679,9 @@
     class(dag),intent(in) :: me
     character(len=*),intent(in),optional :: filename !! file name for diagraph
     character(len=*),intent(in),optional :: rankdir !! right to left orientation (e.g. 'RL')
-    integer,intent(in),optional :: dpi !! resolution (e.g. 300)
+    integer(ip),intent(in),optional :: dpi !! resolution (e.g. 300)
 
-    integer :: iunit, istat
+    integer(ip) :: iunit, istat
     character(len=:),allocatable :: diagraph
 
     diagraph = me%generate_digraph(rankdir,dpi)
@@ -690,10 +705,10 @@
 
     pure function integer_to_string(i) result(s)
 
-    integer,intent(in) :: i
+    integer(ip),intent(in) :: i
     character(len=:),allocatable :: s
 
-    integer :: istat
+    integer(ip) :: istat
 
     allocate( character(len=MAX_INT_STR_LEN) :: s ) ! should be big enough
     write(s,fmt='(ss,I0)',iostat=istat) i
@@ -716,8 +731,8 @@
     type(edge),dimension(:),intent(in) :: vec
     type(edge),dimension(:),allocatable :: vec_unique !! only the unique elements of `vec`
 
-    integer :: i !! counter
-    integer :: n !! size of `vec`
+    integer(ip) :: i !! counter
+    integer(ip) :: n !! size of `vec`
     logical,dimension(:),allocatable :: mask !! for flagging the unique values
 
     n = size(vec)
@@ -746,9 +761,9 @@
 
     type(edge),dimension(:),intent(inout) :: ivec
 
-    integer,parameter :: max_size_for_insertion_sort = 20 !! max size for using insertion sort.
+    integer(ip),parameter :: max_size_for_insertion_sort = 20_ip !! max size for using insertion sort.
 
-    call quicksort(1,size(ivec))
+    call quicksort(1_ip,size(ivec,kind=ip))
 
     contains
 
@@ -756,12 +771,12 @@
 
         !! Sort the array
 
-        integer,intent(in) :: ilow
-        integer,intent(in) :: ihigh
+        integer(ip),intent(in) :: ilow
+        integer(ip),intent(in) :: ihigh
 
-        integer :: ipivot !! pivot element
-        integer :: i      !! counter
-        integer :: j      !! counter
+        integer(ip) :: ipivot !! pivot element
+        integer(ip) :: i      !! counter
+        integer(ip) :: j      !! counter
 
         if ( ihigh-ilow<=max_size_for_insertion_sort .and. ihigh>ilow ) then
 
@@ -792,22 +807,22 @@
         !! Partition the array, based on the
         !! lexical ivecing comparison.
 
-        integer,intent(in)  :: ilow
-        integer,intent(in)  :: ihigh
-        integer,intent(out) :: ipivot
+        integer(ip),intent(in)  :: ilow
+        integer(ip),intent(in)  :: ihigh
+        integer(ip),intent(out) :: ipivot
 
-        integer :: i,ip
+        integer(ip) :: i,ii
 
         call swap(ivec(ilow),ivec((ilow+ihigh)/2))
-        ip = ilow
+        ii = ilow
         do i = ilow + 1, ihigh
             if ( ivec(i)%ivertex < ivec(ilow)%ivertex ) then
-                ip = ip + 1
-                call swap(ivec(ip),ivec(i))
+                ii = ii + 1
+                call swap(ivec(ii),ivec(i))
             end if
         end do
-        call swap(ivec(ilow),ivec(ip))
-        ipivot = ip
+        call swap(ivec(ilow),ivec(ii))
+        ipivot = ii
 
         end subroutine partition
 

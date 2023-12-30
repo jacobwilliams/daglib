@@ -4,17 +4,17 @@
 
     program dag_example_2
 
-    use dag_module
+    use dag_module, ip => daglib_ip
 
     implicit none
 
     type(dag) :: d
-    integer,dimension(:),allocatable :: order
-    integer :: istat
-    integer :: i,r,c
+    integer(ip),dimension(:),allocatable :: order
+    integer(ip) :: istat
+    integer(ip) :: i,r,c
     logical,dimension(:,:),allocatable :: mat !! dependency matrix
 
-    integer,parameter :: n_nodes = 12
+    integer(ip),parameter :: n_nodes = 12
     character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
     character(len=*),dimension(n_nodes),parameter :: labels = ['yb   ', &
                                                                'pi   ', &
@@ -31,16 +31,18 @@
 
     call d%set_vertices(n_nodes, labels=labels)
 
-    call d%set_edges( 1  , [2,5,10 ] )    !  [penwidth=1, arrowhead=none];
-    call d%set_edges( 3  , [4,5,6,1] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 4  , [11,6   ] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 6  , [7      ] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 7  , [11,4   ] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 8  , [9,5    ] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 9  , [1,3    ] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 10 , [8,6,9  ] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 11 , [1,6,9,3] )    !  [penwidth=1, arrowhead=none]
-    call d%set_edges( 12 , [10     ], label=['hello'], attributes=['penwidth=2,arrowhead=none,color=red,fontcolor=red'] )
+    call d%set_edges( 1_ip  , [2_ip,5_ip,10_ip    ] )
+    call d%set_edges( 3_ip  , [4_ip,5_ip,6_ip,1_ip] )
+    call d%set_edges( 4_ip  , [11_ip,6_ip         ] )
+    call d%set_edges( 6_ip  , [7_ip               ] )
+    call d%set_edges( 7_ip  , [11_ip,4_ip         ] )
+    call d%set_edges( 8_ip  , [9_ip,5_ip          ] )
+    call d%set_edges( 9_ip  , [1_ip,3_ip          ] )
+    call d%set_edges( 10_ip , [8_ip,6_ip,9_ip     ] )
+    call d%set_edges( 11_ip , [1_ip,6_ip,9_ip,3_ip] )
+    call d%set_edges( 12_ip , [10_ip              ], &
+                        label=['hello'], &
+                        attributes=['penwidth=2,arrowhead=none,color=red,fontcolor=red'] )
 
     ! [penwidth=1, arrowhead=none]
 
@@ -56,7 +58,7 @@
     write(*,*) 'diagraph:'
     write(*,*) ''
 
-    call d%save_digraph('test2.dot','RL',300)
+    call d%save_digraph('test2.dot','RL',300_ip)
     call execute_command_line('cat test2.dot')
     call execute_command_line('dot -T'//filetype//' -o test2.'//filetype//' test2.dot')
 
