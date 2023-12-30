@@ -9,8 +9,6 @@
     implicit none
 
     type(dag) :: d
-    integer(ip),dimension(:),allocatable :: order
-    integer(ip) :: istat
     integer(ip) :: i,r,c
     logical,dimension(:,:),allocatable :: mat !! dependency matrix
 
@@ -43,8 +41,6 @@
     call d%set_edges( 12_ip , [10_ip              ], &
                         label=['hello'], &
                         attributes=['penwidth=2,arrowhead=none,color=red,fontcolor=red'] )
-
-    ! [penwidth=1, arrowhead=none]
 
     do i = 1, n_nodes
         if (i==7 .or. i==8) then
