@@ -71,7 +71,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title="<p>51.1% of total for derived types.</p>Including implementation: 292 statements, 80.2% of total for derived types.">23 statements</a>
+                 title="<p>52.2% of total for derived types.</p>Including implementation: 301 statements, 80.7% of total for derived types.">24 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -143,6 +143,7 @@
             <a class="list-group-item" href="../type/dag.html#boundprocedure-number_of_vertices">number_of_vertices</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-set_vertices">set_vertices</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-set_edges~2">set_edges</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-add_edge~2">add_edge</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-remove_edge~2">remove_edge</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-remove_vertex">remove_vertex</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-set_vertex_info">set_vertex_info</a>
@@ -737,6 +738,121 @@ saving as a diagraph.</p>
             <td><strong>label</strong></td>
             <td>
 
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-add_edge~2"></span>
+      <h3>
+          procedure, public ::
+  <strong>add_edge</strong> => <a href='../proc/dag_add_edge.html'>dag_add_edge</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/dag_add_edge.html'>dag_add_edge</a>(me, ivertex, iedge, label, attributes)  
+</h3>
+    
+
+  <p>Add an edge to a dag.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iedge</strong></td>
+            <td>
+<p>the vertex to connect to <code>ivertex</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+<p>edge label</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+<p>other attributes when
+saving as a diagraph.</p>
             </td>
         </tr>
     </tbody>
@@ -1825,6 +1941,7 @@ saving as a diagraph.</p>
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_vertices</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_vertices</span>
 <span class="w">        </span><span class="k">generic</span><span class="p">,</span><span class="k">public</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">set_edges</span><span class="w">          </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_edges_no_atts</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
 <span class="w">                                                  </span><span class="n">dag_set_edges_vector_atts</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">add_edge</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_add_edge</span>
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remove_edge</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_remove_edge</span>
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remove_vertex</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_remove_node</span>
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_vertex_info</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_vertex_info</span>
