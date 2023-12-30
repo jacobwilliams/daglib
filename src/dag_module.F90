@@ -795,8 +795,8 @@
 
             ! do the normal quicksort:
             call partition(ilow,ihigh,ipivot)
-            call quicksort(ilow,ipivot - 1)
-            call quicksort(ipivot + 1,ihigh)
+            call quicksort(ilow,ipivot - 1_ip)
+            call quicksort(ipivot + 1_ip,ihigh)
 
         end if
 

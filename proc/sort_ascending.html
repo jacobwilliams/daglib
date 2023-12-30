@@ -548,8 +548,8 @@ implementation in a submodule of an interface in a parent module.
 
 <span class="w">            </span><span class="c">! do the normal quicksort:</span>
 <span class="w">            </span><span class="k">call </span><span class="n">partition</span><span class="p">(</span><span class="n">ilow</span><span class="p">,</span><span class="n">ihigh</span><span class="p">,</span><span class="n">ipivot</span><span class="p">)</span>
-<span class="w">            </span><span class="k">call </span><span class="n">quicksort</span><span class="p">(</span><span class="n">ilow</span><span class="p">,</span><span class="n">ipivot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
-<span class="w">            </span><span class="k">call </span><span class="n">quicksort</span><span class="p">(</span><span class="n">ipivot</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="n">ihigh</span><span class="p">)</span>
+<span class="w">            </span><span class="k">call </span><span class="n">quicksort</span><span class="p">(</span><span class="n">ilow</span><span class="p">,</span><span class="n">ipivot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1_ip</span><span class="p">)</span>
+<span class="w">            </span><span class="k">call </span><span class="n">quicksort</span><span class="p">(</span><span class="n">ipivot</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1_ip</span><span class="p">,</span><span class="n">ihigh</span><span class="p">)</span>
 
 <span class="w">        </span><span class="k">end if</span>
 
