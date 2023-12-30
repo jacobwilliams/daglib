@@ -18,6 +18,21 @@ fpm build --profile release
 fpm test --profile release
 ```
 
+By default, the library is built with single precision (`int32`) integer values. Explicitly specifying the integer kind can be done using the following processor flag:
+
+Preprocessor flag | Kind  | Number of bytes
+----------------- | ----- | ---------------
+`INT8`  | `integer(kind=int8)`  | 1
+`INT16` | `integer(kind=int16)` | 2
+`INT32` | `integer(kind=int32)` | 4
+`INT64` | `integer(kind=int64)` | 8
+
+For example, to build a long integer version of the library:
+
+```
+fpm build --profile release --flag "-DINT64"
+```
+
 ### Example
 
 A simple example is shown below:
