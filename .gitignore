@@ -35,3 +35,6 @@
 
 # misc
 .DS_Store
+
+/*.pdf
+/*.dot
