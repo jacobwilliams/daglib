@@ -72,12 +72,50 @@
           <h1>daglib</h1>
           <h1><img alt="daglib" src="media/logo.png"></h1>
 <h3>Overview</h3>
-<p><img alt="Build Status" src="https://github.com/jacobwilliams/daglib/actions/workflows/CI.yml/badge.svg"></p>
+<p><a href="https://github.com/topics/fortran"><img alt="Language" src="https://img.shields.io/badge/-Fortran-734f96?logo=fortran&amp;logoColor=white"></a>
+<img alt="Build Status" src="https://github.com/jacobwilliams/daglib/actions/workflows/CI.yml/badge.svg">
+<a href="https://github.com/jacobwilliams/daglib/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/release/jacobwilliams/daglib.svg"></a></p>
 <p>DAGLIB is a modern Fortran module for creating and manipulating directed acyclic graphs (DAGs). It includes a toposort feature, and also the ability to generate files in the <a href="https://www.graphviz.org">GraphViz</a> "dot" notation.</p>
 <h3>Building</h3>
 <p>A <a href="https://github.com/fortran-lang/fpm">Fortran Package Manager</a> manifest file is included, so that the library and tests cases can be compiled with FPM. For example:</p>
 <div class="codehilite"><pre><span></span><code>fpm build --profile release
 fpm test --profile release
+</code></pre></div>
+
+<p>By default, the library is built with single precision (<code>int32</code>) integer values. Explicitly specifying the integer kind can be done using the following processor flag:</p>
+<table>
+<thead>
+<tr>
+<th>Preprocessor flag</th>
+<th>Kind</th>
+<th>Number of bytes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>INT8</code></td>
+<td><code>integer(kind=int8)</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>INT16</code></td>
+<td><code>integer(kind=int16)</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>INT32</code></td>
+<td><code>integer(kind=int32)</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>INT64</code></td>
+<td><code>integer(kind=int64)</code></td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>For example, to build a long integer version of the library:</p>
+<div class="codehilite"><pre><span></span><code>fpm build --profile release --flag &quot;-DINT64&quot;
 </code></pre></div>
 
 <h3>Example</h3>
@@ -161,7 +199,7 @@ fpm test --profile release
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Source Files</h3>
-              <ul><li><a href='./sourcefile/dag_module.f90.html'>dag_module.f90</a></li></ul>
+              <ul><li><a href='./sourcefile/dag_module.f90.html'>dag_module.F90</a></li></ul>
             </div>
             <div>
               <ul>
@@ -183,7 +221,7 @@ fpm test --profile release
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Procedures</h3>
-              <ul><li><a href='./proc/add_edge.html'>add_edge</a></li><li><a href='./proc/dag_destroy.html'>dag_destroy</a></li><li><a href='./proc/dag_generate_dependency_matrix.html'>dag_generate_dependency_matrix</a></li><li><a href='./proc/dag_generate_digraph.html'>dag_generate_digraph</a></li><li><a href='./proc/dag_get_dependencies.html'>dag_get_dependencies</a></li><li><a href='./proc/dag_get_edges.html'>dag_get_edges</a></li><li><a href='./proc/dag_save_digraph.html'>dag_save_digraph</a></li><li><a href='./proc/dag_set_edges.html'>dag_set_edges</a></li><li><a href='./proc/dag_set_vertex_info.html'>dag_set_vertex_info</a></li><li><a href='./proc/dag_set_vertices.html'>dag_set_vertices</a></li></ul>
+              <ul><li><a href='./proc/add_edge.html'>add_edge</a></li><li><a href='./proc/dag_destroy.html'>dag_destroy</a></li><li><a href='./proc/dag_generate_dependency_matrix.html'>dag_generate_dependency_matrix</a></li><li><a href='./proc/dag_generate_digraph.html'>dag_generate_digraph</a></li><li><a href='./proc/dag_get_dependencies.html'>dag_get_dependencies</a></li><li><a href='./proc/dag_get_edges.html'>dag_get_edges</a></li><li><a href='./proc/dag_get_number_of_vertices.html'>dag_get_number_of_vertices</a></li><li><a href='./proc/dag_get_vertex.html'>dag_get_vertex</a></li><li><a href='./proc/dag_remove_edge.html'>dag_remove_edge</a></li><li><a href='./proc/dag_remove_node.html'>dag_remove_node</a></li></ul>
             </div>
             <div>
               <ul>
@@ -194,7 +232,7 @@ fpm test --profile release
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Derived Types</h3>
-              <ul><li><a href='./type/dag.html'>dag</a></li><li><a href='./type/vertex.html'>vertex</a></li></ul>
+              <ul><li><a href='./type/dag.html'>dag</a></li><li><a href='./type/edge.html'>edge</a></li><li><a href='./type/vertex.html'>vertex</a></li></ul>
             </div>
             <div>
               <ul>

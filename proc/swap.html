@@ -8,7 +8,7 @@
     <meta name="author" content="Jacob Williams" >
     <link rel="icon" href="../favicon.png">
 
-    <title>dag_save_digraph &ndash; daglib</title>
+    <title>swap &ndash; daglib</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -59,7 +59,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>dag_save_digraph
+    <h1>swap
       <small>Subroutine</small>
       
     </h1>
@@ -71,7 +71,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title=" 3.9% of total for procedures.">16 statements</a>
+                 title=" 1.9% of total for procedures.">8 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -85,7 +85,7 @@
           <ol class="breadcrumb justify-content-end mb-0">
                 <li class="breadcrumb-item"><a href='../sourcefile/dag_module.f90.html'>dag_module.F90</a></li>
                 <li class="breadcrumb-item"><a href='../module/dag_module.html'>dag_module</a></li>
-            <li class="breadcrumb-item active" aria-current="page">dag_save_digraph</li>
+            <li class="breadcrumb-item active" aria-current="page">swap</li>
           </ol>
         </nav>
       </div>
@@ -126,7 +126,7 @@
     <div class="card card-primary">
       <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
       <div class="list-group">
-        <a class="list-group-item" href="../proc/dag_save_digraph.html#src">dag_save_digraph</a>
+        <a class="list-group-item" href="../proc/swap.html#src">swap</a>
       </div>
     </div>
 
@@ -136,14 +136,12 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine dag_save_digraph(me, filename, rankdir, dpi)  
+    <h2>private pure elemental subroutine swap(i1, i2)  
 </h2>
     
 
-    <p>Generate a Graphviz digraph structure for the DAG and write it to a file.</p>
+    <p>Swap two <a href="../type/edge.html">edge</a> values.</p>
 
-    <h3>Type Bound</h3>
-    <p><a href='../type/dag.html'>dag</a></p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -158,62 +156,32 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~15"></span>
-              class(<a href='../type/dag.html'>dag</a>),
+              <span class="anchor" id="variable-i1"></span>
+              type(<a href='../type/edge.html'>edge</a>),
             </td>
-<td>intent(in)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>me</strong></td>
+            <td><strong>i1</strong></td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-filename"></span>
-              character(len=*),
+              <span class="anchor" id="variable-i2"></span>
+              type(<a href='../type/edge.html'>edge</a>),
             </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
+<td>intent(inout)</td>
+              <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>filename</strong></td>
+            <td><strong>i2</strong></td>
             <td>
-                <p>file name for diagraph</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-rankdir~2"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>rankdir</strong></td>
-            <td>
-                <p>right to left orientation (e.g. 'RL')</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-dpi~2"></span>
-              integer(kind=ip),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>dpi</strong></td>
-            <td>
-                <p>resolution (e.g. 300)</p>
+                
             </td>
         </tr>
     </tbody>
@@ -222,7 +190,7 @@
     <br>
     <div class="card">
       <div class="card-header">
-  <h3 class="card-title">Calls</h3>
+  <h3 class="card-title">Called by</h3>
       </div>
       <div class="card-body">
   <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -230,56 +198,137 @@
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.43.0 (0)
  -->
-<!-- Title: proc~~dag_save_digraph~~CallsGraph Pages: 1 -->
-<svg id="procdag_save_digraphCallsGraph" width="641pt" height="29pt"
- viewBox="0.00 0.00 641.00 29.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="proc~~dag_save_digraph~~CallsGraph" class="graph" transform="scale(1.1 1.1) rotate(0) translate(4 28)">
-<title>proc~~dag_save_digraph~~CallsGraph</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 701,-28 701,4 -4,4"/>
-<!-- proc~dag_save_digraph -->
-<g id="proc~~dag_save_digraph~~CallsGraph_node1" class="node">
-<title>proc~dag_save_digraph</title>
-<polygon fill="none" stroke="black" points="213,-24 0,-24 0,0 213,0 213,-24"/>
-<text text-anchor="middle" x="106.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">dag_module::dag%dag_save_digraph</text>
+<!-- Title: proc~~swap~~CalledByGraph Pages: 1 -->
+<svg id="procswapCalledByGraph" width="641pt" height="45pt"
+ viewBox="0.00 0.00 641.00 45.31" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~swap~~CalledByGraph" class="graph" transform="scale(2.1 2.1) rotate(0) translate(4 91)">
+<title>proc~~swap~~CalledByGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-91 1340,-91 1340,4 -4,4"/>
+<!-- proc~swap -->
+<g id="proc~~swap~~CalledByGraph_node1" class="node">
+<title>proc~swap</title>
+<polygon fill="none" stroke="black" points="1336,-45 1223,-45 1223,-21 1336,-21 1336,-45"/>
+<text text-anchor="middle" x="1279.5" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50">dag_module::swap</text>
 </g>
-<!-- proc~dag_generate_digraph -->
-<g id="proc~~dag_save_digraph~~CallsGraph_node2" class="node">
-<title>proc~dag_generate_digraph</title>
-<g id="a_proc~~dag_save_digraph~~CallsGraph_node2"><a xlink:href=".././proc/dag_generate_digraph.html" xlink:title="dag_module::dag%dag_generate_digraph">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="486,-24 249,-24 249,0 486,0 486,-24"/>
-<text text-anchor="middle" x="367.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::dag%dag_generate_digraph</text>
+<!-- proc~sort_ascending -->
+<g id="proc~~swap~~CalledByGraph_node2" class="node">
+<title>proc~sort_ascending</title>
+<g id="a_proc~~swap~~CalledByGraph_node2"><a xlink:href=".././proc/sort_ascending.html" xlink:title="dag_module::sort_ascending">
+<polygon fill="#d9534f" stroke="#d9534f" points="1187,-45 1021,-45 1021,-21 1187,-21 1187,-45"/>
+<text text-anchor="middle" x="1104" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::sort_ascending</text>
 </a>
 </g>
 </g>
-<!-- proc~dag_save_digraph&#45;&gt;proc~dag_generate_digraph -->
-<g id="proc~~dag_save_digraph~~CallsGraph_edge1" class="edge">
-<title>proc~dag_save_digraph&#45;&gt;proc~dag_generate_digraph</title>
-<path fill="none" stroke="#000000" d="M213.22,-12C221.66,-12 230.25,-12 238.82,-12"/>
-<polygon fill="#000000" stroke="#000000" points="238.87,-15.5 248.87,-12 238.87,-8.5 238.87,-15.5"/>
+<!-- proc~sort_ascending&#45;&gt;proc~swap -->
+<g id="proc~~swap~~CalledByGraph_edge1" class="edge">
+<title>proc~sort_ascending&#45;&gt;proc~swap</title>
+<path fill="none" stroke="#000000" d="M1187.18,-33C1195.77,-33 1204.42,-33 1212.8,-33"/>
+<polygon fill="#000000" stroke="#000000" points="1212.85,-36.5 1222.85,-33 1212.85,-29.5 1212.85,-36.5"/>
 </g>
-<!-- proc~integer_to_string -->
-<g id="proc~~dag_save_digraph~~CallsGraph_node3" class="node">
-<title>proc~integer_to_string</title>
-<g id="a_proc~~dag_save_digraph~~CallsGraph_node3"><a xlink:href=".././proc/integer_to_string.html" xlink:title="dag_module::integer_to_string">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="697,-24 522,-24 522,0 697,0 697,-24"/>
-<text text-anchor="middle" x="609.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::integer_to_string</text>
+<!-- proc~add_edge -->
+<g id="proc~~swap~~CalledByGraph_node3" class="node">
+<title>proc~add_edge</title>
+<g id="a_proc~~swap~~CalledByGraph_node3"><a xlink:href=".././proc/add_edge.html" xlink:title="dag_module::vertex%add_edge">
+<polygon fill="#d9534f" stroke="#d9534f" points="985,-66 804,-66 804,-42 985,-42 985,-66"/>
+<text text-anchor="middle" x="894.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::vertex%add_edge</text>
 </a>
 </g>
 </g>
-<!-- proc~dag_generate_digraph&#45;&gt;proc~integer_to_string -->
-<g id="proc~~dag_save_digraph~~CallsGraph_edge2" class="edge">
-<title>proc~dag_generate_digraph&#45;&gt;proc~integer_to_string</title>
-<path fill="none" stroke="#000000" d="M486.04,-12C494.65,-12 503.28,-12 511.75,-12"/>
-<polygon fill="#000000" stroke="#000000" points="511.99,-15.5 521.99,-12 511.99,-8.5 511.99,-15.5"/>
+<!-- proc~add_edge&#45;&gt;proc~sort_ascending -->
+<g id="proc~~swap~~CalledByGraph_edge2" class="edge">
+<title>proc~add_edge&#45;&gt;proc~sort_ascending</title>
+<path fill="none" stroke="#000000" d="M985,-44.94C993.6,-44.07 1002.32,-43.19 1010.94,-42.32"/>
+<polygon fill="#000000" stroke="#000000" points="1011.4,-45.79 1020.99,-41.3 1010.69,-38.82 1011.4,-45.79"/>
+</g>
+<!-- proc~unique -->
+<g id="proc~~swap~~CalledByGraph_node4" class="node">
+<title>proc~unique</title>
+<g id="a_proc~~swap~~CalledByGraph_node4"><a xlink:href=".././proc/unique.html" xlink:title="dag_module::unique">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="956,-24 833,-24 833,0 956,0 956,-24"/>
+<text text-anchor="middle" x="894.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::unique</text>
+</a>
+</g>
+</g>
+<!-- proc~unique&#45;&gt;proc~sort_ascending -->
+<g id="proc~~swap~~CalledByGraph_edge3" class="edge">
+<title>proc~unique&#45;&gt;proc~sort_ascending</title>
+<path fill="none" stroke="#000000" d="M956.08,-18.13C973.13,-19.86 992.09,-21.77 1010.55,-23.64"/>
+<polygon fill="#000000" stroke="#000000" points="1010.45,-27.15 1020.75,-24.68 1011.15,-20.19 1010.45,-27.15"/>
+</g>
+<!-- none~set_edges -->
+<g id="proc~~swap~~CalledByGraph_node5" class="node">
+<title>none~set_edges</title>
+<g id="a_proc~~swap~~CalledByGraph_node5"><a xlink:href=".././type/vertex.html#boundprocedure-set_edges" xlink:title="dag_module::vertex%set_edges">
+<polygon fill="#a7506f" stroke="#a7506f" points="477,-66 295,-66 295,-42 477,-42 477,-66"/>
+<text text-anchor="middle" x="386" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::vertex%set_edges</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges&#45;&gt;proc~add_edge -->
+<g id="proc~~swap~~CalledByGraph_edge4" class="edge">
+<title>none~set_edges&#45;&gt;proc~add_edge</title>
+<path fill="none" stroke="#000000" d="M477.16,-54.8C489.21,-54.88 501.41,-54.95 513,-55 626.33,-55.45 654.67,-55.45 768,-55 776.3,-54.97 784.91,-54.92 793.55,-54.87"/>
+<polygon fill="#000000" stroke="#000000" points="793.72,-58.37 803.69,-54.8 793.67,-51.37 793.72,-58.37"/>
+</g>
+<!-- proc~set_edge_vector_vector -->
+<g id="proc~~swap~~CalledByGraph_node6" class="node">
+<title>proc~set_edge_vector_vector</title>
+<g id="a_proc~~swap~~CalledByGraph_node6"><a xlink:href=".././proc/set_edge_vector_vector.html" xlink:title="dag_module::vertex%set_edge_vector_vector">
+<polygon fill="#d9534f" stroke="#d9534f" points="768,-46 513,-46 513,-22 768,-22 768,-46"/>
+<text text-anchor="middle" x="640.5" y="-31.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::vertex%set_edge_vector_vector</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges&#45;&gt;proc~set_edge_vector_vector -->
+<g id="proc~~swap~~CalledByGraph_edge8" class="edge">
+<title>none~set_edges&#45;&gt;proc~set_edge_vector_vector</title>
+<path fill="none" stroke="#000000" d="M477.09,-46.86C485.44,-46.2 494.01,-45.52 502.66,-44.84"/>
+<polygon fill="#000000" stroke="#000000" points="503.13,-48.31 512.83,-44.03 502.58,-41.33 503.13,-48.31"/>
+</g>
+<!-- proc~set_edge_vector_vector&#45;&gt;proc~add_edge -->
+<g id="proc~~swap~~CalledByGraph_edge5" class="edge">
+<title>proc~set_edge_vector_vector&#45;&gt;proc~add_edge</title>
+<path fill="none" stroke="#000000" d="M768.24,-44.06C776.78,-44.74 785.31,-45.41 793.69,-46.08"/>
+<polygon fill="#000000" stroke="#000000" points="793.56,-49.58 803.81,-46.88 794.12,-42.6 793.56,-49.58"/>
+</g>
+<!-- proc~dag_set_edges_no_atts -->
+<g id="proc~~swap~~CalledByGraph_node7" class="node">
+<title>proc~dag_set_edges_no_atts</title>
+<g id="a_proc~~swap~~CalledByGraph_node7"><a xlink:href=".././proc/dag_set_edges_no_atts.html" xlink:title="dag_module::dag%dag_set_edges_no_atts">
+<polygon fill="#d9534f" stroke="#d9534f" points="248.5,-87 10.5,-87 10.5,-63 248.5,-63 248.5,-87"/>
+<text text-anchor="middle" x="129.5" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::dag%dag_set_edges_no_atts</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_set_edges_no_atts&#45;&gt;none~set_edges -->
+<g id="proc~~swap~~CalledByGraph_edge6" class="edge">
+<title>proc~dag_set_edges_no_atts&#45;&gt;none~set_edges</title>
+<path fill="none" stroke="#000000" d="M248.81,-65.24C260.76,-64.25 272.81,-63.26 284.54,-62.29"/>
+<polygon fill="#000000" stroke="#000000" points="285.09,-65.76 294.76,-61.45 284.51,-58.78 285.09,-65.76"/>
+</g>
+<!-- proc~dag_set_edges_vector_atts -->
+<g id="proc~~swap~~CalledByGraph_node8" class="node">
+<title>proc~dag_set_edges_vector_atts</title>
+<g id="a_proc~~swap~~CalledByGraph_node8"><a xlink:href=".././proc/dag_set_edges_vector_atts.html" xlink:title="dag_module::dag%dag_set_edges_vector_atts">
+<polygon fill="#d9534f" stroke="#d9534f" points="259,-45 0,-45 0,-21 259,-21 259,-45"/>
+<text text-anchor="middle" x="129.5" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag_module::dag%dag_set_edges_vector_atts</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_set_edges_vector_atts&#45;&gt;none~set_edges -->
+<g id="proc~~swap~~CalledByGraph_edge7" class="edge">
+<title>proc~dag_set_edges_vector_atts&#45;&gt;none~set_edges</title>
+<path fill="none" stroke="#000000" d="M259.24,-43.62C267.83,-44.33 276.41,-45.04 284.83,-45.73"/>
+<polygon fill="#000000" stroke="#000000" points="284.74,-49.24 295,-46.57 285.32,-42.26 284.74,-49.24"/>
 </g>
 </g>
 </svg>
 </div>                <script>
-                  var panprocdag_save_digraphCallsGraph = svgPanZoom('#procdag_save_digraphCallsGraph',
+                  var panprocswapCalledByGraph = svgPanZoom('#procswapCalledByGraph',
                     {zoomEnabled: true, controlIconsEnabled: true, fit: true, center: true,}
                   );
-                </script>        <div><a type="button" class="graph-help" data-toggle="modal" href="#CallsGraph-help-text">Help</a></div>
-          <div class="modal fade" id="CallsGraph-help-text" tabindex="-1" role="dialog">
+                </script>        <div><a type="button" class="graph-help" data-toggle="modal" href="#CalledByGraph-help-text">Help</a></div>
+          <div class="modal fade" id="CalledByGraph-help-text" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -371,29 +420,18 @@ implementation in a submodule of an interface in a parent module.
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">dag_save_digraph</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">rankdir</span><span class="p">,</span><span class="n">dpi</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">pure elemental subroutine </span><span class="n">swap</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span><span class="n">i2</span><span class="p">)</span>
 
-<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">dag</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span>
-<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="c">!! file name for diagraph</span>
-<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rankdir</span><span class="w"> </span><span class="c">!! right to left orientation (e.g. &#39;RL&#39;)</span>
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dpi</span><span class="w"> </span><span class="c">!! resolution (e.g. 300)</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">edge</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i1</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">edge</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i2</span>
 
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iunit</span><span class="p">,</span><span class="w"> </span><span class="n">istat</span>
-<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">diagraph</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tmp</span>
 
-<span class="w">    </span><span class="n">diagraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">generate_digraph</span><span class="p">(</span><span class="n">rankdir</span><span class="p">,</span><span class="n">dpi</span><span class="p">)</span>
+<span class="w">    </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i1</span>
+<span class="w">    </span><span class="n">i1</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">i2</span>
+<span class="w">    </span><span class="n">i2</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span>
 
-<span class="w">    </span><span class="k">open</span><span class="p">(</span><span class="n">newunit</span><span class="o">=</span><span class="n">iunit</span><span class="p">,</span><span class="k">file</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span><span class="n">status</span><span class="o">=</span><span class="s1">&#39;REPLACE&#39;</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">istat</span><span class="p">)</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">istat</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">        write</span><span class="p">(</span><span class="n">iunit</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;(A)&#39;</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">istat</span><span class="p">)</span><span class="w"> </span><span class="n">diagraph</span>
-<span class="w">    </span><span class="k">else</span>
-<span class="k">        write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;error opening &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<span class="w">    </span><span class="k">end if</span>
-
-<span class="k">    close</span><span class="p">(</span><span class="n">iunit</span><span class="p">,</span><span class="n">iostat</span><span class="o">=</span><span class="n">istat</span><span class="p">)</span>
-
-<span class="w">    </span><span class="k">end subroutine </span><span class="n">dag_save_digraph</span>
+<span class="w">    </span><span class="k">end subroutine </span><span class="n">swap</span>
 </pre></div>
 
     </section>

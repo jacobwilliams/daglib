@@ -71,19 +71,19 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title=" 9.3% of total for procedures.">20 statements</a>
+                 title=" 4.6% of total for procedures.">19 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/dag_module.f90"> Source File</a>
+              <a href="../src/dag_module.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/dag_module.f90.html'>dag_module.f90</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/dag_module.f90.html'>dag_module.F90</a></li>
                 <li class="breadcrumb-item"><a href='../module/dag_module.html'>dag_module</a></li>
             <li class="breadcrumb-item active" aria-current="page">dag_get_dependencies</li>
           </ol>
@@ -158,7 +158,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~11"></span>
+              <span class="anchor" id="variable-me~17"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(in)</td>
@@ -173,8 +173,8 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex~5"></span>
-              integer,
+              <span class="anchor" id="variable-ivertex~10"></span>
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -192,7 +192,7 @@
       <h3>Return Value
         <small>
           <span class="anchor" id="variable-dep"></span>
-          integer, dimension(:), allocatable
+          integer(kind=ip), dimension(:), allocatable
         </small>
       </h3>
       <p>the set of all vertices
@@ -213,21 +213,19 @@ than depend on <code>ivertex</code></p>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">pure function </span><span class="n">dag_get_dependencies</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">ivertex</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">dep</span><span class="p">)</span>
 
-<span class="w">    </span><span class="k">implicit none</span>
-
-<span class="k">    class</span><span class="p">(</span><span class="n">dag</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span>
-<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ivertex</span>
-<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="k">dimension</span><span class="p">(:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dep</span><span class="w">  </span><span class="c">!! the set of all vertices</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">dag</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ivertex</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">dimension</span><span class="p">(:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dep</span><span class="w">  </span><span class="c">!! the set of all vertices</span>
 <span class="w">                                             </span><span class="c">!! than depend on `ivertex`</span>
 
-<span class="w">    </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="c">!! vertex counter</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="c">!! vertex counter</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ivertex</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">ivertex</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 
 <span class="w">        </span><span class="c">! have to check all the vertices:</span>
 <span class="w">        </span><span class="k">do </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span>
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">edges</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">                if</span><span class="w"> </span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">edges</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ivertex</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">                if</span><span class="w"> </span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">edges</span><span class="p">%</span><span class="n">ivertex</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ivertex</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <span class="k">                    if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">dep</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <span class="k">                        </span><span class="n">dep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">dep</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">]</span><span class="w">  </span><span class="c">! auto LHS allocation</span>
 <span class="w">                    </span><span class="k">else</span>

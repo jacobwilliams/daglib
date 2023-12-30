@@ -71,19 +71,19 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title="100.0% of total for modules and submodules.">249 statements</a>
+                 title="100.0% of total for modules and submodules.">466 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/dag_module.f90"> Source File</a>
+              <a href="../src/dag_module.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/dag_module.f90.html'>dag_module.f90</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/dag_module.f90.html'>dag_module.F90</a></li>
             <li class="breadcrumb-item active" aria-current="page">dag_module</li>
           </ol>
         </nav>
@@ -103,14 +103,38 @@
         <div id="sidebar">
       <h3>Contents</h3>
   
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/dag_module.html#variable-daglib_ip">daglib_ip</a>
+            <a class="list-group-item" href="../module/dag_module.html#variable-ip">ip</a>
+            <a class="list-group-item" href="../module/dag_module.html#variable-max_int_str_len">MAX_INT_STR_LEN</a>
+        </div>
+      </div>
+    </div>
+
   
   
   
   
   
   
-  
-  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#inters-0"
+         aria-expanded="false" aria-controls="inters-0">
+         <h4 class="card-header bg-primary text-white">Interfaces</h4>
+      </a>
+      <div id="inters-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/dag_module.html#interface-edge">edge</a>
+        </div>
+      </div>
+    </div>
+
   
       <div class="card mb-4">
       <a data-bs-toggle="collapse" href="#types-0"
@@ -119,6 +143,7 @@
       </a>
       <div id="types-0" class="collapse">
         <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/dag_module.html#type-edge">edge</a>
             <a class="list-group-item" href="../module/dag_module.html#type-vertex">vertex</a>
             <a class="list-group-item" href="../module/dag_module.html#type-dag">dag</a>
         </div>
@@ -132,10 +157,14 @@
       </a>
       <div id="funcs-0" class="collapse">
         <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/dag_module.html#proc-edge_constructor">edge_constructor</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_get_edges">dag_get_edges</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_get_dependencies">dag_get_dependencies</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-dag_get_number_of_vertices">dag_get_number_of_vertices</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-dag_get_vertex">dag_get_vertex</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_generate_digraph">dag_generate_digraph</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-integer_to_string">integer_to_string</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-unique">unique</a>
         </div>
       </div>
     </div>
@@ -148,14 +177,21 @@
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_destroy">dag_destroy</a>
-            <a class="list-group-item" href="../module/dag_module.html#proc-set_edge_vector">set_edge_vector</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-set_edge_vector_vector">set_edge_vector_vector</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-add_edge">add_edge</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-remove_edge">remove_edge</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-dag_remove_node">dag_remove_node</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_set_vertices">dag_set_vertices</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_set_vertex_info">dag_set_vertex_info</a>
-            <a class="list-group-item" href="../module/dag_module.html#proc-dag_set_edges">dag_set_edges</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-dag_set_edges_no_atts">dag_set_edges_no_atts</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-dag_remove_edge">dag_remove_edge</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-dag_set_edges_vector_atts">dag_set_edges_vector_atts</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-init_internal_vars">init_internal_vars</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_toposort">dag_toposort</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_generate_dependency_matrix">dag_generate_dependency_matrix</a>
             <a class="list-group-item" href="../module/dag_module.html#proc-dag_save_digraph">dag_save_digraph</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-sort_ascending">sort_ascending</a>
+            <a class="list-group-item" href="../module/dag_module.html#proc-swap">swap</a>
         </div>
       </div>
     </div>
@@ -175,17 +211,393 @@
 
     <div class="col-md-9" id='text'>
       <p>DAG Module.</p>
-      
+<br>          <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: module~~dag_module~~UsesGraph Pages: 1 -->
+<svg id="moduledag_moduleUsesGraph" width="217pt" height="32pt"
+ viewBox="0.00 0.00 217.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~dag_module~~UsesGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>module~~dag_module~~UsesGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 213,-28 213,4 -4,4"/>
+<!-- module~dag_module -->
+<g id="module~~dag_module~~UsesGraph_node1" class="node">
+<title>module~dag_module</title>
+<polygon fill="none" stroke="black" points="209,-24 130,-24 130,0 209,0 209,-24"/>
+<text text-anchor="middle" x="169.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">dag_module</text>
+</g>
+<!-- iso_fortran_env -->
+<g id="module~~dag_module~~UsesGraph_node2" class="node">
+<title>iso_fortran_env</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="94,-24 0,-24 0,0 94,0 94,-24"/>
+<text text-anchor="middle" x="47" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">iso_fortran_env</text>
+</g>
+<!-- module~dag_module&#45;&gt;iso_fortran_env -->
+<g id="module~~dag_module~~UsesGraph_edge1" class="edge">
+<title>module~dag_module&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M129.71,-12C121.6,-12 112.89,-12 104.29,-12"/>
+<polygon fill="#000000" stroke="#000000" points="104.29,-8.5 94.29,-12 104.29,-15.5 104.29,-8.5"/>
+</g>
+</g>
+</svg>
+</div>        <div><a type="button" class="graph-help" data-toggle="modal" href="#UsesGraph-help-text">Help</a></div>
+          <div class="modal fade" id="UsesGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                </div>
+              <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="518pt" height="32pt"
+ viewBox="0.00 0.00 517.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 513.5,-28 513.5,4 -4,4"/>
+<!-- Module -->
+<g id="node1" class="node">
+<title>Module</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Module</text>
+</g>
+<!-- Submodule -->
+<g id="node2" class="node">
+<title>Submodule</title>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="145.5,-24 72.5,-24 72.5,0 145.5,0 145.5,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Submodule</text>
+</g>
+<!-- Subroutine -->
+<g id="node3" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-24 164,-24 164,0 234,0 234,-24"/>
+<text text-anchor="middle" x="199" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node4" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="310,-24 252,-24 252,0 310,0 310,-24"/>
+<text text-anchor="middle" x="281" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="386,-24 328,-24 328,0 386,0 386,-24"/>
+<text text-anchor="middle" x="357" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="509.5,-24 404.5,-24 404.5,0 509.5,0 509.5,-24"/>
+<text text-anchor="middle" x="457" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a submodule to the (sub)module which it is
+descended from. Dashed arrows point from a module or program unit to 
+modules which it uses.
+</p>
+ </div>
+            </div>
+          </div>
+        </div>
+            </li>
+        </ul>
+      </div>
+    </div>
+
       
       <br>
 
 
+        <section>
+          <h2>Variables</h2>
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-daglib_ip"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>daglib_ip</strong></td>
+<td> =</td>
+                <td>int32</td>
+            <td>
+                <p>Integer working precision if not specified [4 bytes]</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ip"></span>
+              integer,
+            </td>
+              <td>private,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>ip</strong></td>
+<td> =</td>
+                <td>daglib_ip</td>
+            <td>
+                <p>local copy of <code>daglib_ip</code> with a shorter name</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-max_int_str_len"></span>
+              integer(kind=ip),
+            </td>
+              <td>private,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>MAX_INT_STR_LEN</strong></td>
+<td> =</td>
+                <td>64</td>
+            <td>
+                <p>maximum length of an integer string</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </section>
+        <br>
 
 
+        <section>
+          <h2>Interfaces</h2>
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-edge"></span>
+      <h3>private        interface <a href='../interface/edge.html'>edge</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>constructor for an <a href="../type/edge.html">edge</a> type.</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental function <a href='../proc/edge_constructor.html'>edge_constructor</a>(ivertex, label, attributes) result(e)  
+
+    </h3>
+    
+  <p>Constructor for <a href="../type/edge.html">edge</a> type.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivertex~8"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-label~5"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-attributes~9"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/edge.html'>edge</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+        </section>
+        <br>
 
 
         <section>
           <h2>Derived Types</h2>
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-edge"></span>
+      <h3>
+        type, private&nbsp;::&nbsp;
+        <a href='../type/edge.html'>edge</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      <p>the "to" vertex that defines an edge. This is part of
+the array of vertices contained without the "from" <a href="../type/vertex.html">vertex</a> type.
+an edge can also have optional attrubutes for graphviz.</p>
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivertex"></span>
+              integer(kind=ip),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+<p>vertex number (the index in the <a href="../type/dag.html">dag</a> <code>vertices</code> array)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-label"></span>
+              character(len=:),
+            </td>
+              <td>public,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>used for diagraph</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-attributes"></span>
+              character(len=:),
+            </td>
+              <td>public,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+<p>used for diagraph</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        <h4>Constructor</h4>
+          <p>constructor for an <a href="../type/edge.html">edge</a> type.</p>
+        <table class="table table-striped varlist">
+          <tbody>
+                <tr>
+                  <td>
+                        private
+
+                    pure, elemental
+                    function
+                    <strong><a href='../proc/edge_constructor.html'>edge_constructor</a></strong>
+                    (ivertex, label, attributes)
+                  </td>
+                  <td><p>Constructor for <a href="../type/edge.html">edge</a> type.</p></td>
+                </tr>
+          </tbody>
+        </table>
+
+
+    </div>
+  </div>
+
               <div class="card">
     <div class="card-header codesum">
       <span class="anchor" id="type-vertex"></span>
@@ -196,7 +608,7 @@
       </h3>
     </div>
     <div class="card-body">
-      <p>a vertex of a directed acyclic graph (DAG)</p>
+      <p>a vertex (or node) of a directed acyclic graph (DAG)</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -212,7 +624,7 @@
         <tr>
             <td>
               <span class="anchor" id="variable-edges"></span>
-              integer,
+              type(<a href='../type/edge.html'>edge</a>),
             </td>
               <td>private,</td>
             <td>
@@ -223,13 +635,14 @@
                 <td></td>
                 <td></td>
             <td>
-<p>these are the vertices that this vertex depends on</p>
+<p>these are the vertices that this vertex
+depends on. (edges of the graph).</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex"></span>
-              integer,
+              <span class="anchor" id="variable-ivertex~2"></span>
+              integer(kind=ip),
             </td>
               <td>private</td>
             <td>
@@ -240,7 +653,7 @@
 <td> =</td>
                 <td>0</td>
             <td>
-<p>vertex number</p>
+<p>vertex number (the index in the <a href="../type/dag.html">dag</a> <code>vertices</code> array)</p>
             </td>
         </tr>
         <tr>
@@ -279,7 +692,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-label"></span>
+              <span class="anchor" id="variable-label~2"></span>
               character(len=:),
             </td>
               <td>private,</td>
@@ -296,7 +709,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-attributes"></span>
+              <span class="anchor" id="variable-attributes~2"></span>
               character(len=:),
             </td>
               <td>private,</td>
@@ -321,18 +734,23 @@
         <table class="table table-striped varlist">
           <tbody>
               <tr>
-                <td>  generic, public ::
-  <strong><a href='../type/vertex.html#boundprocedure-set_edges'>set_edges</a></strong> => <a href='../type/vertex.html#boundprocedure-set_edge_vector'>set_edge_vector</a>, <a href='../type/vertex.html#boundprocedure-add_edge'>add_edge</a></td>
+                <td>  generic, private ::
+  <strong><a href='../type/vertex.html#boundprocedure-set_edges'>set_edges</a></strong> => <a href='../type/vertex.html#boundprocedure-set_edge_vector_vector'>set_edge_vector_vector</a>, <a href='../type/vertex.html#boundprocedure-add_edge'>add_edge</a></td>
                 <td></td>
               </tr>
               <tr>
-                <td>  procedure, public ::
-  <strong><a href='../type/vertex.html#boundprocedure-set_edge_vector'>set_edge_vector</a></strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>  procedure, public ::
+                <td>  procedure, private ::
   <strong><a href='../type/vertex.html#boundprocedure-add_edge'>add_edge</a></strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, private ::
+  <strong><a href='../type/vertex.html#boundprocedure-set_edge_vector_vector'>set_edge_vector_vector</a></strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, private ::
+  <strong><a href='../type/vertex.html#boundprocedure-remove_edge'>remove_edge</a></strong></td>
                 <td></td>
               </tr>
           </tbody>
@@ -350,7 +768,8 @@
       </h3>
     </div>
     <div class="card-body">
-      <p>a directed acyclic graph (DAG)</p>
+      <p>a directed acyclic graph (DAG).
+a collection of vertices (nodes) that are connected to other vertices.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -366,7 +785,7 @@
         <tr>
             <td>
               <span class="anchor" id="variable-n"></span>
-              integer,
+              integer(kind=ip),
             </td>
               <td>private</td>
             <td>
@@ -377,7 +796,7 @@
 <td> =</td>
                 <td>0</td>
             <td>
-<p>number of <code>vertices</code></p>
+<p>number of vertices (size of <code>vertices</code> array)</p>
             </td>
         </tr>
         <tr>
@@ -394,7 +813,8 @@
                 <td></td>
                 <td></td>
             <td>
-<p>the vertices in the DAG.</p>
+<p>the vertices in the DAG. The index in
+this array if the vertex number.</p>
             </td>
         </tr>
     </tbody>
@@ -408,12 +828,33 @@
           <tbody>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dag.html#boundprocedure-set_vertices'>set_vertices</a></strong> => <a href='../proc/dag_set_vertices.html'>dag_set_vertices</a></td>
+  <strong><a href='../type/dag.html#boundprocedure-vertex'>vertex</a></strong> => <a href='../proc/dag_get_vertex.html'>dag_get_vertex</a></td>
+                <td><p>not very useful for now, since
+all vertex attributes are private</p></td>
+              </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/dag.html#boundprocedure-number_of_vertices'>number_of_vertices</a></strong> => <a href='../proc/dag_get_number_of_vertices.html'>dag_get_number_of_vertices</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dag.html#boundprocedure-set_edges~2'>set_edges</a></strong> => <a href='../proc/dag_set_edges.html'>dag_set_edges</a></td>
+  <strong><a href='../type/dag.html#boundprocedure-set_vertices'>set_vertices</a></strong> => <a href='../proc/dag_set_vertices.html'>dag_set_vertices</a></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  generic, public ::
+  <strong><a href='../type/dag.html#boundprocedure-set_edges~2'>set_edges</a></strong> => <a href='../type/dag.html#boundprocedure-dag_set_edges_no_atts'>dag_set_edges_no_atts</a>, <a href='../type/dag.html#boundprocedure-dag_set_edges_vector_atts'>dag_set_edges_vector_atts</a></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/dag.html#boundprocedure-remove_edge~2'>remove_edge</a></strong> => <a href='../proc/dag_remove_edge.html'>dag_remove_edge</a></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/dag.html#boundprocedure-remove_vertex'>remove_vertex</a></strong> => <a href='../proc/dag_remove_node.html'>dag_remove_node</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -456,6 +897,21 @@
   <strong><a href='../type/dag.html#boundprocedure-destroy'>destroy</a></strong> => <a href='../proc/dag_destroy.html'>dag_destroy</a></td>
                 <td></td>
               </tr>
+              <tr>
+                <td>  procedure, private ::
+  <strong><a href='../type/dag.html#boundprocedure-init_internal_vars'>init_internal_vars</a></strong></td>
+                <td><p>private routine to initialize some internal variables</p></td>
+              </tr>
+              <tr>
+                <td>  procedure, private ::
+  <strong><a href='../type/dag.html#boundprocedure-dag_set_edges_vector_atts'>dag_set_edges_vector_atts</a></strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, private ::
+  <strong><a href='../type/dag.html#boundprocedure-dag_set_edges_no_atts'>dag_set_edges_no_atts</a></strong></td>
+                <td></td>
+              </tr>
           </tbody>
         </table>
     </div>
@@ -467,11 +923,86 @@
         <section>
           <h2>Functions</h2>
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-edge_constructor"></span><h3>private pure elemental function <a href='../proc/edge_constructor.html'>edge_constructor</a>(ivertex, label, attributes) result(e)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Constructor for <a href="../type/edge.html">edge</a> type.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivertex~8"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-label~5"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-attributes~9"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/edge.html'>edge</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-dag_get_edges"></span><h3>private pure function <a href='../proc/dag_get_edges.html'>dag_get_edges</a>(me, ivertex) result(edges)  
 </h3></div>
     <div class="card-body">
           
-  <p>get the edges for the vertex (all the the vertices
+  <p>get the edges for the vertex (all of the vertices
 that this vertex depends on).</p>
 
   <h4>Arguments</h4>
@@ -487,7 +1018,7 @@ that this vertex depends on).</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~10"></span>
+              <span class="anchor" id="variable-me~16"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(in)</td>
@@ -502,8 +1033,8 @@ that this vertex depends on).</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex~4"></span>
-              integer,
+              <span class="anchor" id="variable-ivertex~9"></span>
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -520,7 +1051,7 @@ that this vertex depends on).</p>
 
     <h4>
     Return Value
-    <small>integer, dimension(:), allocatable</small>
+    <small>integer(kind=ip), dimension(:), allocatable</small>
     </h4>
     
 
@@ -547,7 +1078,7 @@ that this vertex depends on).</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~11"></span>
+              <span class="anchor" id="variable-me~17"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(in)</td>
@@ -562,8 +1093,8 @@ that this vertex depends on).</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex~5"></span>
-              integer,
+              <span class="anchor" id="variable-ivertex~10"></span>
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -580,10 +1111,115 @@ that this vertex depends on).</p>
 
     <h4>
     Return Value
-    <small>integer, dimension(:), allocatable</small>
+    <small>integer(kind=ip), dimension(:), allocatable</small>
     </h4>
     <p>the set of all vertices
 than depend on <code>ivertex</code></p>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dag_get_number_of_vertices"></span><h3>private pure function <a href='../proc/dag_get_number_of_vertices.html'>dag_get_number_of_vertices</a>(me) result(nvertices)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Returns the number of vertices (nodes) in the dag.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~5"></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=ip)</small>
+    </h4>
+    <p>number of vertices</p>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dag_get_vertex"></span><h3>private  function <a href='../proc/dag_get_vertex.html'>dag_get_vertex</a>(me, i) result(v)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Get the <code>i</code>th vertex.</p><a href="../proc/dag_get_vertex.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~4"></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-i~5"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/vertex.html'>vertex</a>)</small>
+    </h4>
+    
 
     </div>
   </div>
@@ -608,7 +1244,7 @@ than depend on <code>ivertex</code></p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~7"></span>
+              <span class="anchor" id="variable-me~13"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(in)</td>
@@ -639,7 +1275,7 @@ than depend on <code>ivertex</code></p>
         <tr>
             <td>
               <span class="anchor" id="variable-dpi"></span>
-              integer,
+              integer(kind=ip),
             </td>
 <td>intent(in),</td>
               <td>optional</td>            <td>
@@ -683,8 +1319,8 @@ than depend on <code>ivertex</code></p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-i~5"></span>
-              integer,
+              <span class="anchor" id="variable-i~11"></span>
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -704,6 +1340,52 @@ than depend on <code>ivertex</code></p>
     <small>character(len=:), allocatable</small>
     </h4>
     
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-unique"></span><h3>private  function <a href='../proc/unique.html'>unique</a>(vec) result(vec_unique)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Return only the unique values from <code>vec</code>.
+The result is also sorted by ascending value.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-vec"></span>
+              type(<a href='../type/edge.html'>edge</a>),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>vec</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/edge.html'>edge</a>), dimension(:), allocatable</small>
+    </h4>
+    <p>only the unique elements of <code>vec</code></p>
 
     </div>
   </div>
@@ -733,7 +1415,7 @@ than depend on <code>ivertex</code></p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~12"></span>
+              <span class="anchor" id="variable-me~18"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(inout)</td>
@@ -754,7 +1436,7 @@ than depend on <code>ivertex</code></p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-set_edge_vector"></span><h3>private  subroutine <a href='../proc/set_edge_vector.html'>set_edge_vector</a>(me, edges)  
+    <div class="card-header codesum"><span class="anchor" id="proc-set_edge_vector_vector"></span><h3>private  subroutine <a href='../proc/set_edge_vector_vector.html'>set_edge_vector_vector</a>(me, edges, label, attributes)  
 </h3></div>
     <div class="card-body">
           
@@ -789,7 +1471,7 @@ than depend on <code>ivertex</code></p>
         <tr>
             <td>
               <span class="anchor" id="variable-edges~2"></span>
-              integer,
+              integer(kind=ip),
             </td>
 <td>intent(in),</td>
               <td></td>            <td>
@@ -801,6 +1483,37 @@ than depend on <code>ivertex</code></p>
 
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-label~6"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional,</td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-attributes~3"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional,</td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+<p>other attributes when
+saving as a diagraph.</p>
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -809,7 +1522,7 @@ than depend on <code>ivertex</code></p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-add_edge"></span><h3>private  subroutine <a href='../proc/add_edge.html'>add_edge</a>(me, edge)  
+    <div class="card-header codesum"><span class="anchor" id="proc-add_edge"></span><h3>private  subroutine <a href='../proc/add_edge.html'>add_edge</a>(me, e, label, attributes)  
 </h3></div>
     <div class="card-body">
           
@@ -843,17 +1556,48 @@ than depend on <code>ivertex</code></p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-edge"></span>
-              integer,
+              <span class="anchor" id="variable-e"></span>
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>edge</strong></td>
+            <td><strong>e</strong></td>
             <td>
 
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-label~7"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-attributes~4"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+<p>other attributes when
+saving as a diagraph.</p>
             </td>
         </tr>
     </tbody>
@@ -864,11 +1608,11 @@ than depend on <code>ivertex</code></p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-dag_set_vertices"></span><h3>private  subroutine <a href='../proc/dag_set_vertices.html'>dag_set_vertices</a>(me, nvertices)  
+    <div class="card-header codesum"><span class="anchor" id="proc-remove_edge"></span><h3>private  subroutine <a href='../proc/remove_edge.html'>remove_edge</a>(me, e)  
 </h3></div>
     <div class="card-body">
           
-  <p>set the number of vertices in the dag</p>
+  <p>remove an edge index from this vertex</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -884,6 +1628,116 @@ than depend on <code>ivertex</code></p>
         <tr>
             <td>
               <span class="anchor" id="variable-me~3"></span>
+              class(<a href='../type/vertex.html'>vertex</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-e~2"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>e</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dag_remove_node"></span><h3>private  subroutine <a href='../proc/dag_remove_node.html'>dag_remove_node</a>(me, ivertex)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Remove a node from a dag. Will also remove any edges connected to it.</p><a href="../proc/dag_remove_node.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~10"></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivertex~3"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>the node to remove</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dag_set_vertices"></span><h3>private  subroutine <a href='../proc/dag_set_vertices.html'>dag_set_vertices</a>(me, nvertices, labels)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>set the number of vertices (nodes) in the dag.</p><a href="../proc/dag_set_vertices.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~6"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(inout)</td>
@@ -899,7 +1753,7 @@ than depend on <code>ivertex</code></p>
         <tr>
             <td>
               <span class="anchor" id="variable-nvertices"></span>
-              integer,
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -909,6 +1763,21 @@ than depend on <code>ivertex</code></p>
             <td><strong>nvertices</strong></td>
             <td>
 <p>number of vertices</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-labels"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional,</td>            <td>
+              dimension(nvertices)
+            </td>
+            <td>::</td>
+            <td><strong>labels</strong></td>
+            <td>
+<p>vertex name strings</p>
             </td>
         </tr>
     </tbody>
@@ -938,7 +1807,7 @@ than depend on <code>ivertex</code></p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~5"></span>
+              <span class="anchor" id="variable-me~11"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(inout)</td>
@@ -953,8 +1822,8 @@ than depend on <code>ivertex</code></p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex~2"></span>
-              integer,
+              <span class="anchor" id="variable-ivertex~4"></span>
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -968,7 +1837,7 @@ than depend on <code>ivertex</code></p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-label~2"></span>
+              <span class="anchor" id="variable-label~3"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -985,7 +1854,7 @@ number is used.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-attributes~2"></span>
+              <span class="anchor" id="variable-attributes~5"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -1007,7 +1876,7 @@ saving as a diagraph.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-dag_set_edges"></span><h3>private  subroutine <a href='../proc/dag_set_edges.html'>dag_set_edges</a>(me, ivertex, edges)  
+    <div class="card-header codesum"><span class="anchor" id="proc-dag_set_edges_no_atts"></span><h3>private  subroutine <a href='../proc/dag_set_edges_no_atts.html'>dag_set_edges_no_atts</a>(me, ivertex, edges)  
 </h3></div>
     <div class="card-body">
           
@@ -1026,7 +1895,7 @@ saving as a diagraph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~4"></span>
+              <span class="anchor" id="variable-me~7"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(inout)</td>
@@ -1041,8 +1910,8 @@ saving as a diagraph.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex~3"></span>
-              integer,
+              <span class="anchor" id="variable-ivertex~5"></span>
+              integer(kind=ip),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1057,7 +1926,7 @@ saving as a diagraph.</p>
         <tr>
             <td>
               <span class="anchor" id="variable-edges~3"></span>
-              integer,
+              integer(kind=ip),
             </td>
 <td>intent(in),</td>
               <td></td>            <td>
@@ -1065,6 +1934,217 @@ saving as a diagraph.</p>
             </td>
             <td>::</td>
             <td><strong>edges</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dag_remove_edge"></span><h3>private  subroutine <a href='../proc/dag_remove_edge.html'>dag_remove_edge</a>(me, ivertex, iedge)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Remove an edge from a dag.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~9"></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivertex~6"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-iedge"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iedge</strong></td>
+            <td>
+<p>the edge to remove</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dag_set_edges_vector_atts"></span><h3>private  subroutine <a href='../proc/dag_set_edges_vector_atts.html'>dag_set_edges_vector_atts</a>(me, ivertex, edges, attributes, label)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>set the edges for a vertex in a dag</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~8"></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivertex~7"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-edges~4"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>edges</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-attributes~6"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+<p>other attributes when
+saving as a diagraph.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-label~8"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional,</td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-init_internal_vars"></span><h3>private  subroutine <a href='../proc/init_internal_vars.html'>init_internal_vars</a>(me)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Initialize the internal private variables used for graph traversal.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~19"></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
             <td>
 
             </td>
@@ -1096,7 +2176,7 @@ saving as a diagraph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~6"></span>
+              <span class="anchor" id="variable-me~12"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(inout)</td>
@@ -1112,7 +2192,7 @@ saving as a diagraph.</p>
         <tr>
             <td>
               <span class="anchor" id="variable-order"></span>
-              integer,
+              integer(kind=ip),
             </td>
 <td>intent(out),</td>
               <td></td>            <td>
@@ -1127,7 +2207,7 @@ saving as a diagraph.</p>
         <tr>
             <td>
               <span class="anchor" id="variable-istat"></span>
-              integer,
+              integer(kind=ip),
             </td>
 <td>intent(out)</td>
               <td></td>            <td>
@@ -1166,7 +2246,7 @@ saving as a diagraph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~8"></span>
+              <span class="anchor" id="variable-me~14"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(in)</td>
@@ -1221,7 +2301,7 @@ saving as a diagraph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~9"></span>
+              <span class="anchor" id="variable-me~15"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(in)</td>
@@ -1267,7 +2347,7 @@ saving as a diagraph.</p>
         <tr>
             <td>
               <span class="anchor" id="variable-dpi~2"></span>
-              integer,
+              integer(kind=ip),
             </td>
 <td>intent(in),</td>
               <td>optional</td>            <td>
@@ -1277,6 +2357,103 @@ saving as a diagraph.</p>
             <td><strong>dpi</strong></td>
             <td>
 <p>resolution (e.g. 300)</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-sort_ascending"></span><h3>private  subroutine <a href='../proc/sort_ascending.html'>sort_ascending</a>(ivec)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Sorts an <a href="../type/edge.html">edge</a> array <code>ivec</code> in increasing order by vertex number.
+Uses a basic recursive quicksort
+(with insertion sort for partitions with <script type="math/tex">\le</script> 20 elements).</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivec"></span>
+              type(<a href='../type/edge.html'>edge</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>ivec</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-swap"></span><h3>private pure elemental subroutine <a href='../proc/swap.html'>swap</a>(i1, i2)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Swap two <a href="../type/edge.html">edge</a> values.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-i1"></span>
+              type(<a href='../type/edge.html'>edge</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-i2"></span>
+              type(<a href='../type/edge.html'>edge</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i2</strong></td>
+            <td>
+
             </td>
         </tr>
     </tbody>
