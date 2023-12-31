@@ -459,8 +459,11 @@
 
     if (present(label)) me%vertices(ivertex)%label = label
     if (present(attributes)) me%vertices(ivertex)%attributes = attributes
-    if (present(metadata)) allocate(me%vertices(ivertex)%metadata, source=metadata)
-
+    if (present(metadata)) then
+        if (allocated(me%vertices(ivertex)%metadata)) &
+            deallocate(me%vertices(ivertex)%metadata)
+        allocate(me%vertices(ivertex)%metadata, source=metadata)
+    end if
     end subroutine dag_set_vertex_info
 !*******************************************************************************
 
@@ -961,10 +964,10 @@
         if ( ihigh-ilow<=max_size_for_insertion_sort .and. ihigh>ilow ) then
 
             ! do insertion sort:
-            do i = ilow + 1,ihigh
-                do j = i,ilow + 1,-1
-                    if ( ivec(j)%ivertex < ivec(j-1)%ivertex ) then
-                        call swap(ivec(j),ivec(j-1))
+            do i = ilow + 1_ip,ihigh
+                do j = i,ilow + 1_ip,-1_ip
+                    if ( ivec(j)%ivertex < ivec(j-1_ip)%ivertex ) then
+                        call swap(ivec(j),ivec(j-1_ip))
                     else
                         exit
                     end if
@@ -993,11 +996,11 @@
 
         integer(ip) :: i,ii
 
-        call swap(ivec(ilow),ivec((ilow+ihigh)/2))
+        call swap(ivec(ilow),ivec((ilow+ihigh)/2_ip))
         ii = ilow
-        do i = ilow + 1, ihigh
+        do i = ilow + 1_ip, ihigh
             if ( ivec(i)%ivertex < ivec(ilow)%ivertex ) then
-                ii = ii + 1
+                ii = ii + 1_ip
                 call swap(ivec(ii),ivec(i))
             end if
         end do
