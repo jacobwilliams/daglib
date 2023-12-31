@@ -9,13 +9,12 @@
     implicit none
 
     type(dag) :: d
-    integer(ip) :: i, n_nodes
+    integer(ip) :: i, j, n_nodes
     character(len=3),dimension(:),allocatable :: labels
 
     character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
 
     n_nodes = 0
-    !allocate(labels(0))
     do i = 1, 2
         ! first pass just gets the nodes, 2nd gets the dependencies
         call process(i, 'jqt', ['rhn', 'xhk', 'nvd'])
@@ -36,6 +35,9 @@
         if (i==1) then
             write(*,*) 'set_vertices !'
             call d%set_vertices(n_nodes, labels=labels)
+            do j = 1, n_nodes
+                call d%set_vertex_info(j,attributes='fillcolor=cornsilk,style=filled')
+            end do
         end if
     end do
 
