@@ -83,6 +83,7 @@
         procedure,public :: remove_edge         => dag_remove_edge
         procedure,public :: remove_vertex       => dag_remove_node
         procedure,public :: toposort            => dag_toposort
+        procedure,public :: traverse            => dag_traverse
         procedure,public :: generate_digraph    => dag_generate_digraph
         procedure,public :: generate_dependency_matrix => dag_generate_dependency_matrix
         procedure,public :: save_digraph        => dag_save_digraph
@@ -93,6 +94,20 @@
         procedure :: dag_set_edges_no_atts, dag_set_edges_vector_atts
 
     end type dag
+
+    abstract interface
+        subroutine traverse_func(ivertex,stop,iedge)
+            !! user-provided function for traversing a dag.
+            import :: ip
+            implicit none
+            integer(ip),intent(in) :: ivertex !! vertex number
+            logical,intent(out) :: stop !! set to true to stop the process
+            integer(ip),intent(in),optional :: iedge !! edge index for this vertex
+                                                     !! (note: not the vertex number,
+                                                     !! the index in the array of edge vertices)
+                                                     !! [not present if this is the starting node]
+        end subroutine traverse_func
+    end interface
 
     contains
 !*******************************************************************************
@@ -623,6 +638,72 @@
     end subroutine dfs
 
     end subroutine dag_toposort
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  depth-first graph traversal of the dag.
+!
+!  This will visit each node in the graph once, and call the `userfunc`.
+!  If some nodes are not connected to `ivertex`, then they will not be visited.
+!
+!@todo Should also add a bfs option.
+
+    subroutine dag_traverse(me,ivertex,userfunc)
+
+    class(dag),intent(inout) :: me
+    integer(ip),intent(in) :: ivertex !! the vertex number to start on
+    procedure(traverse_func) :: userfunc !! a user-provided function that will
+                                         !! be called for each vertex/edge combination
+
+    if (me%n==0) return ! nothing to do
+    if (ivertex<0 .or. ivertex>me%n) error stop 'invalid vertex number in dag_traverse'
+
+    ! initialize internal variables, in case
+    ! we have called this routine before.
+    call me%init_internal_vars()
+
+    call dfs(ivertex)
+
+    contains
+
+        recursive subroutine dfs(ivertex,iedge)
+        !! depth-first graph traversal
+        integer(ip),intent(in) :: ivertex !! the vertex
+        integer(ip),intent(in),optional :: iedge !! the edge index for this vertex
+        if (present(iedge)) then ! visiting an edge
+            associate ( v => me%vertices(me%vertices(ivertex)%edges(iedge)%ivertex) )
+                if (done(v,ivertex,iedge)) return
+            end associate
+        else ! the starting node, no edge
+            associate ( v => me%vertices(ivertex) )
+                if (done(v,ivertex,iedge)) return
+            end associate
+        end if
+        end subroutine dfs
+
+        recursive function done(v,iv,ie) result(user_stop)
+            !! process this vertex in the [[dfs]] and return true if done.
+            type(vertex),intent(inout) :: v !! vertex to process
+            logical :: user_stop !! if the user has signaled to stop
+            integer(ip),intent(in) :: iv !! the vertex number
+            integer(ip),intent(in),optional :: ie !! the edge index for this vertex (if this is an edge)
+            integer(ip) :: jedge !! edge counter
+            if (v%marked) return ! this one has already been visited
+            v%marked = .true.    !
+            ! call the user's function for this node/edge combo:
+            call userfunc(iv,user_stop,ie)
+            if (.not. user_stop) then ! continue traversing
+                if (allocated(v%edges)) then
+                    do jedge = 1,size(v%edges)
+                        call dfs(v%ivertex,jedge)
+                        if (user_stop) return
+                    end do
+                end if
+            end if
+        end function done
+
+    end subroutine dag_traverse
 !*******************************************************************************
 
 !*******************************************************************************

@@ -17,8 +17,6 @@
     integer(ip),parameter :: n_nodes = 7
     character(len=*),parameter :: filetype = 'pdf'  !! filetype for output plot ('pdf', png', etc.)
 
-    ! TODO combine set_edges and set_vertex_info into one routine maybe.
-
     call d%set_vertices(n_nodes)
     call d%set_edges(2_ip,[1_ip])        !2 depends on 1
     call d%set_edges(3_ip,[5_ip,1_ip])   !3 depends on 5 and 1
@@ -61,15 +59,23 @@
             write(*,'(A)') ''
     end do
 
+    ! traverse the dag and print something:
+    write(*,*) ''
+    write(*,*) 'Traverse the DAG starting with node 3:'
+    call d%traverse(3_ip, traverse)
+
     ! test removing a node:
+    write(*,*) ''
     call d%remove_vertex(5_ip)
     call save_plot('test1_5-removed')
 
     ! test removing an edge:
+    write(*,*) ''
     call d%remove_edge(5_ip,4_ip) ! the orignal node 6 is now 5
     call save_plot('test1_node-5-removed_6-4-edge-removed')
 
     ! test adding an edge:
+    write(*,*) ''
     call d%add_edge(ivertex=5_ip,iedge=1_ip, &
                     label='added',&
                     attributes='penwidth=2,arrowhead=none,color=red')
@@ -81,6 +87,7 @@
     contains
 
         subroutine save_plot(filename)
+            !! save the plot of the dag
             character(len=*),intent(in) :: filename
             call d%save_digraph(filename//'.dot','RL',300_ip)
             call execute_command_line('cat '//filename//'.dot')
@@ -88,6 +95,21 @@
                                         filename//'.'//filetype//' '//&
                                         filename//'.dot')
         end subroutine save_plot
+
+        subroutine traverse(ivertex,stop,iedge)
+            !! a function to call for each node of the dag
+            integer(ip),intent(in) :: ivertex !! vertex number
+            logical,intent(out) :: stop !! set to true to stop the process
+            integer(ip),intent(in),optional :: iedge !! edge index for this vertex
+            if (present(iedge)) then
+                associate( edges => d%get_edges(ivertex))
+                    write(*,'(a,1x,i2,1x,a,i2)') 'edge: ', ivertex, '->', edges(iedge)
+                end associate
+            else
+                write(*,'(a,1x,i2)') 'node: ', ivertex
+            end if
+            stop = .false.
+        end subroutine traverse
 
     end program dag_example
 !*******************************************************************************
