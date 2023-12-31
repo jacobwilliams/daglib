@@ -32,6 +32,7 @@
         integer(ip) :: ivertex = 0 !! vertex number (the index in the [[dag]] `vertices` array)
         character(len=:),allocatable :: label !! used for diagraph
         character(len=:),allocatable :: attributes !! used for diagraph
+        class(*),allocatable :: metadata !! user-defined metadata
     end type edge
     interface edge
         !! constructor for an [[edge]] type.
@@ -48,6 +49,7 @@
         logical :: marked = .false.    !! used for toposort
         character(len=:),allocatable :: label      !! used for diagraph
         character(len=:),allocatable :: attributes !! used for diagraph
+        class(*),allocatable :: metadata !! user-defined metadata
     contains
         private
         generic :: set_edges => set_edge_vector_vector, add_edge
@@ -67,26 +69,45 @@
 
         procedure,public :: vertex => dag_get_vertex !! not very useful for now, since
                                                      !! all vertex attributes are private
-        procedure,public :: number_of_vertices => dag_get_number_of_vertices
-        procedure,public :: set_vertices       => dag_set_vertices
-        generic,public   :: set_edges          => dag_set_edges_no_atts, &
-                                                  dag_set_edges_vector_atts
-        procedure,public :: add_edge           => dag_add_edge
-        procedure,public :: remove_edge        => dag_remove_edge
-        procedure,public :: remove_vertex      => dag_remove_node
-        procedure,public :: set_vertex_info    => dag_set_vertex_info
-        procedure,public :: toposort           => dag_toposort
-        procedure,public :: generate_digraph   => dag_generate_digraph
+        procedure,public :: number_of_vertices  => dag_get_number_of_vertices
+        procedure,public :: get_edge_metadata   => dag_get_edge_metadata
+        procedure,public :: get_vertex_metadata => dag_get_vertex_metadata
+        procedure,public :: get_edges           => dag_get_edges
+        procedure,public :: get_dependencies    => dag_get_dependencies
+
+        procedure,public :: set_vertices        => dag_set_vertices
+        procedure,public :: set_vertex_info     => dag_set_vertex_info
+        procedure,public :: add_edge            => dag_add_edge
+        generic,public   :: set_edges           => dag_set_edges_no_atts, &
+                                                   dag_set_edges_vector_atts
+        procedure,public :: remove_edge         => dag_remove_edge
+        procedure,public :: remove_vertex       => dag_remove_node
+        procedure,public :: toposort            => dag_toposort
+        procedure,public :: traverse            => dag_traverse
+        procedure,public :: generate_digraph    => dag_generate_digraph
         procedure,public :: generate_dependency_matrix => dag_generate_dependency_matrix
-        procedure,public :: save_digraph       => dag_save_digraph
-        procedure,public :: get_edges          => dag_get_edges
-        procedure,public :: get_dependencies   => dag_get_dependencies
-        procedure,public :: destroy            => dag_destroy
+        procedure,public :: save_digraph        => dag_save_digraph
+        procedure,public :: destroy             => dag_destroy
+        procedure,public :: get_edge_index
 
         procedure :: init_internal_vars !! private routine to initialize some internal variables
         procedure :: dag_set_edges_no_atts, dag_set_edges_vector_atts
 
     end type dag
+
+    abstract interface
+        subroutine traverse_func(ivertex,stop,iedge)
+            !! user-provided function for traversing a dag.
+            import :: ip
+            implicit none
+            integer(ip),intent(in) :: ivertex !! vertex number
+            logical,intent(out) :: stop !! set to true to stop the process
+            integer(ip),intent(in),optional :: iedge !! edge index for this vertex
+                                                     !! (note: not the vertex number,
+                                                     !! the index in the array of edge vertices)
+                                                     !! [not present if this is the starting node]
+        end subroutine traverse_func
+    end interface
 
     contains
 !*******************************************************************************
@@ -95,15 +116,18 @@
 !>
 !  Constructor for [[edge]] type.
 
-    pure elemental function edge_constructor(ivertex,label,attributes) result(e)
+    pure elemental function edge_constructor(ivertex,label,attributes,metadata) result(e)
 
-    integer(ip),intent(in),optional :: ivertex
-    character(len=*),intent(in),optional :: label
-    character(len=*),intent(in),optional :: attributes
+    integer(ip),intent(in),optional :: ivertex !! vertex number defining the destination of this edge
+    character(len=*),intent(in),optional :: label !! vertex name for grahviz
+    character(len=*),intent(in),optional :: attributes !! other attributes for graphviz
+    class(*),intent(in),optional :: metadata !! optional user-defined metadata
+
     type(edge) :: e
     e%ivertex = ivertex
     if (present(label)) e%label = label
     if (present(attributes)) e%attributes = attributes
+    if (present(metadata)) allocate(e%attributes, source = attributes)
 
     end function edge_constructor
 !*******************************************************************************
@@ -126,27 +150,19 @@
 !>
 !  specify the edge indices for this vertex
 
-    subroutine set_edge_vector_vector(me,edges,label,attributes)
+    subroutine set_edge_vector_vector(me,edges,label,attributes,metadata)
 
     class(vertex),intent(inout) :: me
     integer(ip),dimension(:),intent(in) :: edges
     character(len=*),dimension(:),intent(in),optional :: label
     character(len=*),dimension(:),intent(in),optional :: attributes !! other attributes when
                                                                     !! saving as a diagraph.
+    class(*),intent(in),optional :: metadata !! optional user-defined metadata
 
-    integer(ip) :: i !! counter
-
-    do i=1,size(edges)
-        if (present(label) .and. present(attributes)) then
-            call me%add_edge(edges(i),label=label(i),attributes=attributes(i))
-        else if (.not. present(label) .and. present(attributes)) then
-            call me%add_edge(edges(i),attributes=attributes(i))
-        else if (present(label) .and. .not. present(attributes)) then
-            call me%add_edge(edges(i),label=label(i))
-        else
-            call me%add_edge(edges(i))
-        end if
-    end do
+    ! elemental assignment:
+    me%edges = edge(ivertex=edges,label=label,&
+                    attributes=attributes,metadata=metadata)
+    call sort_ascending(me%edges)
 
     end subroutine set_edge_vector_vector
 !*******************************************************************************
@@ -155,21 +171,27 @@
 !>
 !  add an edge index for this vertex
 
-    subroutine add_edge(me,e,label,attributes)
+    subroutine add_edge(me,e,label,attributes,metadata)
 
     class(vertex),intent(inout) :: me
     integer(ip),intent(in) :: e
     character(len=*),intent(in),optional :: label
     character(len=*),intent(in),optional :: attributes !! other attributes when
                                                        !! saving as a diagraph.
+    class(*),intent(in),optional :: metadata !! optional user-defined metadata
+
+    type(edge) :: edge_
+
+    edge_ = edge(ivertex=e,label=label,&
+                 attributes=attributes,metadata=metadata)
 
     if (allocated(me%edges)) then
         if (.not. any(e==me%edges%ivertex)) then ! don't add if already there
-            me%edges = [me%edges, edge(e,label=label,attributes=attributes)]
+            me%edges = [me%edges, edge_]
             call sort_ascending(me%edges)
         end if
     else
-        me%edges = [edge(e,label=label,attributes=attributes)]
+        me%edges = [edge_]
     end if
 
     end subroutine add_edge
@@ -261,8 +283,10 @@
     integer(ip),intent(in) :: ivertex
     integer(ip),dimension(:),allocatable :: edges
 
-    if (ivertex>0 .and. ivertex <= me%n) then
-        edges = me%vertices(ivertex)%edges%ivertex  ! auto LHS allocation
+    if (allocated(me%vertices(ivertex)%edges)) then
+        if (ivertex>0 .and. ivertex <= me%n) then
+            edges = me%vertices(ivertex)%edges%ivertex  ! auto LHS allocation
+        end if
     end if
 
     end function dag_get_edges
@@ -310,12 +334,18 @@
 !  * [[dag_set_vertex_info]] which can be used to set/change
 !    the labels and other attributes.
 
-    subroutine dag_set_vertices(me,nvertices,labels)
+    subroutine dag_set_vertices(me,nvertices,labels,attributes,metadata)
 
     class(dag),intent(inout) :: me
     integer(ip),intent(in)   :: nvertices !! number of vertices
     character(len=*),dimension(nvertices),intent(in),optional :: labels !! vertex name strings
+    character(len=*),intent(in),optional :: attributes !! other attributes when
+                                                       !! saving as a diagraph.
+    class(*),intent(in),optional :: metadata !! optional user-defined metadata
+
     integer(ip) :: i !! counter
+    logical :: has_label !! if `labels` is specified
+    character(len=:),allocatable :: label_ !! temp variable for labels
 
     if (nvertices<=0) error stop 'error: nvertices must be >= 1'
 
@@ -323,18 +353,19 @@
 
     me%n = nvertices
     allocate(me%vertices(nvertices))
-    me%vertices%ivertex = [(i,i=1,nvertices)]
+    me%vertices%ivertex = [(i,i=1,nvertices)] ! vertex indices
 
-    if (present(labels)) then
-        do i = 1, nvertices
-            me%vertices(i)%label = trim(adjustl(labels(i)))
-        end do
-    else
-        ! just use the vertex number
-        do i = 1, nvertices
-            me%vertices(i)%label = integer_to_string(i)
-        end do
-    end if
+    has_label = present(labels)
+
+    do i = 1, nvertices
+        if (has_label) then
+            label_ = trim(adjustl(labels(i)))
+        else
+            label_ = integer_to_string(i)  ! just use the vertex number
+        end if
+        call me%set_vertex_info(ivertex=i,label=label_,&
+                                attributes=attributes,metadata=metadata)
+    end do
 
     end subroutine dag_set_vertices
 !*******************************************************************************
@@ -355,9 +386,67 @@
 
 !*******************************************************************************
 !>
+!  Returns the metadata for a vertex (node) in the dag.
+
+    pure function dag_get_vertex_metadata(me,ivertex) result(m)
+
+    class(dag),intent(in) :: me
+    integer(ip),intent(in) :: ivertex !! vertex number
+    class(*),allocatable :: m
+
+    if (allocated(me%vertices(ivertex)%metadata)) &
+        allocate(m, source = me%vertices(ivertex)%metadata)
+
+    end function dag_get_vertex_metadata
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Returns the metadata for an edge in the dag.
+
+    pure function dag_get_edge_metadata(me,ivertex,iedge) result(m)
+
+    class(dag),intent(in) :: me
+    integer(ip),intent(in) :: ivertex !! vertex number
+    integer(ip),intent(in) :: iedge   !! edge vertex
+    class(*),allocatable   :: m
+
+    associate ( i => me%get_edge_index(ivertex,iedge) )
+        if (i>0) allocate(m, source = me%vertices(ivertex)%edges(i)%metadata)
+    end associate
+
+    end function dag_get_edge_metadata
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  Returns the index in the edge array of the vertex.
+
+    pure function get_edge_index(me,ivertex,iedge) result(edge_index)
+
+    class(dag),intent(in) :: me
+    integer(ip),intent(in) :: ivertex !! vertex number
+    integer(ip),intent(in) :: iedge !! edge vertex number
+    integer(ip) :: edge_index !! the index of the `iedge` vertex in
+                              !! the edge array (0 if not found)
+
+    integer(ip),dimension(1) :: idx
+
+    if (allocated(me%vertices(ivertex)%edges)) then
+        idx = findloc(me%vertices(ivertex)%edges%ivertex, iedge)
+        edge_index = idx(1)
+    else
+        edge_index = 0_ip
+    end if
+
+    end function get_edge_index
+!*******************************************************************************
+
+!*******************************************************************************
+!>
 !  set info about a vertex in a dag.
 
-    subroutine dag_set_vertex_info(me,ivertex,label,attributes)
+    subroutine dag_set_vertex_info(me,ivertex,label,attributes,metadata)
 
     class(dag),intent(inout) :: me
     integer(ip),intent(in)               :: ivertex !! vertex number
@@ -366,10 +455,15 @@
                                                   !! number is used.
     character(len=*),intent(in),optional :: attributes !! other attributes when
                                                        !! saving as a diagraph.
+    class(*),intent(in),optional :: metadata !! optional user-defined metadata
 
     if (present(label)) me%vertices(ivertex)%label = label
     if (present(attributes)) me%vertices(ivertex)%attributes = attributes
-
+    if (present(metadata)) then
+        if (allocated(me%vertices(ivertex)%metadata)) &
+            deallocate(me%vertices(ivertex)%metadata)
+        allocate(me%vertices(ivertex)%metadata, source=metadata)
+    end if
     end subroutine dag_set_vertex_info
 !*******************************************************************************
 
@@ -398,7 +492,7 @@
 !>
 !  Add an edge to a dag.
 
-    subroutine dag_add_edge(me,ivertex,iedge,label,attributes)
+    subroutine dag_add_edge(me,ivertex,iedge,label,attributes,metadata)
 
     class(dag),intent(inout) :: me
     integer(ip),intent(in)   :: ivertex !! vertex number
@@ -406,10 +500,12 @@
     character(len=*),intent(in),optional :: label !! edge label
     character(len=*),intent(in),optional :: attributes !! other attributes when
                                                        !! saving as a diagraph.
+    class(*),intent(in),optional :: metadata !! optional user-defined metadata
 
     call me%vertices(ivertex)%set_edges(iedge,&
                         label=label,&
-                        attributes=attributes)
+                        attributes=attributes,&
+                        metadata=metadata)
 
     end subroutine dag_add_edge
 !*******************************************************************************
@@ -545,6 +641,72 @@
     end subroutine dfs
 
     end subroutine dag_toposort
+!*******************************************************************************
+
+!*******************************************************************************
+!>
+!  depth-first graph traversal of the dag.
+!
+!  This will visit each node in the graph once, and call the `userfunc`.
+!  If some nodes are not connected to `ivertex`, then they will not be visited.
+!
+!@todo Should also add a bfs option.
+
+    subroutine dag_traverse(me,ivertex,userfunc)
+
+    class(dag),intent(inout) :: me
+    integer(ip),intent(in) :: ivertex !! the vertex number to start on
+    procedure(traverse_func) :: userfunc !! a user-provided function that will
+                                         !! be called for each vertex/edge combination
+
+    if (me%n==0) return ! nothing to do
+    if (ivertex<0 .or. ivertex>me%n) error stop 'invalid vertex number in dag_traverse'
+
+    ! initialize internal variables, in case
+    ! we have called this routine before.
+    call me%init_internal_vars()
+
+    call dfs(ivertex)
+
+    contains
+
+        recursive subroutine dfs(ivertex,iedge)
+        !! depth-first graph traversal
+        integer(ip),intent(in) :: ivertex !! the vertex
+        integer(ip),intent(in),optional :: iedge !! the edge index for this vertex
+        if (present(iedge)) then ! visiting an edge
+            associate ( v => me%vertices(me%vertices(ivertex)%edges(iedge)%ivertex) )
+                if (done(v,ivertex,iedge)) return
+            end associate
+        else ! the starting node, no edge
+            associate ( v => me%vertices(ivertex) )
+                if (done(v,ivertex,iedge)) return
+            end associate
+        end if
+        end subroutine dfs
+
+        recursive function done(v,iv,ie) result(user_stop)
+            !! process this vertex in the [[dfs]] and return true if done.
+            type(vertex),intent(inout) :: v !! vertex to process
+            logical :: user_stop !! if the user has signaled to stop
+            integer(ip),intent(in) :: iv !! the vertex number
+            integer(ip),intent(in),optional :: ie !! the edge index for this vertex (if this is an edge)
+            integer(ip) :: jedge !! edge counter
+            if (v%marked) return ! this one has already been visited
+            v%marked = .true.    !
+            ! call the user's function for this node/edge combo:
+            call userfunc(iv,user_stop,ie)
+            if (.not. user_stop) then ! continue traversing
+                if (allocated(v%edges)) then
+                    do jedge = 1,size(v%edges)
+                        call dfs(v%ivertex,jedge)
+                        if (user_stop) return
+                    end do
+                end if
+            end if
+        end function done
+
+    end subroutine dag_traverse
 !*******************************************************************************
 
 !*******************************************************************************
@@ -802,10 +964,10 @@
         if ( ihigh-ilow<=max_size_for_insertion_sort .and. ihigh>ilow ) then
 
             ! do insertion sort:
-            do i = ilow + 1,ihigh
-                do j = i,ilow + 1,-1
-                    if ( ivec(j)%ivertex < ivec(j-1)%ivertex ) then
-                        call swap(ivec(j),ivec(j-1))
+            do i = ilow + 1_ip,ihigh
+                do j = i,ilow + 1_ip,-1_ip
+                    if ( ivec(j)%ivertex < ivec(j-1_ip)%ivertex ) then
+                        call swap(ivec(j),ivec(j-1_ip))
                     else
                         exit
                     end if
@@ -834,11 +996,11 @@
 
         integer(ip) :: i,ii
 
-        call swap(ivec(ilow),ivec((ilow+ihigh)/2))
+        call swap(ivec(ilow),ivec((ilow+ihigh)/2_ip))
         ii = ilow
-        do i = ilow + 1, ihigh
+        do i = ilow + 1_ip, ihigh
             if ( ivec(i)%ivertex < ivec(ilow)%ivertex ) then
-                ii = ii + 1
+                ii = ii + 1_ip
                 call swap(ivec(ii),ivec(i))
             end if
         end do

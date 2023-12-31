@@ -44,6 +44,9 @@
                   <a class="nav-link" href="../lists/procedures.html">Procedures</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" href="../lists/types.html">Derived Types</a>
                 </li>
             </ul>
@@ -71,7 +74,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title="<p>52.2% of total for derived types.</p>Including implementation: 301 statements, 80.7% of total for derived types.">24 statements</a>
+                 title="<p>53.8% of total for derived types.</p>Including implementation: 386 statements, 85.0% of total for derived types.">28 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,19 +144,23 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../type/dag.html#boundprocedure-vertex">vertex</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-number_of_vertices">number_of_vertices</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-get_edge_metadata">get_edge_metadata</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-get_vertex_metadata">get_vertex_metadata</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-get_edges">get_edges</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-get_dependencies">get_dependencies</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-set_vertices">set_vertices</a>
-            <a class="list-group-item" href="../type/dag.html#boundprocedure-set_edges~2">set_edges</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-set_vertex_info">set_vertex_info</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-add_edge~2">add_edge</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-set_edges~2">set_edges</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-remove_edge~2">remove_edge</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-remove_vertex">remove_vertex</a>
-            <a class="list-group-item" href="../type/dag.html#boundprocedure-set_vertex_info">set_vertex_info</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-toposort">toposort</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-traverse">traverse</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-generate_digraph">generate_digraph</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-generate_dependency_matrix">generate_dependency_matrix</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-save_digraph">save_digraph</a>
-            <a class="list-group-item" href="../type/dag.html#boundprocedure-get_edges">get_edges</a>
-            <a class="list-group-item" href="../type/dag.html#boundprocedure-get_dependencies">get_dependencies</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-destroy">destroy</a>
+            <a class="list-group-item" href="../type/dag.html#boundprocedure-get_edge_index">get_edge_index</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-init_internal_vars">init_internal_vars</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-dag_set_edges_vector_atts">dag_set_edges_vector_atts</a>
             <a class="list-group-item" href="../type/dag.html#boundprocedure-dag_set_edges_no_atts">dag_set_edges_no_atts</a>
@@ -484,6 +491,319 @@ all vertex attributes are private</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-get_edge_metadata"></span>
+      <h3>
+          procedure, public ::
+  <strong>get_edge_metadata</strong> => <a href='../proc/dag_get_edge_metadata.html'>dag_get_edge_metadata</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure function <a href='../proc/dag_get_edge_metadata.html'>dag_get_edge_metadata</a>(me, ivertex, iedge) result(m)  
+</h3>
+    
+
+  <p>Returns the metadata for an edge in the dag.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iedge</strong></td>
+            <td>
+<p>edge vertex</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>class(*), allocatable</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-get_vertex_metadata"></span>
+      <h3>
+          procedure, public ::
+  <strong>get_vertex_metadata</strong> => <a href='../proc/dag_get_vertex_metadata.html'>dag_get_vertex_metadata</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure function <a href='../proc/dag_get_vertex_metadata.html'>dag_get_vertex_metadata</a>(me, ivertex) result(m)  
+</h3>
+    
+
+  <p>Returns the metadata for a vertex (node) in the dag.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>class(*), allocatable</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-get_edges"></span>
+      <h3>
+          procedure, public ::
+  <strong>get_edges</strong> => <a href='../proc/dag_get_edges.html'>dag_get_edges</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure function <a href='../proc/dag_get_edges.html'>dag_get_edges</a>(me, ivertex) result(edges)  
+</h3>
+    
+
+  <p>get the edges for the vertex (all of the vertices
+that this vertex depends on).</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=ip), dimension(:), allocatable</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-get_dependencies"></span>
+      <h3>
+          procedure, public ::
+  <strong>get_dependencies</strong> => <a href='../proc/dag_get_dependencies.html'>dag_get_dependencies</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure function <a href='../proc/dag_get_dependencies.html'>dag_get_dependencies</a>(me, ivertex) result(dep)  
+</h3>
+    
+
+  <p>get all the vertices that depend on this vertex.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=ip), dimension(:), allocatable</small>
+    </h4>
+    <p>the set of all vertices
+than depend on <code>ivertex</code></p>
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
       <span class="anchor" id="boundprocedure-set_vertices"></span>
       <h3>
           procedure, public ::
@@ -494,7 +814,7 @@ all vertex attributes are private</p>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/dag_set_vertices.html'>dag_set_vertices</a>(me, nvertices, labels)  
+    private  subroutine <a href='../proc/dag_set_vertices.html'>dag_set_vertices</a>(me, nvertices, labels, attributes, metadata)  
 </h3>
     
 
@@ -554,6 +874,284 @@ all vertex attributes are private</p>
             <td><strong>labels</strong></td>
             <td>
 <p>vertex name strings</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+<p>other attributes when
+saving as a diagraph.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-set_vertex_info"></span>
+      <h3>
+          procedure, public ::
+  <strong>set_vertex_info</strong> => <a href='../proc/dag_set_vertex_info.html'>dag_set_vertex_info</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/dag_set_vertex_info.html'>dag_set_vertex_info</a>(me, ivertex, label, attributes, metadata)  
+</h3>
+    
+
+  <p>set info about a vertex in a dag.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+<p>if a label is not set,
+then the integer vertex
+number is used.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+<p>other attributes when
+saving as a diagraph.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-add_edge~2"></span>
+      <h3>
+          procedure, public ::
+  <strong>add_edge</strong> => <a href='../proc/dag_add_edge.html'>dag_add_edge</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/dag_add_edge.html'>dag_add_edge</a>(me, ivertex, iedge, label, attributes, metadata)  
+</h3>
+    
+
+  <p>Add an edge to a dag.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iedge</strong></td>
+            <td>
+<p>the vertex to connect to <code>ivertex</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+<p>edge label</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+<p>other attributes when
+saving as a diagraph.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
             </td>
         </tr>
     </tbody>
@@ -752,121 +1350,6 @@ saving as a diagraph.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-add_edge~2"></span>
-      <h3>
-          procedure, public ::
-  <strong>add_edge</strong> => <a href='../proc/dag_add_edge.html'>dag_add_edge</a>
-        
-      </h3>
-    </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private  subroutine <a href='../proc/dag_add_edge.html'>dag_add_edge</a>(me, ivertex, iedge, label, attributes)  
-</h3>
-    
-
-  <p>Add an edge to a dag.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/dag.html'>dag</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>me</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=ip),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ivertex</strong></td>
-            <td>
-<p>vertex number</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=ip),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>iedge</strong></td>
-            <td>
-<p>the vertex to connect to <code>ivertex</code></p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>label</strong></td>
-            <td>
-<p>edge label</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>attributes</strong></td>
-            <td>
-<p>other attributes when
-saving as a diagraph.</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-          </div>
-          <div class="row">
-              <div class="card mt-3">
-    <div class="card-header codesum">
       <span class="anchor" id="boundprocedure-remove_edge~2"></span>
       <h3>
           procedure, public ::
@@ -1020,108 +1503,6 @@ saving as a diagraph.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-set_vertex_info"></span>
-      <h3>
-          procedure, public ::
-  <strong>set_vertex_info</strong> => <a href='../proc/dag_set_vertex_info.html'>dag_set_vertex_info</a>
-        
-      </h3>
-    </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private  subroutine <a href='../proc/dag_set_vertex_info.html'>dag_set_vertex_info</a>(me, ivertex, label, attributes)  
-</h3>
-    
-
-  <p>set info about a vertex in a dag.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/dag.html'>dag</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>me</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=ip),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ivertex</strong></td>
-            <td>
-<p>vertex number</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>label</strong></td>
-            <td>
-<p>if a label is not set,
-then the integer vertex
-number is used.</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>attributes</strong></td>
-            <td>
-<p>other attributes when
-saving as a diagraph.</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-          </div>
-          <div class="row">
-              <div class="card mt-3">
-    <div class="card-header codesum">
       <span class="anchor" id="boundprocedure-toposort"></span>
       <h3>
           procedure, public ::
@@ -1192,6 +1573,91 @@ saving as a diagraph.</p>
             <td><strong>istat</strong></td>
             <td>
 <p>Status flag:</p><a href="../proc/dag_toposort.html#variable-istat" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-traverse"></span>
+      <h3>
+          procedure, public ::
+  <strong>traverse</strong> => <a href='../proc/dag_traverse.html'>dag_traverse</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/dag_traverse.html'>dag_traverse</a>(me, ivertex, userfunc)  
+</h3>
+    
+
+  <p>depth-first graph traversal of the dag.</p><a href="../proc/dag_traverse.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>the vertex number to start on</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              procedure(<a href='../interface/traverse_func.html'>traverse_func</a>)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>userfunc</strong></td>
+            <td>
+<p>a user-provided function that will
+be called for each vertex/edge combination</p>
             </td>
         </tr>
     </tbody>
@@ -1463,156 +1929,6 @@ saving as a diagraph.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-get_edges"></span>
-      <h3>
-          procedure, public ::
-  <strong>get_edges</strong> => <a href='../proc/dag_get_edges.html'>dag_get_edges</a>
-        
-      </h3>
-    </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private pure function <a href='../proc/dag_get_edges.html'>dag_get_edges</a>(me, ivertex) result(edges)  
-</h3>
-    
-
-  <p>get the edges for the vertex (all of the vertices
-that this vertex depends on).</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/dag.html'>dag</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>me</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=ip),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ivertex</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer(kind=ip), dimension(:), allocatable</small>
-    </h4>
-    
-
-        </li>
-    </ul>
-  </div>
-
-          </div>
-          <div class="row">
-              <div class="card mt-3">
-    <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-get_dependencies"></span>
-      <h3>
-          procedure, public ::
-  <strong>get_dependencies</strong> => <a href='../proc/dag_get_dependencies.html'>dag_get_dependencies</a>
-        
-      </h3>
-    </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private pure function <a href='../proc/dag_get_dependencies.html'>dag_get_dependencies</a>(me, ivertex) result(dep)  
-</h3>
-    
-
-  <p>get all the vertices that depend on this vertex.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/dag.html'>dag</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>me</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=ip),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ivertex</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer(kind=ip), dimension(:), allocatable</small>
-    </h4>
-    <p>the set of all vertices
-than depend on <code>ivertex</code></p>
-
-        </li>
-    </ul>
-  </div>
-
-          </div>
-          <div class="row">
-              <div class="card mt-3">
-    <div class="card-header codesum">
       <span class="anchor" id="boundprocedure-destroy"></span>
       <h3>
           procedure, public ::
@@ -1658,6 +1974,96 @@ than depend on <code>ivertex</code></p>
     </tbody>
   </table>
 
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-get_edge_index"></span>
+      <h3>
+          procedure, public ::
+  <strong>get_edge_index</strong>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure function <a href='../proc/get_edge_index.html'>get_edge_index</a>(me, ivertex, iedge) result(edge_index)  
+</h3>
+    
+
+  <p>Returns the index in the edge array of the vertex.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+<p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iedge</strong></td>
+            <td>
+<p>edge vertex number</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=ip)</small>
+    </h4>
+    <p>the index of the <code>iedge</code> vertex in
+the edge array (0 if not found)</p>
 
         </li>
     </ul>
@@ -1937,21 +2343,26 @@ saving as a diagraph.</p>
 
 <span class="k">        procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_vertex</span><span class="w"> </span><span class="c">!! not very useful for now, since</span>
 <span class="w">                                                     </span><span class="c">!! all vertex attributes are private</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">number_of_vertices</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_number_of_vertices</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_vertices</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_vertices</span>
-<span class="w">        </span><span class="k">generic</span><span class="p">,</span><span class="k">public</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">set_edges</span><span class="w">          </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_edges_no_atts</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
-<span class="w">                                                  </span><span class="n">dag_set_edges_vector_atts</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">add_edge</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_add_edge</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remove_edge</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_remove_edge</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remove_vertex</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_remove_node</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_vertex_info</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_vertex_info</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">toposort</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_toposort</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">generate_digraph</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_generate_digraph</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">number_of_vertices</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_number_of_vertices</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_edge_metadata</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_edge_metadata</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_vertex_metadata</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_vertex_metadata</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_edges</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_edges</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_dependencies</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_dependencies</span>
+
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_vertices</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_vertices</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_vertex_info</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_vertex_info</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">add_edge</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_add_edge</span>
+<span class="w">        </span><span class="k">generic</span><span class="p">,</span><span class="k">public</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">set_edges</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_set_edges_no_atts</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">                                                   </span><span class="n">dag_set_edges_vector_atts</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remove_edge</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_remove_edge</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remove_vertex</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_remove_node</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">toposort</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_toposort</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">traverse</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_traverse</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">generate_digraph</span><span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_generate_digraph</span>
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">generate_dependency_matrix</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_generate_dependency_matrix</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">save_digraph</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_save_digraph</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_edges</span><span class="w">          </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_edges</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_dependencies</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_get_dependencies</span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">destroy</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_destroy</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">save_digraph</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_save_digraph</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">destroy</span><span class="w">             </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dag_destroy</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_edge_index</span>
 
 <span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">init_internal_vars</span><span class="w"> </span><span class="c">!! private routine to initialize some internal variables</span>
 <span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dag_set_edges_no_atts</span><span class="p">,</span><span class="w"> </span><span class="n">dag_set_edges_vector_atts</span>

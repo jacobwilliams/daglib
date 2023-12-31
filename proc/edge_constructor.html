@@ -44,6 +44,9 @@
                   <a class="nav-link" href="../lists/procedures.html">Procedures</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" href="../lists/types.html">Derived Types</a>
                 </li>
             </ul>
@@ -71,7 +74,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title=" 2.1% of total for procedures.">9 statements</a>
+                 title=" 2.2% of total for procedures.">11 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -136,7 +139,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private pure elemental function edge_constructor(ivertex, label, attributes) result(e)  
+    <h2>private pure elemental function edge_constructor(ivertex, label, attributes, metadata) result(e)  
 </h2>
     
 
@@ -156,7 +159,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex~9"></span>
+              <span class="anchor" id="variable-ivertex~4"></span>
               integer(kind=ip),
             </td>
 <td>intent(in),</td>
@@ -166,12 +169,12 @@
             <td>::</td>
             <td><strong>ivertex</strong></td>
             <td>
-                
+                <p>vertex number defining the destination of this edge</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-label~6"></span>
+              <span class="anchor" id="variable-label~3"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -181,12 +184,12 @@
             <td>::</td>
             <td><strong>label</strong></td>
             <td>
-                
+                <p>vertex name for grahviz</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-attributes~10"></span>
+              <span class="anchor" id="variable-attributes~3"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -196,7 +199,22 @@
             <td>::</td>
             <td><strong>attributes</strong></td>
             <td>
-                
+                <p>other attributes for graphviz</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metadata~3"></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+                <p>optional user-defined metadata</p>
             </td>
         </tr>
     </tbody>
@@ -342,15 +360,18 @@ implementation in a submodule of an interface in a parent module.
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">pure elemental function </span><span class="n">edge_constructor</span><span class="p">(</span><span class="n">ivertex</span><span class="p">,</span><span class="n">label</span><span class="p">,</span><span class="n">attributes</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">pure elemental function </span><span class="n">edge_constructor</span><span class="p">(</span><span class="n">ivertex</span><span class="p">,</span><span class="n">label</span><span class="p">,</span><span class="n">attributes</span><span class="p">,</span><span class="n">metadata</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ivertex</span>
-<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">label</span>
-<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">attributes</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ivertex</span><span class="w"> </span><span class="c">!! vertex number defining the destination of this edge</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="c">!! vertex name for grahviz</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">attributes</span><span class="w"> </span><span class="c">!! other attributes for graphviz</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">metadata</span><span class="w"> </span><span class="c">!! optional user-defined metadata</span>
+
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">e</span>
 <span class="w">    </span><span class="n">e</span><span class="p">%</span><span class="n">ivertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ivertex</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">label</span><span class="p">))</span><span class="w"> </span><span class="n">e</span><span class="p">%</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">label</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">attributes</span><span class="p">))</span><span class="w"> </span><span class="n">e</span><span class="p">%</span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">attributes</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">metadata</span><span class="p">))</span><span class="w"> </span><span class="k">allocate</span><span class="p">(</span><span class="n">e</span><span class="p">%</span><span class="n">attributes</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">attributes</span><span class="p">)</span>
 
 <span class="w">    </span><span class="k">end function </span><span class="n">edge_constructor</span>
 </pre></div>

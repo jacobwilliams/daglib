@@ -8,7 +8,7 @@
     <meta name="author" content="Jacob Williams" >
     <link rel="icon" href="../favicon.png">
 
-    <title>dag_generate_dependency_matrix &ndash; daglib</title>
+    <title>dag_get_vertex_metadata &ndash; daglib</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -62,8 +62,8 @@
 
     <div class="container">
   <div class="row">
-    <h1>dag_generate_dependency_matrix
-      <small>Subroutine</small>
+    <h1>dag_get_vertex_metadata
+      <small>Function</small>
       
     </h1>
       <div class="container p-2 mb-4 bg-light border rounded-3">
@@ -74,7 +74,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title=" 3.4% of total for procedures.">17 statements</a>
+                 title=" 1.2% of total for procedures.">6 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -88,7 +88,7 @@
           <ol class="breadcrumb justify-content-end mb-0">
                 <li class="breadcrumb-item"><a href='../sourcefile/dag_module.f90.html'>dag_module.F90</a></li>
                 <li class="breadcrumb-item"><a href='../module/dag_module.html'>dag_module</a></li>
-            <li class="breadcrumb-item active" aria-current="page">dag_generate_dependency_matrix</li>
+            <li class="breadcrumb-item active" aria-current="page">dag_get_vertex_metadata</li>
           </ol>
         </nav>
       </div>
@@ -129,7 +129,7 @@
     <div class="card card-primary">
       <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
       <div class="list-group">
-        <a class="list-group-item" href="../proc/dag_generate_dependency_matrix.html#src">dag_generate_dependency_matrix</a>
+        <a class="list-group-item" href="../proc/dag_get_vertex_metadata.html#src">dag_get_vertex_metadata</a>
       </div>
     </div>
 
@@ -139,13 +139,11 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine dag_generate_dependency_matrix(me, mat)  
+    <h2>private pure function dag_get_vertex_metadata(me, ivertex) result(m)  
 </h2>
     
 
-    <p>Generate the dependency matrix for the DAG.</p>
-<p>This is an <script type="math/tex">n \times n </script> matrix with elements <script type="math/tex">A_{ij}</script>,
-such that <script type="math/tex">A_{ij}</script> is true if vertex <script type="math/tex">i</script> depends on vertex <script type="math/tex">j</script>.</p>
+    <p>Returns the metadata for a vertex (node) in the dag.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/dag.html'>dag</a></p>
@@ -163,7 +161,7 @@ such that <script type="math/tex">A_{ij}</script> is true if vertex <script type
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~20"></span>
+              <span class="anchor" id="variable-me~7"></span>
               class(<a href='../type/dag.html'>dag</a>),
             </td>
 <td>intent(in)</td>
@@ -178,22 +176,29 @@ such that <script type="math/tex">A_{ij}</script> is true if vertex <script type
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-mat"></span>
-              logical,
+              <span class="anchor" id="variable-ivertex~6"></span>
+              integer(kind=ip),
             </td>
-<td>intent(out),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              dimension(:,:), allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>mat</strong></td>
+            <td><strong>ivertex</strong></td>
             <td>
-                <p>dependency matrix</p>
+                <p>vertex number</p>
             </td>
         </tr>
     </tbody>
   </table>
 
+      <h3>Return Value
+        <small>
+          <span class="anchor" id="variable-m"></span>
+          class(*), allocatable
+        </small>
+      </h3>
+      
     <br>
 
 
@@ -208,30 +213,16 @@ such that <script type="math/tex">A_{ij}</script> is true if vertex <script type
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">dag_generate_dependency_matrix</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">mat</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">pure function </span><span class="n">dag_get_vertex_metadata</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">ivertex</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 
 <span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">dag</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span>
-<span class="w">    </span><span class="kt">logical</span><span class="p">,</span><span class="k">dimension</span><span class="p">(:,:),</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mat</span><span class="w"> </span><span class="c">!! dependency matrix</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ivertex</span><span class="w"> </span><span class="c">!! vertex number</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">m</span>
 
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="c">!! vertex counter</span>
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="c">!! edge counter</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">ivertex</span><span class="p">)%</span><span class="n">metadata</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">        </span><span class="k">allocate</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">ivertex</span><span class="p">)%</span><span class="n">metadata</span><span class="p">)</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-
-<span class="k">        allocate</span><span class="p">(</span><span class="n">mat</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">))</span>
-<span class="w">        </span><span class="n">mat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
-
-<span class="w">        </span><span class="k">do </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">edges</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">                do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">edges</span><span class="p">)</span>
-<span class="w">                    </span><span class="n">mat</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">edges</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">ivertex</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
-<span class="w">                </span><span class="k">end do</span>
-<span class="k">            end if</span>
-<span class="k">        end do</span>
-
-<span class="k">    end if</span>
-
-<span class="k">    end subroutine </span><span class="n">dag_generate_dependency_matrix</span>
+<span class="w">    </span><span class="k">end function </span><span class="n">dag_get_vertex_metadata</span>
 </pre></div>
 
     </section>

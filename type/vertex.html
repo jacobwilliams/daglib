@@ -44,6 +44,9 @@
                   <a class="nav-link" href="../lists/procedures.html">Procedures</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" href="../lists/types.html">Derived Types</a>
                 </li>
             </ul>
@@ -71,7 +74,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title="<p>30.4% of total for derived types.</p>Including implementation: 67 statements, 18.0% of total for derived types.">14 statements</a>
+                 title="<p>28.8% of total for derived types.</p>Including implementation: 62 statements, 13.7% of total for derived types.">15 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -117,6 +120,7 @@
             <a class="list-group-item" href="../type/vertex.html#variable-marked">marked</a>
             <a class="list-group-item" href="../type/vertex.html#variable-label~2">label</a>
             <a class="list-group-item" href="../type/vertex.html#variable-attributes~2">attributes</a>
+            <a class="list-group-item" href="../type/vertex.html#variable-metadata~2">metadata</a>
         </div>
       </div>
     </div>
@@ -463,6 +467,23 @@ depends on. (edges of the graph).</p>
                 <p>used for diagraph</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metadata~2"></span>
+              class(*),
+            </td>
+              <td>private,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>user-defined metadata</p>
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -486,7 +507,7 @@ depends on. (edges of the graph).</p>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/set_edge_vector_vector.html'>set_edge_vector_vector</a>(me, edges, label, attributes)  
+    private  subroutine <a href='../proc/set_edge_vector_vector.html'>set_edge_vector_vector</a>(me, edges, label, attributes, metadata)  
 </h3>
     
 
@@ -564,6 +585,21 @@ depends on. (edges of the graph).</p>
 saving as a diagraph.</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -571,7 +607,7 @@ saving as a diagraph.</p>
         </li>
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/add_edge.html'>add_edge</a>(me, e, label, attributes)  
+    private  subroutine <a href='../proc/add_edge.html'>add_edge</a>(me, e, label, attributes, metadata)  
 </h3>
     
 
@@ -647,6 +683,21 @@ saving as a diagraph.</p>
             <td>
 <p>other attributes when
 saving as a diagraph.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
             </td>
         </tr>
     </tbody>
@@ -671,7 +722,7 @@ saving as a diagraph.</p>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/add_edge.html'>add_edge</a>(me, e, label, attributes)  
+    private  subroutine <a href='../proc/add_edge.html'>add_edge</a>(me, e, label, attributes, metadata)  
 </h3>
     
 
@@ -749,6 +800,21 @@ saving as a diagraph.</p>
 saving as a diagraph.</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -771,7 +837,7 @@ saving as a diagraph.</p>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/set_edge_vector_vector.html'>set_edge_vector_vector</a>(me, edges, label, attributes)  
+    private  subroutine <a href='../proc/set_edge_vector_vector.html'>set_edge_vector_vector</a>(me, edges, label, attributes, metadata)  
 </h3>
     
 
@@ -847,6 +913,21 @@ saving as a diagraph.</p>
             <td>
 <p>other attributes when
 saving as a diagraph.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
             </td>
         </tr>
     </tbody>
@@ -941,6 +1022,7 @@ saving as a diagraph.</p>
 <span class="w">        </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">marked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span><span class="w">    </span><span class="c">!! used for toposort</span>
 <span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">label</span><span class="w">      </span><span class="c">!! used for diagraph</span>
 <span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">attributes</span><span class="w"> </span><span class="c">!! used for diagraph</span>
+<span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">metadata</span><span class="w"> </span><span class="c">!! user-defined metadata</span>
 <span class="w">    </span><span class="k">contains</span>
 <span class="k">        private</span>
 <span class="k">        generic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_edges</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">set_edge_vector_vector</span><span class="p">,</span><span class="w"> </span><span class="n">add_edge</span>

@@ -44,6 +44,9 @@
                   <a class="nav-link" href="../lists/procedures.html">Procedures</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" href="../lists/types.html">Derived Types</a>
                 </li>
             </ul>
@@ -71,7 +74,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title="<p> 0.7% of total for procedures.</p>Including implementation: 12 statements,  2.8% of total for procedures.">3 statements</a>
+                 title="<p> 0.6% of total for procedures.</p>Including implementation: 14 statements,  2.8% of total for procedures.">3 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -266,7 +269,7 @@ implementation in a submodule of an interface in a parent module.
 
         <h2>Module Procedures</h2>
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-edge_constructor"></span><h3>private pure elemental function <a href='../proc/edge_constructor.html'>edge_constructor</a>(ivertex, label, attributes) result(e)  
+    <div class="card-header codesum"><span class="anchor" id="proc-edge_constructor"></span><h3>private pure elemental function <a href='../proc/edge_constructor.html'>edge_constructor</a>(ivertex, label, attributes, metadata) result(e)  
 </h3></div>
     <div class="card-body">
           
@@ -285,7 +288,7 @@ implementation in a submodule of an interface in a parent module.
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-ivertex~9"></span>
+              <span class="anchor" id="variable-ivertex~4"></span>
               integer(kind=ip),
             </td>
 <td>intent(in),</td>
@@ -295,12 +298,12 @@ implementation in a submodule of an interface in a parent module.
             <td>::</td>
             <td><strong>ivertex</strong></td>
             <td>
-
+<p>vertex number defining the destination of this edge</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-label~6"></span>
+              <span class="anchor" id="variable-label~3"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -310,12 +313,12 @@ implementation in a submodule of an interface in a parent module.
             <td>::</td>
             <td><strong>label</strong></td>
             <td>
-
+<p>vertex name for grahviz</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-attributes~10"></span>
+              <span class="anchor" id="variable-attributes~3"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -325,7 +328,22 @@ implementation in a submodule of an interface in a parent module.
             <td>::</td>
             <td><strong>attributes</strong></td>
             <td>
-
+<p>other attributes for graphviz</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metadata~3"></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+<p>optional user-defined metadata</p>
             </td>
         </tr>
     </tbody>
