@@ -116,7 +116,7 @@
 !>
 !  Constructor for [[edge]] type.
 
-    pure elemental function edge_constructor(ivertex,label,attributes,metadata) result(e)
+    impure elemental function edge_constructor(ivertex,label,attributes,metadata) result(e)
 
     integer(ip),intent(in),optional :: ivertex !! vertex number defining the destination of this edge
     character(len=*),intent(in),optional :: label !! vertex name for grahviz
@@ -388,11 +388,11 @@
 !>
 !  Returns the metadata for a vertex (node) in the dag.
 
-    pure function dag_get_vertex_metadata(me,ivertex) result(m)
+    function dag_get_vertex_metadata(me,ivertex) result(m)
 
     class(dag),intent(in) :: me
     integer(ip),intent(in) :: ivertex !! vertex number
-    class(*),allocatable :: m
+    class(*), allocatable :: m
 
     if (allocated(me%vertices(ivertex)%metadata)) &
         allocate(m, source = me%vertices(ivertex)%metadata)
@@ -404,7 +404,7 @@
 !>
 !  Returns the metadata for an edge in the dag.
 
-    pure function dag_get_edge_metadata(me,ivertex,iedge) result(m)
+    function dag_get_edge_metadata(me,ivertex,iedge) result(m)
 
     class(dag),intent(in) :: me
     integer(ip),intent(in) :: ivertex !! vertex number
@@ -1016,7 +1016,7 @@
 !>
 !  Swap two [[edge]] values.
 
-    pure elemental subroutine swap(i1,i2)
+    impure elemental subroutine swap(i1,i2)
 
     type(edge),intent(inout) :: i1
     type(edge),intent(inout) :: i2
