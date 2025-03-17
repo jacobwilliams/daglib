@@ -1,7 +1,8 @@
 name = "daglib"
 author = "Jacob Williams"
-copyright  = "Copyright (c) 2018-2021, Jacob Williams"
+copyright  = "Copyright (c) 2018-2025, Jacob Williams"
 license = "BSD-3"
+version = "1.2.2"
 description = "Directed Acyclic Graphs With Modern Fortran"
 homepage = "https://github.com/jacobwilliams/daglib"
 keywords = ["graph theory", "graphviz", "DAG"]
