@@ -1,0 +1,529 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Directed Acyclic Graphs With Modern Fortran">
+    <meta name="author" content="Jacob Williams" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>dag_add_edge &ndash; daglib</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">daglib </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../sourcefile/dag_module.f90.html">Source File</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>dag_add_edge
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 1.8% of total for procedures.">9 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/dag_module.F90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/dag_module.f90.html'>dag_module.F90</a></li>
+                <li class="breadcrumb-item"><a href='../module/dag_module.html'>dag_module</a></li>
+            <li class="breadcrumb-item active" aria-current="page">dag_add_edge</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/dag_add_edge.html#src">dag_add_edge</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2>private  subroutine dag_add_edge(me, ivertex, iedge, label, attributes, metadata)  
+</h2>
+    
+
+    <p>Add an edge to a dag.</p>
+
+    <h3>Type Bound</h3>
+    <p><a href='../type/dag.html'>dag</a></p>
+
+    <h3>Arguments</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~15"></span>
+              class(<a href='../type/dag.html'>dag</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ivertex~12"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivertex</strong></td>
+            <td>
+                <p>vertex number</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-iedge~4"></span>
+              integer(kind=ip),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iedge</strong></td>
+            <td>
+                <p>the vertex to connect to <code>ivertex</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-label~7"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>label</strong></td>
+            <td>
+                <p>edge label</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-attributes~8"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>attributes</strong></td>
+            <td>
+                <p>other attributes when
+saving as a diagraph.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-metadata~8"></span>
+              class(*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>metadata</strong></td>
+            <td>
+                <p>optional user-defined metadata</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <br>
+    <div class="card">
+      <div class="card-header">
+  <h3 class="card-title">Calls</h3>
+      </div>
+      <div class="card-body">
+  <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: proc~~dag_add_edge~~CallsGraph Pages: 1 -->
+<svg id="procdag_add_edgeCallsGraph" width="641pt" height="67pt"
+ viewBox="0.00 0.00 641.00 66.81" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~dag_add_edge~~CallsGraph" class="graph" transform="scale(0.9 0.9) rotate(0) translate(4 70)">
+<title>proc~~dag_add_edge~~CallsGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-70 706,-70 706,4 -4,4"/>
+<!-- proc~dag_add_edge -->
+<g id="proc~~dag_add_edge~~CallsGraph_node1" class="node">
+<title>proc~dag_add_edge</title>
+<polygon fill="none" stroke="black" points="121,-45 0,-45 0,-21 121,-21 121,-45"/>
+<text text-anchor="middle" x="60.5" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50">dag%dag_add_edge</text>
+</g>
+<!-- none~set_edges -->
+<g id="proc~~dag_add_edge~~CallsGraph_node2" class="node">
+<title>none~set_edges</title>
+<g id="a_proc~~dag_add_edge~~CallsGraph_node2"><a xlink:href="../type/vertex.html#boundprocedure-set_edges" xlink:title="vertex%set_edges">
+<polygon fill="#a7506f" stroke="#a7506f" points="266,-45 157,-45 157,-21 266,-21 266,-45"/>
+<text text-anchor="middle" x="211.5" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vertex%set_edges</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_add_edge&#45;&gt;none~set_edges -->
+<g id="proc~~dag_add_edge~~CallsGraph_edge1" class="edge">
+<title>proc~dag_add_edge&#45;&gt;none~set_edges</title>
+<path fill="none" stroke="#000000" d="M121.25,-33C129.53,-33 138.08,-33 146.44,-33"/>
+<polygon fill="#000000" stroke="#000000" points="146.52,-36.5 156.52,-33 146.52,-29.5 146.52,-36.5"/>
+</g>
+<!-- proc~add_edge -->
+<g id="proc~~dag_add_edge~~CallsGraph_node3" class="node">
+<title>proc~add_edge</title>
+<g id="a_proc~~dag_add_edge~~CallsGraph_node3"><a xlink:href="../proc/add_edge.html" xlink:title="vertex%add_edge">
+<polygon fill="#d9534f" stroke="#d9534f" points="446.5,-66 338.5,-66 338.5,-42 446.5,-42 446.5,-66"/>
+<text text-anchor="middle" x="392.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vertex%add_edge</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges&#45;&gt;proc~add_edge -->
+<g id="proc~~dag_add_edge~~CallsGraph_edge2" class="edge">
+<title>none~set_edges&#45;&gt;proc~add_edge</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M266.21,-39.3C285.76,-41.6 308.05,-44.21 328.35,-46.59"/>
+<polygon fill="#000000" stroke="#000000" points="328.11,-50.09 338.45,-47.78 328.92,-43.13 328.11,-50.09"/>
+</g>
+<!-- proc~set_edge_vector_vector -->
+<g id="proc~~dag_add_edge~~CallsGraph_node4" class="node">
+<title>proc~set_edge_vector_vector</title>
+<g id="a_proc~~dag_add_edge~~CallsGraph_node4"><a xlink:href="../proc/set_edge_vector_vector.html" xlink:title="vertex%set_edge_vector_vector">
+<polygon fill="#d9534f" stroke="#d9534f" points="483,-24 302,-24 302,0 483,0 483,-24"/>
+<text text-anchor="middle" x="392.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vertex%set_edge_vector_vector</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges&#45;&gt;proc~set_edge_vector_vector -->
+<g id="proc~~dag_add_edge~~CallsGraph_edge3" class="edge">
+<title>none~set_edges&#45;&gt;proc~set_edge_vector_vector</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M266.21,-26.7C274.36,-25.74 282.99,-24.73 291.75,-23.7"/>
+<polygon fill="#000000" stroke="#000000" points="292.16,-27.18 301.69,-22.54 291.35,-20.23 292.16,-27.18"/>
+</g>
+<!-- proc~sort_ascending -->
+<g id="proc~~dag_add_edge~~CallsGraph_node5" class="node">
+<title>proc~sort_ascending</title>
+<g id="a_proc~~dag_add_edge~~CallsGraph_node5"><a xlink:href="../proc/sort_ascending.html" xlink:title="sort_ascending">
+<polygon fill="#d9534f" stroke="#d9534f" points="612,-45 519,-45 519,-21 612,-21 612,-45"/>
+<text text-anchor="middle" x="565.5" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sort_ascending</text>
+</a>
+</g>
+</g>
+<!-- proc~add_edge&#45;&gt;proc~sort_ascending -->
+<g id="proc~~dag_add_edge~~CallsGraph_edge4" class="edge">
+<title>proc~add_edge&#45;&gt;proc~sort_ascending</title>
+<path fill="none" stroke="#000000" d="M446.67,-47.47C466.37,-45.05 488.76,-42.3 508.69,-39.85"/>
+<polygon fill="#000000" stroke="#000000" points="509.37,-43.3 518.86,-38.6 508.51,-36.35 509.37,-43.3"/>
+</g>
+<!-- proc~set_edge_vector_vector&#45;&gt;proc~sort_ascending -->
+<g id="proc~~dag_add_edge~~CallsGraph_edge5" class="edge">
+<title>proc~set_edge_vector_vector&#45;&gt;proc~sort_ascending</title>
+<path fill="none" stroke="#000000" d="M483.01,-22.99C491.85,-24.08 500.64,-25.16 509,-26.18"/>
+<polygon fill="#000000" stroke="#000000" points="508.59,-29.66 518.94,-27.41 509.44,-22.71 508.59,-29.66"/>
+</g>
+<!-- proc~swap -->
+<g id="proc~~dag_add_edge~~CallsGraph_node6" class="node">
+<title>proc~swap</title>
+<g id="a_proc~~dag_add_edge~~CallsGraph_node6"><a xlink:href="../proc/swap.html" xlink:title="swap">
+<polygon fill="#d9534f" stroke="#d9534f" points="702,-45 648,-45 648,-21 702,-21 702,-45"/>
+<text text-anchor="middle" x="675" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">swap</text>
+</a>
+</g>
+</g>
+<!-- proc~sort_ascending&#45;&gt;proc~swap -->
+<g id="proc~~dag_add_edge~~CallsGraph_edge6" class="edge">
+<title>proc~sort_ascending&#45;&gt;proc~swap</title>
+<path fill="none" stroke="#000000" d="M612.09,-33C620.7,-33 629.6,-33 637.87,-33"/>
+<polygon fill="#000000" stroke="#000000" points="637.94,-36.5 647.94,-33 637.94,-29.5 637.94,-36.5"/>
+</g>
+</g>
+</svg>
+</div>                <script>
+                  var panprocdag_add_edgeCallsGraph = svgPanZoom('#procdag_add_edgeCallsGraph',
+                    {zoomEnabled: true, controlIconsEnabled: true, fit: true, center: true,}
+                  );
+                </script>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#CallsGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="CallsGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="641pt" height="28pt"
+ viewBox="0.00 0.00 641.00 27.51" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(0.86 0.86) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 741.5,-28 741.5,4 -4,4"/>
+<!-- Subroutine -->
+<g id="node1" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="70,-24 0,-24 0,0 70,0 70,-24"/>
+<text text-anchor="middle" x="35" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node2" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="146,-24 88,-24 88,0 146,0 146,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Interface -->
+<g id="node3" class="node">
+<title>Interface</title>
+<polygon fill="#a7506f" stroke="#a7506f" points="225.5,-24 164.5,-24 164.5,0 225.5,0 225.5,-24"/>
+<text text-anchor="middle" x="195" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Interface</text>
+</g>
+<!-- Type Bound Procedure -->
+<g id="node4" class="node">
+<title>Type Bound Procedure</title>
+<polygon fill="#a7506f" stroke="#a7506f" points="374,-24 244,-24 244,0 374,0 374,-24"/>
+<text text-anchor="middle" x="309" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Type Bound Procedure</text>
+</g>
+<!-- Unknown Procedure Type -->
+<g id="node5" class="node">
+<title>Unknown Procedure Type</title>
+<polygon fill="#777777" stroke="#777777" points="537.5,-24 392.5,-24 392.5,0 537.5,0 537.5,-24"/>
+<text text-anchor="middle" x="465" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Unknown Procedure Type</text>
+</g>
+<!-- Program -->
+<g id="node6" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="614,-24 556,-24 556,0 614,0 614,-24"/>
+<text text-anchor="middle" x="585" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node7" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="737.5,-24 632.5,-24 632.5,0 737.5,0 737.5,-24"/>
+<text text-anchor="middle" x="685" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a procedure to one which it calls. Dashed 
+arrows point from an interface to procedures which implement that interface.
+This could include the module procedures in a generic interface or the
+implementation in a submodule of an interface in a parent module.
+</p>
+ </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+
+
+    
+    
+
+    
+    
+
+
+
+    
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">dag_add_edge</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">ivertex</span><span class="p">,</span><span class="n">iedge</span><span class="p">,</span><span class="n">label</span><span class="p">,</span><span class="n">attributes</span><span class="p">,</span><span class="n">metadata</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">dag</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">ivertex</span><span class="w"> </span><span class="c">!! vertex number</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">iedge</span><span class="w">   </span><span class="c">!! the vertex to connect to `ivertex`</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="c">!! edge label</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">attributes</span><span class="w"> </span><span class="c">!! other attributes when</span>
+<span class="w">                                                       </span><span class="c">!! saving as a diagraph.</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">metadata</span><span class="w"> </span><span class="c">!! optional user-defined metadata</span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">vertices</span><span class="p">(</span><span class="n">ivertex</span><span class="p">)%</span><span class="n">set_edges</span><span class="p">(</span><span class="n">iedge</span><span class="p">,&amp;</span>
+<span class="w">                        </span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,&amp;</span>
+<span class="w">                        </span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,&amp;</span>
+<span class="w">                        </span><span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">end subroutine </span><span class="n">dag_add_edge</span>
+</pre></div>
+
+    </section>
+    <br>
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              daglib
+ was developed by Jacob Williams<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>

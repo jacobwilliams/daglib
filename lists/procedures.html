@@ -1,0 +1,813 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Directed Acyclic Graphs With Modern Fortran">
+    <meta name="author" content="Jacob Williams" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>All Procedures &ndash; daglib
+</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">daglib </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../sourcefile/dag_module.f90.html">Source File</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12" id='text'>
+			 <h1>Procedures</h1>
+			 <table class="table table-striped">
+			 <thead><tr><th>Procedure</th><th>Location</th><th>Procedure Type</th><th>Description</th></tr></thead>
+			 <tbody>
+			   <tr>
+                 <td><a href='../proc/add_edge.html'>add_edge</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>add an edge index for this vertex</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_add_edge.html'>dag_add_edge</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Add an edge to a dag.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_destroy.html'>dag_destroy</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Destroy the <code>dag</code>.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_generate_dependency_matrix.html'>dag_generate_dependency_matrix</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Generate the dependency matrix for the DAG.</p><a href="../proc/dag_generate_dependency_matrix.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_generate_digraph.html'>dag_generate_digraph</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Generate a Graphviz digraph structure for the DAG.</p><a href="../proc/dag_generate_digraph.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_get_dependencies.html'>dag_get_dependencies</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>get all the vertices that depend on this vertex.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_get_edge_metadata.html'>dag_get_edge_metadata</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Returns the metadata for an edge in the dag.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_get_edges.html'>dag_get_edges</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>get the edges for the vertex (all of the vertices
+that this vertex depends on).</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_get_number_of_vertices.html'>dag_get_number_of_vertices</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Returns the number of vertices (nodes) in the dag.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_get_vertex.html'>dag_get_vertex</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Get the <code>i</code>th vertex.</p><a href="../proc/dag_get_vertex.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_get_vertex_metadata.html'>dag_get_vertex_metadata</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Returns the metadata for a vertex (node) in the dag.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_remove_edge.html'>dag_remove_edge</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Remove an edge from a dag.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_remove_node.html'>dag_remove_node</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Remove a node from a dag. Will also remove any edges connected to it.</p><a href="../proc/dag_remove_node.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_save_digraph.html'>dag_save_digraph</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Generate a Graphviz digraph structure for the DAG and write it to a file.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_set_edges_no_atts.html'>dag_set_edges_no_atts</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>set the edges for a vertex in a dag</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_set_edges_vector_atts.html'>dag_set_edges_vector_atts</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>set the edges for a vertex in a dag</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_set_vertex_info.html'>dag_set_vertex_info</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>set info about a vertex in a dag.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_set_vertices.html'>dag_set_vertices</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>set the number of vertices (nodes) in the dag.</p><a href="../proc/dag_set_vertices.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_toposort.html'>dag_toposort</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Main toposort routine</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dag_traverse.html'>dag_traverse</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>depth-first graph traversal of the dag.</p><a href="../proc/dag_traverse.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/edge.html'>edge</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Interface</td>
+                 <td><p>constructor for an <a href="../type/edge.html">edge</a> type.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/edge_constructor.html'>edge_constructor</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Constructor for <a href="../type/edge.html">edge</a> type.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_edge_index.html'>get_edge_index</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Returns the index in the edge array of the vertex.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/init_internal_vars.html'>init_internal_vars</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Initialize the internal private variables used for graph traversal.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/integer_to_string.html'>integer_to_string</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Integer to allocatable string.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/remove_edge.html'>remove_edge</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>remove an edge index from this vertex</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/set_edge_vector_vector.html'>set_edge_vector_vector</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>specify the edge indices for this vertex</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/sort_ascending.html'>sort_ascending</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Sorts an <a href="../type/edge.html">edge</a> array <code>ivec</code> in increasing order by vertex number.
+Uses a basic recursive quicksort
+(with insertion sort for partitions with <script type="math/tex">\le</script> 20 elements).</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/swap.html'>swap</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Swap two <a href="../type/edge.html">edge</a> values.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/unique.html'>unique</a></td>
+                 <td><a href='../module/dag_module.html'>dag_module</a></td>
+                 <td>Function</td>
+                 <td><p>Return only the unique values from <code>vec</code>.
+The result is also sorted by ascending value.</p></td>
+               </tr>
+			 </tbody></table>
+             <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: call~~graph~~CallGraph Pages: 1 -->
+<svg id="callgraphCallGraph" width="855pt" height="509pt"
+ viewBox="0.00 0.00 855.00 508.87" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="call~~graph~~CallGraph" class="graph" transform="scale(0.79 0.79) rotate(0) translate(4 637)">
+<title>call~~graph~~CallGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-637 1073,-637 1073,4 -4,4"/>
+<!-- interface~edge -->
+<g id="call~~graph~~CallGraph_node1" class="node">
+<title>interface~edge</title>
+<g id="a_call~~graph~~CallGraph_node1"><a xlink:href="../interface/edge.html" xlink:title="edge">
+<polygon fill="#a7506f" stroke="#a7506f" points="141,-24 87,-24 87,0 141,0 141,-24"/>
+<text text-anchor="middle" x="114" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">edge</text>
+</a>
+</g>
+</g>
+<!-- proc~edge_constructor -->
+<g id="call~~graph~~CallGraph_node24" class="node">
+<title>proc~edge_constructor</title>
+<g id="a_call~~graph~~CallGraph_node24"><a xlink:href="../proc/edge_constructor.html" xlink:title="edge_constructor">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="409.5,-24 303.5,-24 303.5,0 409.5,0 409.5,-24"/>
+<text text-anchor="middle" x="356.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">edge_constructor</text>
+</a>
+</g>
+</g>
+<!-- interface~edge&#45;&gt;proc~edge_constructor -->
+<g id="call~~graph~~CallGraph_edge1" class="edge">
+<title>interface~edge&#45;&gt;proc~edge_constructor</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M141.2,-12C177.34,-12 243.62,-12 292.94,-12"/>
+<polygon fill="#000000" stroke="#000000" points="293.19,-15.5 303.19,-12 293.19,-8.5 293.19,-15.5"/>
+</g>
+<!-- none~set_edges -->
+<g id="call~~graph~~CallGraph_node2" class="node">
+<title>none~set_edges</title>
+<g id="a_call~~graph~~CallGraph_node2"><a xlink:href="../type/vertex.html#boundprocedure-set_edges" xlink:title="vertex%set_edges">
+<polygon fill="#a7506f" stroke="#a7506f" points="613.5,-108 504.5,-108 504.5,-84 613.5,-84 613.5,-108"/>
+<text text-anchor="middle" x="559" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vertex%set_edges</text>
+</a>
+</g>
+</g>
+<!-- proc~add_edge -->
+<g id="call~~graph~~CallGraph_node4" class="node">
+<title>proc~add_edge</title>
+<g id="a_call~~graph~~CallGraph_node4"><a xlink:href="../proc/add_edge.html" xlink:title="vertex%add_edge">
+<polygon fill="#d9534f" stroke="#d9534f" points="813.5,-129 705.5,-129 705.5,-105 813.5,-105 813.5,-129"/>
+<text text-anchor="middle" x="759.5" y="-114.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vertex%add_edge</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges&#45;&gt;proc~add_edge -->
+<g id="call~~graph~~CallGraph_edge2" class="edge">
+<title>none~set_edges&#45;&gt;proc~add_edge</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M613.72,-101.68C638.85,-104.34 668.97,-107.53 695.21,-110.3"/>
+<polygon fill="#000000" stroke="#000000" points="695.12,-113.81 705.43,-111.39 695.85,-106.85 695.12,-113.81"/>
+</g>
+<!-- proc~set_edge_vector_vector -->
+<g id="call~~graph~~CallGraph_node29" class="node">
+<title>proc~set_edge_vector_vector</title>
+<g id="a_call~~graph~~CallGraph_node29"><a xlink:href="../proc/set_edge_vector_vector.html" xlink:title="vertex%set_edge_vector_vector">
+<polygon fill="#d9534f" stroke="#d9534f" points="850,-87 669,-87 669,-63 850,-63 850,-87"/>
+<text text-anchor="middle" x="759.5" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vertex%set_edge_vector_vector</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges&#45;&gt;proc~set_edge_vector_vector -->
+<g id="call~~graph~~CallGraph_edge3" class="edge">
+<title>none~set_edges&#45;&gt;proc~set_edge_vector_vector</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M613.72,-90.32C627.66,-88.84 643.13,-87.21 658.62,-85.57"/>
+<polygon fill="#000000" stroke="#000000" points="659.21,-89.02 668.78,-84.49 658.47,-82.06 659.21,-89.02"/>
+</g>
+<!-- none~set_edges~2 -->
+<g id="call~~graph~~CallGraph_node3" class="node">
+<title>none~set_edges~2</title>
+<g id="a_call~~graph~~CallGraph_node3"><a xlink:href="../type/dag.html#boundprocedure-set_edges~2" xlink:title="dag%set_edges">
+<polygon fill="#a7506f" stroke="#a7506f" points="162,-69 66,-69 66,-45 162,-45 162,-69"/>
+<text text-anchor="middle" x="114" y="-54.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%set_edges</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_set_edges_no_atts -->
+<g id="call~~graph~~CallGraph_node18" class="node">
+<title>proc~dag_set_edges_no_atts</title>
+<g id="a_call~~graph~~CallGraph_node18"><a xlink:href="../proc/dag_set_edges_no_atts.html" xlink:title="dag%dag_set_edges_no_atts">
+<polygon fill="#d9534f" stroke="#d9534f" points="439,-108 274,-108 274,-84 439,-84 439,-108"/>
+<text text-anchor="middle" x="356.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_set_edges_no_atts</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges~2&#45;&gt;proc~dag_set_edges_no_atts -->
+<g id="call~~graph~~CallGraph_edge4" class="edge">
+<title>none~set_edges~2&#45;&gt;proc~dag_set_edges_no_atts</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M162.23,-64.66C193.24,-69.69 234.68,-76.41 271.23,-82.33"/>
+<polygon fill="#000000" stroke="#000000" points="270.96,-85.84 281.4,-83.98 272.08,-78.93 270.96,-85.84"/>
+</g>
+<!-- proc~dag_set_edges_vector_atts -->
+<g id="call~~graph~~CallGraph_node19" class="node">
+<title>proc~dag_set_edges_vector_atts</title>
+<g id="a_call~~graph~~CallGraph_node19"><a xlink:href="../proc/dag_set_edges_vector_atts.html" xlink:title="dag%dag_set_edges_vector_atts">
+<polygon fill="#d9534f" stroke="#d9534f" points="449,-66 264,-66 264,-42 449,-42 449,-66"/>
+<text text-anchor="middle" x="356.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_set_edges_vector_atts</text>
+</a>
+</g>
+</g>
+<!-- none~set_edges~2&#45;&gt;proc~dag_set_edges_vector_atts -->
+<g id="call~~graph~~CallGraph_edge5" class="edge">
+<title>none~set_edges~2&#45;&gt;proc~dag_set_edges_vector_atts</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M162.23,-56.41C188.27,-56.09 221.67,-55.67 253.36,-55.27"/>
+<polygon fill="#000000" stroke="#000000" points="253.62,-58.77 263.57,-55.15 253.53,-51.77 253.62,-58.77"/>
+</g>
+<!-- proc~sort_ascending -->
+<g id="call~~graph~~CallGraph_node30" class="node">
+<title>proc~sort_ascending</title>
+<g id="a_call~~graph~~CallGraph_node30"><a xlink:href="../proc/sort_ascending.html" xlink:title="sort_ascending">
+<polygon fill="#d9534f" stroke="#d9534f" points="979,-129 886,-129 886,-105 979,-105 979,-129"/>
+<text text-anchor="middle" x="932.5" y="-114.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sort_ascending</text>
+</a>
+</g>
+</g>
+<!-- proc~add_edge&#45;&gt;proc~sort_ascending -->
+<g id="call~~graph~~CallGraph_edge6" class="edge">
+<title>proc~add_edge&#45;&gt;proc~sort_ascending</title>
+<path fill="none" stroke="#000000" d="M813.67,-117C833.37,-117 855.76,-117 875.69,-117"/>
+<polygon fill="#000000" stroke="#000000" points="875.86,-120.5 885.86,-117 875.86,-113.5 875.86,-120.5"/>
+</g>
+<!-- proc~dag_add_edge -->
+<g id="call~~graph~~CallGraph_node5" class="node">
+<title>proc~dag_add_edge</title>
+<g id="a_call~~graph~~CallGraph_node5"><a xlink:href="../proc/dag_add_edge.html" xlink:title="dag%dag_add_edge">
+<polygon fill="#d9534f" stroke="#d9534f" points="417,-150 296,-150 296,-126 417,-126 417,-150"/>
+<text text-anchor="middle" x="356.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_add_edge</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_add_edge&#45;&gt;none~set_edges -->
+<g id="call~~graph~~CallGraph_edge7" class="edge">
+<title>proc~dag_add_edge&#45;&gt;none~set_edges</title>
+<path fill="none" stroke="#000000" d="M414.96,-125.96C439.78,-120.76 468.91,-114.66 494.39,-109.33"/>
+<polygon fill="#000000" stroke="#000000" points="495.25,-112.72 504.32,-107.24 493.81,-105.87 495.25,-112.72"/>
+</g>
+<!-- proc~dag_destroy -->
+<g id="call~~graph~~CallGraph_node6" class="node">
+<title>proc~dag_destroy</title>
+<g id="a_call~~graph~~CallGraph_node6"><a xlink:href="../proc/dag_destroy.html" xlink:title="dag%dag_destroy">
+<polygon fill="#d9534f" stroke="#d9534f" points="167.5,-121 60.5,-121 60.5,-97 167.5,-97 167.5,-121"/>
+<text text-anchor="middle" x="114" y="-106.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_destroy</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_generate_dependency_matrix -->
+<g id="call~~graph~~CallGraph_node7" class="node">
+<title>proc~dag_generate_dependency_matrix</title>
+<g id="a_call~~graph~~CallGraph_node7"><a xlink:href="../proc/dag_generate_dependency_matrix.html" xlink:title="dag%dag_generate_dependency_matrix">
+<polygon fill="#d9534f" stroke="#d9534f" points="228,-168 0,-168 0,-144 228,-144 228,-168"/>
+<text text-anchor="middle" x="114" y="-153.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_generate_dependency_matrix</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_generate_digraph -->
+<g id="call~~graph~~CallGraph_node8" class="node">
+<title>proc~dag_generate_digraph</title>
+<g id="a_call~~graph~~CallGraph_node8"><a xlink:href="../proc/dag_generate_digraph.html" xlink:title="dag%dag_generate_digraph">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="438,-213 275,-213 275,-189 438,-189 438,-213"/>
+<text text-anchor="middle" x="356.5" y="-198.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_generate_digraph</text>
+</a>
+</g>
+</g>
+<!-- proc~integer_to_string -->
+<g id="call~~graph~~CallGraph_node27" class="node">
+<title>proc~integer_to_string</title>
+<g id="a_call~~graph~~CallGraph_node27"><a xlink:href="../proc/integer_to_string.html" xlink:title="integer_to_string">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="610,-213 508,-213 508,-189 610,-189 610,-213"/>
+<text text-anchor="middle" x="559" y="-198.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">integer_to_string</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_generate_digraph&#45;&gt;proc~integer_to_string -->
+<g id="call~~graph~~CallGraph_edge8" class="edge">
+<title>proc~dag_generate_digraph&#45;&gt;proc~integer_to_string</title>
+<path fill="none" stroke="#000000" d="M438.18,-201C458.02,-201 478.91,-201 497.6,-201"/>
+<polygon fill="#000000" stroke="#000000" points="497.73,-204.5 507.73,-201 497.73,-197.5 497.73,-204.5"/>
+</g>
+<!-- proc~dag_get_dependencies -->
+<g id="call~~graph~~CallGraph_node9" class="node">
+<title>proc~dag_get_dependencies</title>
+<g id="a_call~~graph~~CallGraph_node9"><a xlink:href="../proc/dag_get_dependencies.html" xlink:title="dag%dag_get_dependencies">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="197,-255 31,-255 31,-231 197,-231 197,-255"/>
+<text text-anchor="middle" x="114" y="-240.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_get_dependencies</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_get_edge_metadata -->
+<g id="call~~graph~~CallGraph_node10" class="node">
+<title>proc~dag_get_edge_metadata</title>
+<g id="a_call~~graph~~CallGraph_node10"><a xlink:href="../proc/dag_get_edge_metadata.html" xlink:title="dag%dag_get_edge_metadata">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="201.5,-297 26.5,-297 26.5,-273 201.5,-273 201.5,-297"/>
+<text text-anchor="middle" x="114" y="-282.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_get_edge_metadata</text>
+</a>
+</g>
+</g>
+<!-- proc~get_edge_index -->
+<g id="call~~graph~~CallGraph_node25" class="node">
+<title>proc~get_edge_index</title>
+<g id="a_call~~graph~~CallGraph_node25"><a xlink:href="../proc/get_edge_index.html" xlink:title="dag%get_edge_index">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="419.5,-297 293.5,-297 293.5,-273 419.5,-273 419.5,-297"/>
+<text text-anchor="middle" x="356.5" y="-282.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%get_edge_index</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_get_edge_metadata&#45;&gt;proc~get_edge_index -->
+<g id="call~~graph~~CallGraph_edge9" class="edge">
+<title>proc~dag_get_edge_metadata&#45;&gt;proc~get_edge_index</title>
+<path fill="none" stroke="#000000" d="M201.83,-285C228.55,-285 257.67,-285 283.3,-285"/>
+<polygon fill="#000000" stroke="#000000" points="283.31,-288.5 293.31,-285 283.31,-281.5 283.31,-288.5"/>
+</g>
+<!-- proc~dag_get_edges -->
+<g id="call~~graph~~CallGraph_node11" class="node">
+<title>proc~dag_get_edges</title>
+<g id="a_call~~graph~~CallGraph_node11"><a xlink:href="../proc/dag_get_edges.html" xlink:title="dag%dag_get_edges">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="175.5,-339 52.5,-339 52.5,-315 175.5,-315 175.5,-339"/>
+<text text-anchor="middle" x="114" y="-324.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_get_edges</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_get_number_of_vertices -->
+<g id="call~~graph~~CallGraph_node12" class="node">
+<title>proc~dag_get_number_of_vertices</title>
+<g id="a_call~~graph~~CallGraph_node12"><a xlink:href="../proc/dag_get_number_of_vertices.html" xlink:title="dag%dag_get_number_of_vertices">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="212,-381 16,-381 16,-357 212,-357 212,-381"/>
+<text text-anchor="middle" x="114" y="-366.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_get_number_of_vertices</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_get_vertex -->
+<g id="call~~graph~~CallGraph_node13" class="node">
+<title>proc~dag_get_vertex</title>
+<g id="a_call~~graph~~CallGraph_node13"><a xlink:href="../proc/dag_get_vertex.html" xlink:title="dag%dag_get_vertex">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="176,-423 52,-423 52,-399 176,-399 176,-423"/>
+<text text-anchor="middle" x="114" y="-408.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_get_vertex</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_get_vertex_metadata -->
+<g id="call~~graph~~CallGraph_node14" class="node">
+<title>proc~dag_get_vertex_metadata</title>
+<g id="a_call~~graph~~CallGraph_node14"><a xlink:href="../proc/dag_get_vertex_metadata.html" xlink:title="dag%dag_get_vertex_metadata">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="204.5,-465 23.5,-465 23.5,-441 204.5,-441 204.5,-465"/>
+<text text-anchor="middle" x="114" y="-450.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_get_vertex_metadata</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_remove_edge -->
+<g id="call~~graph~~CallGraph_node15" class="node">
+<title>proc~dag_remove_edge</title>
+<g id="a_call~~graph~~CallGraph_node15"><a xlink:href="../proc/dag_remove_edge.html" xlink:title="dag%dag_remove_edge">
+<polygon fill="#d9534f" stroke="#d9534f" points="184.5,-549 43.5,-549 43.5,-525 184.5,-525 184.5,-549"/>
+<text text-anchor="middle" x="114" y="-534.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_remove_edge</text>
+</a>
+</g>
+</g>
+<!-- proc~remove_edge -->
+<g id="call~~graph~~CallGraph_node28" class="node">
+<title>proc~remove_edge</title>
+<g id="a_call~~graph~~CallGraph_node28"><a xlink:href="../proc/remove_edge.html" xlink:title="vertex%remove_edge">
+<polygon fill="#d9534f" stroke="#d9534f" points="420.5,-528 292.5,-528 292.5,-504 420.5,-504 420.5,-528"/>
+<text text-anchor="middle" x="356.5" y="-513.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vertex%remove_edge</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_remove_edge&#45;&gt;proc~remove_edge -->
+<g id="call~~graph~~CallGraph_edge10" class="edge">
+<title>proc~dag_remove_edge&#45;&gt;proc~remove_edge</title>
+<path fill="none" stroke="#000000" d="M184.56,-530.93C215.1,-528.26 250.97,-525.13 281.95,-522.42"/>
+<polygon fill="#000000" stroke="#000000" points="282.6,-525.88 292.25,-521.52 281.99,-518.91 282.6,-525.88"/>
+</g>
+<!-- proc~dag_remove_node -->
+<g id="call~~graph~~CallGraph_node16" class="node">
+<title>proc~dag_remove_node</title>
+<g id="a_call~~graph~~CallGraph_node16"><a xlink:href="../proc/dag_remove_node.html" xlink:title="dag%dag_remove_node">
+<polygon fill="#d9534f" stroke="#d9534f" points="184.5,-507 43.5,-507 43.5,-483 184.5,-483 184.5,-507"/>
+<text text-anchor="middle" x="114" y="-492.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_remove_node</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_remove_node&#45;&gt;proc~remove_edge -->
+<g id="call~~graph~~CallGraph_edge11" class="edge">
+<title>proc~dag_remove_node&#45;&gt;proc~remove_edge</title>
+<path fill="none" stroke="#000000" d="M184.56,-501.07C215.1,-503.74 250.97,-506.87 281.95,-509.58"/>
+<polygon fill="#000000" stroke="#000000" points="281.99,-513.09 292.25,-510.48 282.6,-506.12 281.99,-513.09"/>
+</g>
+<!-- proc~dag_save_digraph -->
+<g id="call~~graph~~CallGraph_node17" class="node">
+<title>proc~dag_save_digraph</title>
+<g id="a_call~~graph~~CallGraph_node17"><a xlink:href="../proc/dag_save_digraph.html" xlink:title="dag%dag_save_digraph">
+<polygon fill="#d9534f" stroke="#d9534f" points="183.5,-213 44.5,-213 44.5,-189 183.5,-189 183.5,-213"/>
+<text text-anchor="middle" x="114" y="-198.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_save_digraph</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_save_digraph&#45;&gt;proc~dag_generate_digraph -->
+<g id="call~~graph~~CallGraph_edge12" class="edge">
+<title>proc~dag_save_digraph&#45;&gt;proc~dag_generate_digraph</title>
+<path fill="none" stroke="#000000" d="M183.6,-201C208.83,-201 237.82,-201 264.71,-201"/>
+<polygon fill="#000000" stroke="#000000" points="264.9,-204.5 274.9,-201 264.9,-197.5 264.9,-204.5"/>
+</g>
+<!-- proc~dag_set_edges_no_atts&#45;&gt;none~set_edges -->
+<g id="call~~graph~~CallGraph_edge13" class="edge">
+<title>proc~dag_set_edges_no_atts&#45;&gt;none~set_edges</title>
+<path fill="none" stroke="#000000" d="M439.05,-96C457.45,-96 476.72,-96 494.26,-96"/>
+<polygon fill="#000000" stroke="#000000" points="494.37,-99.5 504.37,-96 494.37,-92.5 494.37,-99.5"/>
+</g>
+<!-- proc~dag_set_edges_vector_atts&#45;&gt;none~set_edges -->
+<g id="call~~graph~~CallGraph_edge14" class="edge">
+<title>proc~dag_set_edges_vector_atts&#45;&gt;none~set_edges</title>
+<path fill="none" stroke="#000000" d="M414.96,-66.04C439.78,-71.24 468.91,-77.34 494.39,-82.67"/>
+<polygon fill="#000000" stroke="#000000" points="493.81,-86.13 504.32,-84.76 495.25,-79.28 493.81,-86.13"/>
+</g>
+<!-- proc~dag_set_vertex_info -->
+<g id="call~~graph~~CallGraph_node20" class="node">
+<title>proc~dag_set_vertex_info</title>
+<g id="a_call~~graph~~CallGraph_node20"><a xlink:href="../proc/dag_set_vertex_info.html" xlink:title="dag%dag_set_vertex_info">
+<polygon fill="#d9534f" stroke="#d9534f" points="633,-255 485,-255 485,-231 633,-231 633,-255"/>
+<text text-anchor="middle" x="559" y="-240.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_set_vertex_info</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_set_vertices -->
+<g id="call~~graph~~CallGraph_node21" class="node">
+<title>proc~dag_set_vertices</title>
+<g id="a_call~~graph~~CallGraph_node21"><a xlink:href="../proc/dag_set_vertices.html" xlink:title="dag%dag_set_vertices">
+<polygon fill="#d9534f" stroke="#d9534f" points="422,-255 291,-255 291,-231 422,-231 422,-255"/>
+<text text-anchor="middle" x="356.5" y="-240.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_set_vertices</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_set_vertices&#45;&gt;proc~dag_set_vertex_info -->
+<g id="call~~graph~~CallGraph_edge15" class="edge">
+<title>proc~dag_set_vertices&#45;&gt;proc~dag_set_vertex_info</title>
+<path fill="none" stroke="#000000" d="M422.04,-243C438.79,-243 457.07,-243 474.63,-243"/>
+<polygon fill="#000000" stroke="#000000" points="474.87,-246.5 484.87,-243 474.87,-239.5 474.87,-246.5"/>
+</g>
+<!-- proc~dag_set_vertices&#45;&gt;proc~integer_to_string -->
+<g id="call~~graph~~CallGraph_edge16" class="edge">
+<title>proc~dag_set_vertices&#45;&gt;proc~integer_to_string</title>
+<path fill="none" stroke="#000000" d="M414.96,-230.96C440.92,-225.53 471.59,-219.1 497.86,-213.6"/>
+<polygon fill="#000000" stroke="#000000" points="498.63,-217.01 507.7,-211.54 497.19,-210.16 498.63,-217.01"/>
+</g>
+<!-- proc~dag_toposort -->
+<g id="call~~graph~~CallGraph_node22" class="node">
+<title>proc~dag_toposort</title>
+<g id="a_call~~graph~~CallGraph_node22"><a xlink:href="../proc/dag_toposort.html" xlink:title="dag%dag_toposort">
+<polygon fill="#d9534f" stroke="#d9534f" points="170,-633 58,-633 58,-609 170,-609 170,-633"/>
+<text text-anchor="middle" x="114" y="-618.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_toposort</text>
+</a>
+</g>
+</g>
+<!-- proc~init_internal_vars -->
+<g id="call~~graph~~CallGraph_node26" class="node">
+<title>proc~init_internal_vars</title>
+<g id="a_call~~graph~~CallGraph_node26"><a xlink:href="../proc/init_internal_vars.html" xlink:title="dag%init_internal_vars">
+<polygon fill="#d9534f" stroke="#d9534f" points="423,-612 290,-612 290,-588 423,-588 423,-612"/>
+<text text-anchor="middle" x="356.5" y="-597.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%init_internal_vars</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_toposort&#45;&gt;proc~init_internal_vars -->
+<g id="call~~graph~~CallGraph_edge17" class="edge">
+<title>proc~dag_toposort&#45;&gt;proc~init_internal_vars</title>
+<path fill="none" stroke="#000000" d="M170.18,-616.18C202.61,-613.35 244.09,-609.73 279.58,-606.63"/>
+<polygon fill="#000000" stroke="#000000" points="280.25,-610.08 289.9,-605.73 279.64,-603.11 280.25,-610.08"/>
+</g>
+<!-- proc~dag_traverse -->
+<g id="call~~graph~~CallGraph_node23" class="node">
+<title>proc~dag_traverse</title>
+<g id="a_call~~graph~~CallGraph_node23"><a xlink:href="../proc/dag_traverse.html" xlink:title="dag%dag_traverse">
+<polygon fill="#d9534f" stroke="#d9534f" points="170,-591 58,-591 58,-567 170,-567 170,-591"/>
+<text text-anchor="middle" x="114" y="-576.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dag%dag_traverse</text>
+</a>
+</g>
+</g>
+<!-- proc~dag_traverse&#45;&gt;proc~init_internal_vars -->
+<g id="call~~graph~~CallGraph_edge18" class="edge">
+<title>proc~dag_traverse&#45;&gt;proc~init_internal_vars</title>
+<path fill="none" stroke="#000000" d="M170.18,-583.82C202.61,-586.65 244.09,-590.27 279.58,-593.37"/>
+<polygon fill="#000000" stroke="#000000" points="279.64,-596.89 289.9,-594.27 280.25,-589.92 279.64,-596.89"/>
+</g>
+<!-- proc~set_edge_vector_vector&#45;&gt;proc~sort_ascending -->
+<g id="call~~graph~~CallGraph_edge19" class="edge">
+<title>proc~set_edge_vector_vector&#45;&gt;proc~sort_ascending</title>
+<path fill="none" stroke="#000000" d="M812.6,-87.02C824.88,-89.91 837.91,-93.02 850,-96 858.45,-98.08 867.39,-100.33 876.12,-102.56"/>
+<polygon fill="#000000" stroke="#000000" points="875.3,-105.96 885.85,-105.05 877.03,-99.18 875.3,-105.96"/>
+</g>
+<!-- proc~swap -->
+<g id="call~~graph~~CallGraph_node31" class="node">
+<title>proc~swap</title>
+<g id="a_call~~graph~~CallGraph_node31"><a xlink:href="../proc/swap.html" xlink:title="swap">
+<polygon fill="#d9534f" stroke="#d9534f" points="1069,-129 1015,-129 1015,-105 1069,-105 1069,-129"/>
+<text text-anchor="middle" x="1042" y="-114.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">swap</text>
+</a>
+</g>
+</g>
+<!-- proc~sort_ascending&#45;&gt;proc~swap -->
+<g id="call~~graph~~CallGraph_edge20" class="edge">
+<title>proc~sort_ascending&#45;&gt;proc~swap</title>
+<path fill="none" stroke="#000000" d="M979.09,-117C987.7,-117 996.6,-117 1004.87,-117"/>
+<polygon fill="#000000" stroke="#000000" points="1004.94,-120.5 1014.94,-117 1004.94,-113.5 1004.94,-120.5"/>
+</g>
+<!-- proc~unique -->
+<g id="call~~graph~~CallGraph_node32" class="node">
+<title>proc~unique</title>
+<g id="a_call~~graph~~CallGraph_node32"><a xlink:href="../proc/unique.html" xlink:title="unique">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="786.5,-171 732.5,-171 732.5,-147 786.5,-147 786.5,-171"/>
+<text text-anchor="middle" x="759.5" y="-156.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">unique</text>
+</a>
+</g>
+</g>
+<!-- proc~unique&#45;&gt;proc~sort_ascending -->
+<g id="call~~graph~~CallGraph_edge21" class="edge">
+<title>proc~unique&#45;&gt;proc~sort_ascending</title>
+<path fill="none" stroke="#000000" d="M786.77,-152.99C804.63,-148.87 828.77,-143.23 850,-138 858.45,-135.92 867.39,-133.67 876.12,-131.44"/>
+<polygon fill="#000000" stroke="#000000" points="877.03,-134.82 885.85,-128.95 875.3,-128.04 877.03,-134.82"/>
+</g>
+</g>
+</svg>
+</div>                <script>
+                  var pancallgraphCallGraph = svgPanZoom('#callgraphCallGraph',
+                    {zoomEnabled: true, controlIconsEnabled: true, fit: true, center: true,}
+                  );
+                </script>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#CallGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="CallGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="641pt" height="28pt"
+ viewBox="0.00 0.00 641.00 27.51" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(0.86 0.86) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 741.5,-28 741.5,4 -4,4"/>
+<!-- Subroutine -->
+<g id="node1" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="70,-24 0,-24 0,0 70,0 70,-24"/>
+<text text-anchor="middle" x="35" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node2" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="146,-24 88,-24 88,0 146,0 146,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Interface -->
+<g id="node3" class="node">
+<title>Interface</title>
+<polygon fill="#a7506f" stroke="#a7506f" points="225.5,-24 164.5,-24 164.5,0 225.5,0 225.5,-24"/>
+<text text-anchor="middle" x="195" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Interface</text>
+</g>
+<!-- Type Bound Procedure -->
+<g id="node4" class="node">
+<title>Type Bound Procedure</title>
+<polygon fill="#a7506f" stroke="#a7506f" points="374,-24 244,-24 244,0 374,0 374,-24"/>
+<text text-anchor="middle" x="309" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Type Bound Procedure</text>
+</g>
+<!-- Unknown Procedure Type -->
+<g id="node5" class="node">
+<title>Unknown Procedure Type</title>
+<polygon fill="#777777" stroke="#777777" points="537.5,-24 392.5,-24 392.5,0 537.5,0 537.5,-24"/>
+<text text-anchor="middle" x="465" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Unknown Procedure Type</text>
+</g>
+<!-- Program -->
+<g id="node6" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="614,-24 556,-24 556,0 614,0 614,-24"/>
+<text text-anchor="middle" x="585" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node7" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="737.5,-24 632.5,-24 632.5,0 737.5,0 737.5,-24"/>
+<text text-anchor="middle" x="685" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a procedure to one which it calls. Dashed 
+arrows point from an interface to procedures which implement that interface.
+This could include the module procedures in a generic interface or the
+implementation in a submodule of an interface in a parent module.
+</p>
+ </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              daglib
+ was developed by Jacob Williams<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>
