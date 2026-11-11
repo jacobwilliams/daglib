@@ -118,7 +118,7 @@
 
     impure elemental function edge_constructor(ivertex,label,attributes,metadata) result(e)
 
-    integer(ip),intent(in),optional :: ivertex !! vertex number defining the destination of this edge
+    integer(ip),intent(in) :: ivertex !! vertex number defining the destination of this edge
     character(len=*),intent(in),optional :: label !! vertex name for grahviz
     character(len=*),intent(in),optional :: attributes !! other attributes for graphviz
     class(*),intent(in),optional :: metadata !! optional user-defined metadata
